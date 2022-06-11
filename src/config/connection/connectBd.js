@@ -1,7 +1,8 @@
 var Sequelize = require('sequelize')
 const config = require('../env')
 
-var sequelize = new Sequelize(config.DB_NAME, 
+var sequelize = new Sequelize(
+    config.DB_NAME, 
     config.DB_USER,
     config.DB_PASS, 
     {
