@@ -1,0 +1,910 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "conexionPos",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000"
+    }
+  ],
+  "paths": {
+    "/v1/billingResolution": {
+      "get": {
+        "description": "get all billingResolutions of the BD",
+        "tags": [
+          "billingResolution"
+        ],
+        "responses": {
+          "200": {
+            "description": "get all billingResolutions successfully"
+          },
+          "401": {
+            "description": "don't have permissions for this action"
+          }
+        }
+
+      },
+      "post": {
+        "description": "insert a new billingResolutions in the BD",
+        "tags": [
+          "billingResolution"
+        ],
+        "requestBody": {
+          "description": "billingResolutions create body",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#components/schemas/billingResolutionsSchema"
+              },
+              "example": {
+                "resolutionClass": "class prueba",
+                "resolutionType": "type prueba",
+                "resolutionNumber": 1234,
+                "prefix": "res",
+                "initialNumber": 2,
+                "finalNumber": 3,
+                "localBilling": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "billingResolution add successfully"
+          },
+          "401": {
+            "description": "you can't create billingResolutions"
+          }
+        }
+      }
+    },
+    "/v1/billingResolution/{id}": {
+      "get": {
+        "description": "get one billingResolution of the BD",
+        "tags": [
+          "billingResolution"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of the billingResolution",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "get all billingResolution successfully"
+          },
+          "401": {
+            "description": "don't have permissions for this action"
+          }
+        }
+
+      },
+      "put": {
+        "description": "update one billingResolution of the BD",
+        "tags": [
+          "billingResolution"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of the billingResolution",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "billingResolutions updated body",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#components/schemas/billingResolutionSchema"
+              },
+              "example": {
+                "resolutionClass": "class prueba mod",
+                "resolutionType": "type prueba mod",
+                "resolutionNumber": 123333,
+                "prefix": "resmod",
+                "initialNumber": 4,
+                "finalNumber": 4,
+                "localBilling": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "update billingResolution successfully"
+          },
+          "401": {
+            "description": "don't have permissions for this action"
+          }
+        }
+      },
+      "delete": {
+        "description": "delete one billingResolution of the BD",
+        "tags": [
+          "billingResolution"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of the billingResolution",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "delete billingResolution successfully"
+          },
+          "401": {
+            "description": "don't have permissions for this action"
+          }
+        }
+
+      }
+    },
+    "/v1/banks":{
+      "get": {
+        "description": "get all banks of the BD",
+        "tags": [
+          "bank"
+        ],
+        "responses": {
+          "200": {
+            "description": "get all bank successfully"
+          },
+          "401": {
+            "description": "don't have permissions for this action"
+          }
+        }
+
+      },
+      "post": {
+        "description": "insert a new bank in the BD",
+        "tags": [
+          "bank"
+        ],
+        "requestBody": {
+          "description": "banks create body",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#components/schemas/bankSchema"
+              },
+              "example": {
+                "name": "bancolombia",
+                "accountingAccount": 123
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "bank add successfully"
+          },
+          "401": {
+            "description": "you can't create bank"
+          }
+        }
+      }
+    },
+    "/v1/banks/{id}": {
+      "get": {
+        "description": "get one bank of the BD",
+        "tags": [
+          "bank"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of the bank",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "get all bank successfully"
+          },
+          "401": {
+            "description": "don't have permissions for this action"
+          }
+        }
+
+      },
+      "put": {
+        "description": "update one bank of the BD",
+        "tags": [
+          "bank"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of the bank",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "banks updated body",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#components/schemas/bankSchema"
+              },
+              "example": {
+                "name": "bancolombia mod",
+                "accountingAccount": 1212
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "update bank successfully"
+          },
+          "401": {
+            "description": "don't have permissions for this action"
+          }
+        }
+      },
+      "delete": {
+        "description": "delete one bank of the BD",
+        "tags": [
+          "bank"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of the bank",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "delete bank successfully"
+          },
+          "401": {
+            "description": "don't have permissions for this action"
+          }
+        }
+
+      }
+    },
+    "/v1/warehouses": {
+      "get": {
+        "description": "get all warehouses of the BD",
+        "tags": [
+          "warehouse"
+        ],
+        "responses": {
+          "200": {
+            "description": "get all warehouse successfully"
+          },
+          "401": {
+            "description": "don't have permissions for this action"
+          }
+        }
+
+      },
+      "post": {
+        "description": "insert a new warehouse in the BD",
+        "tags": [
+          "warehouse"
+        ],
+        "requestBody": {
+          "description": "warehouses create body",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#components/schemas/warehouseSchema"
+              },
+              "example": {
+                "name": "almacen prueba",
+                "code": "prueba wareh",
+                "location": "risaralda",
+                "description": "almacen de prueba api",
+                "warehouseTypes": "warehouse billing",
+                "BillingResolutionId": "idbillingsdkjs"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "warehouse add successfully"
+          },
+          "401": {
+            "description": "you can't create warehouse"
+          }
+        }
+      }
+    },
+    "/v1/warehouses/{id}": {
+      "get": {
+        "description": "get one warehouse of the BD",
+        "tags": [
+          "warehouse"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of the warehouse",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "get all warehouse successfully"
+          },
+          "401": {
+            "description": "don't have permissions for this action"
+          }
+        }
+
+      },
+      "put": {
+        "description": "update one warehouse of the BD",
+        "tags": [
+          "warehouse"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of the warehouse",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "warehouses updated body",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#components/schemas/warehouseSchema"
+              },
+              "example": {
+                "name": "almacen prueba mod",
+                "code": "prueba wareh mod",
+                "location": "risaralda mod",
+                "description": "almacen de prueba apimod",
+                "warehouseTypes": "warehouse billing",
+                "BillingResolutionId": "idbillingsdkjs"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "update warehouse successfully"
+          },
+          "401": {
+            "description": "don't have permissions for this action"
+          }
+        }
+      },
+      "delete": {
+        "description": "delete one warehouse of the BD",
+        "tags": [
+          "warehouse"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of the warehouse",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "delete warehouse successfully"
+          },
+          "401": {
+            "description": "don't have permissions for this action"
+          }
+        }
+
+      }
+    },
+    "/v1/taxes": {
+      "get": {
+        "description": "get all taxess of the BD",
+        "tags": [
+          "taxes"
+        ],
+        "responses": {
+          "200": {
+            "description": "get all taxes successfully"
+          },
+          "401": {
+            "description": "don't have permissions for this action"
+          }
+        }
+
+      },
+      "post": {
+        "description": "insert a new taxes in the BD",
+        "tags": [
+          "taxes"
+        ],
+        "requestBody": {
+          "description": "taxess create body",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#components/schemas/taxesSchema"
+              },
+              "example": {
+                "name": "impuesto prueba",
+                "description": "descripcion impuesto prueba ",
+                "tax": 1,
+                "taxType": {
+                    "INCLUDED_IN_PRICE": "INCLUDED_IN_PRICE",
+                    "CONSUMPTION_TAX": "CONSUMPTION_TAX",
+                    "GENERAL_TAX": "GENERAL_TAX"
+                }
+            }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "taxes add successfully"
+          },
+          "401": {
+            "description": "you can't create taxes"
+          }
+        }
+      }
+    },
+    "/v1/taxes/{id}": {
+      "get": {
+        "description": "get one taxes of the BD",
+        "tags": [
+          "taxes"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of the taxes",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "get all taxes successfully"
+          },
+          "401": {
+            "description": "don't have permissions for this action"
+          }
+        }
+
+      },
+      "put": {
+        "description": "update one taxes of the BD",
+        "tags": [
+          "taxes"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of the taxes",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "taxes updated body",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#components/schemas/taxesSchema"
+              },
+              "example": {
+                "name": "impuesto prueba mod",
+                "description": "descripcion impuesto prueba mod",
+                "tax": 11,
+                "taxType": {
+                    "GENERAL_TAX": "GENERAL_TAX"
+                }
+            }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "update taxes successfully"
+          },
+          "401": {
+            "description": "don't have permissions for this action"
+          }
+        }
+      },
+      "delete": {
+        "description": "delete one taxes of the BD",
+        "tags": [
+          "taxes"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of the taxes",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "delete taxes successfully"
+          },
+          "401": {
+            "description": "don't have permissions for this action"
+          }
+        }
+
+      }
+    },
+    "/v1/monetaryDenomination": {
+      "get": {
+        "description": "get all monetaryDenominations of the BD",
+        "tags": [
+          "monetaryDenominations"
+        ],
+        "responses": {
+          "200": {
+            "description": "get all monetaryDenominations successfully"
+          },
+          "401": {
+            "description": "don't have permissions for this action"
+          }
+        }
+
+      },
+      "post": {
+        "description": "insert a new monetaryDenominations in the BD",
+        "tags": [
+          "monetaryDenominations"
+        ],
+        "requestBody": {
+          "description": "monetaryDenominationss create body",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#components/schemas/monetaryDenominationsSchema"
+              },
+              "example": {
+                "photoFile": "idphototprueba",
+                "value": 2000,
+                "monetaryDenominationTypes": "COIN"
+            }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "monetaryDenominations add successfully"
+          },
+          "401": {
+            "description": "you can't create monetaryDenominations"
+          }
+        }
+      }
+    },
+    "/v1/monetaryDenomination/{id}": {
+      "get": {
+        "description": "get one monetaryDenominations of the BD",
+        "tags": [
+          "monetaryDenominations"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of the monetaryDenominations",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "get all monetaryDenominations successfully"
+          },
+          "401": {
+            "description": "don't have permissions for this action"
+          }
+        }
+
+      },
+      "put": {
+        "description": "update one monetaryDenominations of the BD",
+        "tags": [
+          "monetaryDenominations"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of the monetaryDenominations",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "monetaryDenominations updated body",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#components/schemas/monetaryDenominationsSchema"
+              },
+              "example": {
+                "photoFile": "idphototprueba mod",
+                "value": 3000,
+                "monetaryDenominationTypes": "TICKET"
+            }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "update monetaryDenominations successfully"
+          },
+          "401": {
+            "description": "don't have permissions for this action"
+          }
+        }
+      },
+      "delete": {
+        "description": "delete one monetaryDenominations of the BD",
+        "tags": [
+          "monetaryDenominations"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of the monetaryDenominations",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "delete monetaryDenominations successfully"
+          },
+          "401": {
+            "description": "don't have permissions for this action"
+          }
+        }
+
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "BankSchema": {
+        "required":[
+          "name",
+          "accountingAccount"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "accountingAccount": {
+            "type": "number"
+          }
+        }
+      },
+      "BillingResolutionSchema": {
+        "required": [
+          "resolutionClass",
+          "resolutionType",
+          "resolutionNumber",
+          "prefix",
+          "initialNumber",
+          "finalNumber"
+        ],
+        "properties": {
+          "id":{
+            "type": "string"
+          },
+          "resolutionClass": {
+            "type": "string"
+          },
+          "resolutionType": {
+            "type":"string"
+          },
+          "resolutionNumber": {
+            "type": "number"
+          },
+          "from": {
+            "type": "string",
+            "format": "date"
+          },
+          "to": {
+            "type": "string",
+            "format": "date"
+          },
+          "prefix":{
+            "type": "string"
+          },
+          "initialNumber":{
+            "type": "number"
+          },
+          "finalNumber":{
+            "type": "number"
+          },
+          "localBilling": {
+            "type": "boolean"
+          }
+        }
+      },
+      "taxesSchema": {
+        "required": [
+          "name",
+          "tax",
+          "taxType"
+        ],
+        "properties": {
+          "id":{
+            "type": "string"
+          },
+          "name":{
+            "type": "string"
+          },
+          "description":{
+            "type": "string"
+          },
+          "tax":{
+            "type": "number"
+          },
+          "taxType":{
+            "type": "json"
+          },
+          "isActive":{
+            "type": "boolean"
+          }
+        }
+      },
+      "monetaryDenominationsSchema": {
+        "required": [
+          "value",
+          "monetaryDenominationTypes"
+        ],
+        "properties": {
+          "id":{
+            "type": "string"
+          },
+          "photoFile":{
+            "type": "string"
+          },
+          "value":{
+            "type": "number"
+          },
+          "monetaryDenominationTypes": {
+            "type": "string"
+          }
+        }
+      },
+      "warehouseSchema": {
+        "required": [
+          "name",
+          "code",
+          "location",
+          "warehouseTypes"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "code": {
+            "type": "string"
+          },
+          "location": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "warehouseTypes": {
+            "type": "string"
+          },
+          "BillingResolutionId": {
+            "type": "string"
+          },
+          "isActive": {
+            "type": "boolean"
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "required": [
+          "status",
+          "message"
+        ],
+        "properties": {
+          "status": {
+            "type": "integer",
+            "description": "HTTP status code",
+            "example": 200
+          },
+          "message": {
+            "type": "string",
+            "description": "Error description",
+            "example": "entity no created"
+          }
+        }
+      }
+    }
+  },
+  "tags": []
+}
