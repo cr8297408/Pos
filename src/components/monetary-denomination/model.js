@@ -21,7 +21,7 @@ const MonetaryDenomination = sequelize.define('MonetaryDenomination', {
     allowNull: false,
   }
 },{
-  tableName: "MonetaryDenominations",
+  tableName: "monetaryDenominations",
   timestamps: true
 })
 

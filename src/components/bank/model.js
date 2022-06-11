@@ -18,7 +18,7 @@ const Bank = sequelize.define('Bank', {
     allowNull: false,
   },
 },{
-  tableName: "Banks",
+  tableName: "banks",
   timestamps: true
 })
 

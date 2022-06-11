@@ -25,7 +25,7 @@ const ProductArea = sequelize.define('ProductArea', {
     defaultValue: true
   },
 },{
-  tableName: "ProductAreas",
+  tableName: "productAreas",
   timestamps: true
 })
 

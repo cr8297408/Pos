@@ -42,7 +42,7 @@ const BillingResolution = sequelize.define('BillingResolution', {
   }
 
 },{
-  tableName: "BillingResolutions",
+  tableName: "billingResolutions",
   timestamps: true
 })
 
