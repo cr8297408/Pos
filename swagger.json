@@ -598,7 +598,7 @@
 
       }
     },
-    "/v1/monetaryDenomination": {
+    "/v1/monetaryDenominations": {
       "get": {
         "description": "get all monetaryDenominations of the BD",
         "tags": [
@@ -645,7 +645,7 @@
         }
       }
     },
-    "/v1/monetaryDenomination/{id}": {
+    "/v1/monetaryDenominations/{id}": {
       "get": {
         "description": "get one monetaryDenominations of the BD",
         "tags": [
@@ -732,6 +732,288 @@
         "responses": {
           "200": {
             "description": "delete monetaryDenominations successfully"
+          },
+          "401": {
+            "description": "don't have permissions for this action"
+          }
+        }
+
+      }
+    },
+    "/v1/productAreas": {
+      "get": {
+        "description": "get all productAreas of the BD",
+        "tags": [
+          "productAreas"
+        ],
+        "responses": {
+          "200": {
+            "description": "get all productAreas successfully"
+          },
+          "401": {
+            "description": "don't have permissions for this action"
+          }
+        }
+
+      },
+      "post": {
+        "description": "insert a new productAreas in the BD",
+        "tags": [
+          "productAreas"
+        ],
+        "requestBody": {
+          "description": "productAreass create body",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#components/schemas/productAreasSchema"
+              },
+              "example": {
+                "attentionArea": false,
+                "name": "area prueba",
+                "description": "prueba descripcion",
+                "isActive": true
+            }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "productAreas add successfully"
+          },
+          "401": {
+            "description": "you can't create productAreas"
+          }
+        }
+      }
+    },
+    "/v1/productAreas/{id}": {
+      "get": {
+        "description": "get one productAreas of the BD",
+        "tags": [
+          "productAreas"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of the productAreas",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "get all productAreas successfully"
+          },
+          "401": {
+            "description": "don't have permissions for this action"
+          }
+        }
+
+      },
+      "put": {
+        "description": "update one productAreas of the BD",
+        "tags": [
+          "productAreas"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of the productAreas",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "productAreas updated body",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#components/schemas/productAreasSchema"
+              },
+              "example": {
+                "attentionArea": true,
+                "name": "area prueba mod",
+                "description": "prueba descripcion mod",
+                "isActive": false
+            }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "update productAreas successfully"
+          },
+          "401": {
+            "description": "don't have permissions for this action"
+          }
+        }
+      },
+      "delete": {
+        "description": "delete one productAreas of the BD",
+        "tags": [
+          "productAreas"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of the productAreas",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "delete productAreas successfully"
+          },
+          "401": {
+            "description": "don't have permissions for this action"
+          }
+        }
+
+      }
+    },
+    "/v1/measureUnits": {
+      "get": {
+        "description": "get all measureUnits of the BD",
+        "tags": [
+          "measureUnits"
+        ],
+        "responses": {
+          "200": {
+            "description": "get all measureUnits successfully"
+          },
+          "401": {
+            "description": "don't have permissions for this action"
+          }
+        }
+
+      },
+      "post": {
+        "description": "insert a new measureUnits in the BD",
+        "tags": [
+          "measureUnits"
+        ],
+        "requestBody": {
+          "description": "measureUnitss create body",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#components/schemas/measureUnitsSchema"
+              },
+              "example": {
+                "name": "unit prueba"
+            }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "measureUnits add successfully"
+          },
+          "401": {
+            "description": "you can't create measureUnits"
+          }
+        }
+      }
+    },
+    "/v1/measureUnits/{id}": {
+      "get": {
+        "description": "get one measureUnits of the BD",
+        "tags": [
+          "measureUnits"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of the measureUnits",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "get all measureUnits successfully"
+          },
+          "401": {
+            "description": "don't have permissions for this action"
+          }
+        }
+
+      },
+      "put": {
+        "description": "update one measureUnits of the BD",
+        "tags": [
+          "measureUnits"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of the measureUnits",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "measureUnits updated body",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#components/schemas/measureUnitsSchema"
+              },
+              "example": {
+                "name": "unit prueba mod"
+            }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "update measureUnits successfully"
+          },
+          "401": {
+            "description": "don't have permissions for this action"
+          }
+        }
+      },
+      "delete": {
+        "description": "delete one measureUnits of the BD",
+        "tags": [
+          "measureUnits"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of the measureUnits",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "delete measureUnits successfully"
           },
           "401": {
             "description": "don't have permissions for this action"
@@ -882,6 +1164,26 @@
           },
           "isActive": {
             "type": "boolean"
+          }
+        }
+      },
+      "productAreaSchema": {
+        "required": [
+          "attentionArea",
+          "name"
+        ],
+        "properties": {
+          "id": {
+            "type":"string"
+          },
+          "attentionArea": {
+            "type":"boolean"
+          },
+          "name": {
+            "type":"string"
+          },
+          "description": {
+            "type":"string"
           }
         }
       },

@@ -2,12 +2,16 @@ const { DataTypes, Model, UUIDV4} = require('sequelize');
 const db = require('../../config/connection/connectBD');
 sequelize = db.sequelize;
 
-const Tax = sequelize.define('Tax', {
+const ProductArea = sequelize.define('ProductArea', {
   id: {
     type: DataTypes.STRING,
     defaultValue: UUIDV4,
     primaryKey: true,
     allowNull: false,
+  },
+  attentionArea: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: true
   },
   name: {
     type: DataTypes.STRING,
@@ -16,22 +20,13 @@ const Tax = sequelize.define('Tax', {
   description: {
     type: DataTypes.STRING,
   },
-  tax: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-  },
-  taxType: {
-    type: DataTypes.JSON,
-    allowNull: false,
-  },
   isActive: {
     type: DataTypes.BOOLEAN,
     defaultValue: true
-  }
-
+  },
 },{
-  tableName: "taxes",
+  tableName: "ProductAreas",
   timestamps: true
 })
 
-module.exports = Tax;
+module.exports = ProductArea;

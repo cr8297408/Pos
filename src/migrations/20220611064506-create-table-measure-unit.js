@@ -3,7 +3,7 @@ const { UUIDV4, DataTypes } = require('sequelize')
 
 module.exports = {
   async up (queryInterface, Sequelize) {
-    await queryInterface.createTable('taxes', { 
+    await queryInterface.createTable('measureUnits', { 
       id: {
         type: Sequelize.DataTypes.STRING,
         defaultValue: UUIDV4,
@@ -14,25 +14,19 @@ module.exports = {
         type: Sequelize.DataTypes.STRING,
         allowNull: false,
       },
-      description: {
+      createdAt: {
         type: Sequelize.DataTypes.STRING,
+        defaultValue: new Date(),
       },
-      tax: {
-        type: Sequelize.DataTypes.INTEGER,
-        allowNull: false,
-      },
-      taxType: {
-        type: Sequelize.DataTypes.JSON,
-        allowNull: false,
-      },
-      isActive: {
-        type: Sequelize.DataTypes.BOOLEAN,
-        defaultValue: true
+      updatedAt: {
+        type: Sequelize.DataTypes.STRING,
+        defaultValue: new Date(),
       }
-    });
+     });
+    
   },
 
   async down (queryInterface, Sequelize) {
-    await queryInterface.dropTable('taxes');
+    await queryInterface.dropTable('measureUnits');
   }
 };
