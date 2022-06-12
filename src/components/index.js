@@ -4,7 +4,8 @@ const WarehouseComponent = require('./warehouse')
 const TaxComponent = require('./tax');
 const MonetaryDenominationComponent = require('./monetary-denomination');
 const ProductAreaComponent = require('./product-area');
-const MeasureUnitComponent = require('./measure-unit')
+const MeasureUnitComponent = require('./measure-unit');
+const UserComponent = require('./user');
 
 module.exports = { 
   BankComponent, 
@@ -13,5 +14,6 @@ module.exports = {
   TaxComponent,
   MonetaryDenominationComponent,
   ProductAreaComponent,
-  MeasureUnitComponent
+  MeasureUnitComponent,
+  UserComponent
 }
