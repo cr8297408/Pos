@@ -147,11 +147,23 @@ const router = Router();
   *                  type: string
   *              name:
   *                  type: string,
-  *              accountingAccount:
+  *              description:
   *                    type: string
+  *              tax:
+  *                    type: number
+  *              taxType:
+  *                    type: json
+  *              isActive:
+  *                    type: boolean
   *          example:
-  *              name: bancolombia
-  *              accountingAccount: 123
+  *              name: impuesto prueba
+  *              description: descripcion impuesto prueba
+  *              tax: 1
+  *              taxType: {
+  *                  INCLUDED_IN_PRICE: INCLUDED_IN_PRICE
+  *                  CONSUMPTION_TAX: CONSUMPTION_TAX
+  *                  GENERAL_TAX: GENERAL_TAX
+  *              }
   *      Error:    
   *          type: object
   *          required:

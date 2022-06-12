@@ -18,8 +18,7 @@ class UserValidation {
       const schema = Joi.object().keys({
         username: Joi.string().required(),
         email: Joi.string().email({ 
-          minDomainSegments: 2, 
-          tlds: { allow: ['com', 'net'] } 
+          minDomainSegments: 2,
         }).required(),
         password: Joi.string().required(),
         firstName: Joi.string().required(),

@@ -41,6 +41,9 @@ const User = sequelize.define('User', {
     type: DataTypes.BOOLEAN,
     defaultValue: true
   },
+  lastLogin: {
+    type: DataTypes.DATE
+  },
   isAdmin: {
     type: DataTypes.BOOLEAN,
     defaultValue: false

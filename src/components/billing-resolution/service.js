@@ -110,6 +110,17 @@ const BillingResolutionService = {
       if (validateBody.error) {
         throw new Error(validate.error)
       }
+
+      const exists_resolutionNumber = await BillingResolution.findOne({
+        where:{
+          resolutionNumber: body.resolutionNumber
+        }
+      })
+
+      if (exists_resolutionNumber) {
+        throw new Error('el numero de resolucion ya está en uso...')
+      }
+
       const newBillingResolution = await BillingResolution.update(
         {
           resolutionClass: body.resolutionClass,

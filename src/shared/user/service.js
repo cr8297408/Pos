@@ -29,6 +29,30 @@ const UserService = {
       if (validate.error) {
         throw new Error(validate.error)
       }
+      
+      const existsMail = await User.findOne({
+        where: {
+          email:body.email,
+        }
+      })
+      const existsUser = await User.findOne({
+        where: {
+          username:body.username,
+        }
+      })
+
+      if (existsMail) {
+        return {
+          status: 400,
+          message: 'el email ya está en uso '
+        }
+      }
+      if (existsUser) {
+        return {
+          status: 400,
+          message: 'el usuario ya está en uso '
+        }
+      }
 
       const createdUser = await User.create(body);
       return createdUser;
@@ -105,8 +129,15 @@ const UserService = {
       }
       const newUser = await User.update(
         {
-          name: body.name,
-          accountingAccount: body.accountingAccount 
+          username: body.username,
+          email:body.email,
+          firstName: body.firstName,
+          lastName: body.lastName,
+          roles: body.roles,
+          profile: body.profile,
+          isActive: body.isActive,
+          isAdmin: body.isAdmin,
+          avatarFile: body.avatarFile,
         },
         {where: {id}}
       )

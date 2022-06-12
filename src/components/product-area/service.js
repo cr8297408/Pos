@@ -30,6 +30,15 @@ const ProductAreaService = {
         throw new Error(validate.error)
       }
 
+      const validateName = await ProductArea.findOne({
+        where: {
+          name: body.name
+        }
+      })
+      if (validateName) {
+        throw new Error('el nombre está en uso')
+      }
+
       const createProductArea = await ProductArea.create(body);
       return createProductArea;
 
@@ -99,6 +108,14 @@ const ProductAreaService = {
       const validateBody = await ProductAreaValidation.createProductArea(body)
       if (validateBody.error) {
         throw new Error(validate.error)
+      }
+      const validateName = await ProductArea.findOne({
+        where: {
+          name: body.name
+        }
+      })
+      if (validateName) {
+        throw new Error('el nombre está en uso')
       }
       const newProductArea = await ProductArea.update(
         {
