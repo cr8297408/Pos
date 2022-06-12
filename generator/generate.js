@@ -14,6 +14,19 @@ generateTemplateFiles([
       pathAndFileNameDefaultCase: '(kebabCase)',
       overwrite: true,
     },
+  },
+  {
+    option: 'GENERATE_ROUTE',
+    defaultCase: '(pascalCase)',
+    entry: {
+      folderPath: './generator/route',
+    },
+    stringReplacers: [{ question: 'Insert Route Name', slot: '__name__' } ],
+    output: {
+      path: './src/routes/',
+      pathAndFileNameDefaultCase: '(kebabCase)',
+      overwrite: true,
+    },
   }
 
 ]);
