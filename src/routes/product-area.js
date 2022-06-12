@@ -8,194 +8,166 @@ const router = Router();
 
 
 /**
- * GET method route
- * @example http://localhost:PORT/v1/ProductAreas
- *
  * @swagger
- * /v1/ProductAreas:
- *   get:
- *     description: Get all stored ProductAreas in Database
- *     tags: ["ProductArea"]
- *     security:
- *      - bearerAuth: []
- *     responses:
- *       200:
- *         description: An array of ProductAreas
- *         content:
- *           application/json:
- *             schema:
- *               oneOf:
- *                - $ref: '#/components/schemas/ProductAreas'
- *       default:
- *          description: unexpected error
- *          content:
- *            application/json:
- *              schema:
- *                $ref: '#/components/schemas/Error'
+ *  /v1/productAreas:
+ *      get:
+ *          summary: det all the productAreas;
+ *          tags: ["productAreas"]
+ *          responses:
+ *              200:
+ *                  description: get productAreas successfully 
+ *                  content:
+ *                      application/json:
+ *                          squema:
+ *                              type: array
+ *                              items:
+ *                                  $ref: '#/components/schemas/productAreas'
+ *              401:
+ *                  description: error in get productAreas
  */
+ router.get('/', ProductAreaComponent.findAll)
 
-router.get('/', ProductAreaComponent.findAll)
-
-/**
- * GET method route
- * @example http://localhost:PORT/v1/ProductAreas/id
- *
- * @swagger
- * /v1/ProductAreas/{id}:
- *   get:
- *     description: Get one ProductArea in Database
- *     tags: ["ProductArea"]
- *     parameters: [
- *        {
- *          name: id,
- *          in: path,
- *          description: id of the ProductArea
- *          required: true,
- *          schema: {
- *            type: string,
- *          }
- *        }
- *     ] 
- *     security:
- *      - bearerAuth: []
- *     responses:
- *       200:
- *         description: A entity od ProductArea
- *         content:
- *           application/json:
- *             schema:
- *               oneOf:
- *                - $ref: '#/components/schemas/ProductAreas'
- *       default:
- *          description: unexpected error
- *          content:
- *            application/json:
- *              schema:
- *                $ref: '#/components/schemas/Error'
- */
-
-router.get('/:id', ProductAreaComponent.findOne);
-
-/**
- * DELETE method route
- * @example http://localhost:PORT/v1/ProductAreas/id
- *
- * @swagger
- * /v1/ProductAreas/{id}:
- *   get:
- *     description: delete one ProductAreas in Database
- *     tags: ["ProductArea"]
- *     parameters: [
- *        {
- *          name: id,
- *          in: path,
- *          description: id of the ProductArea
- *          required: true,
- *          schema: {
- *            type: string,
- *          }
- *        }
- *     ] 
- *     security:
- *      - bearerAuth: []
- *     responses:
- *       200:
- *         description: a ProductArea updated
- *         content:
- *           application/json:
- *             schema:
- *               oneOf:
- *                - $ref: '#/components/schemas/ProductAreas'
- *       default:
- *          description: unexpected error
- *          content:
- *            application/json:
- *              schema:
- *                $ref: '#/components/schemas/Error'
- */
-
-router.delete('/:id', ProductAreaComponent.deleteOne);
-
-/**
- * PUT method route
- * @example http://localhost:PORT/v1/ProductAreas/id
- *
- * @swagger
- * /v1/ProductAreas/{id}:
- *   get:
- *     description: update a ProductArea in Database
- *     tags: ["ProductArea"]
- *     parameters: [
- *        {
- *          name: id,
- *          in: path,
- *          description: id of the ProductArea
- *          required: true,
- *          schema: {
- *            type: string,
- *          }
- *        }
- *     ] 
- *     security:
- *      - bearerAuth: []
- *     responses:
- *       200:
- *         description: a number, 1 true, 0 false
- *         content:
- *           application/json:
- *             schema:
- *               oneOf:
- *                - $ref: '#/components/schemas/ProductAreas'
- *       default:
- *          description: unexpected error
- *          content:
- *            application/json:
- *              schema:
- *                $ref: '#/components/schemas/Error'
- */
-
-router.put('/:id', ProductAreaComponent.updateOne);
-
-/**
- * POST method route
- * @example http://localhost:PORT/v1/ProductAreas
- *
- * @swagger
- * /v1/ProductAreas:
- *   post:
- *      description: Create new ProductArea
- *      tags: ["ProductArea"]
- *      security:
- *       - bearerAuth: []
- *      requestBody:
- *        description: ProductArea creation request body
- *        required: true
- *        content:
- *          application/json:
- *            schema:
- *              $ref: '#/components/schemas/ProductAreaSchema'
- *            example:
- *              client: idclientprueba,
- *              serial: tyrue363jasdjd7eserial,
- *              start_date: 2022-09-06T05:00:00.000Z,
- *              expired_date: 09-06-2023,
- *              nodes: 2,
- *              isActive: true
- *      responses:
- *        201:
- *          description: return created ProductArea
- *          content:
- *            application/json:
- *              schema:
- *                oneOf:
- *                  - $ref: '#/components/schemas/ProductAreaSchema'
- *        default:
- *          description: unexpected error
- *          content:
- *            application/json:
- *              schema:
- *                $ref: '#/components/schemas/Error'
- */
-router.post('/', ProductAreaComponent.create)
-
-module.exports = router;
+ /**
+  * @swagger
+  *  /v1/productAreas/{id}:
+  *      get:
+  *          summary: get one productArea by id
+  *          tags: ["productAreas"]
+  *          responses:
+  *              200:
+  *                  description: get productArea succefully  
+  *              401:
+  *                  description: user not authorized to get productArea
+  *          parameters: [
+  *           {
+  *              name: idProducto,
+  *              in: path,
+  *              description: id con el que está registrado en el sistema el producto a eliminar,
+  *              required: true,
+  *              schema: {
+  *                  type: string
+  *              }
+  *           },
+  *          ]
+  */
+ 
+ router.get('/:id', ProductAreaComponent.findOne);
+ 
+ /**
+  * @swagger
+  *  /v1/productAreas/{id}:
+  *      delete:
+  *          summary: delete a productArea
+  *          tags: ["productAreas"]
+  *          responses:
+  *              200:
+  *                  description: productArea deleted succesfully
+  *              401:
+  *                  description: user not authorized to delete productAreas
+  *          parameters: [
+  *           {
+  *              name: id,
+  *              in: path,
+  *              description: id of the productArea,
+  *              required: true,
+  *              schema: {
+  *                  type: string,
+  *              }
+  *           },
+  *          ]
+  */
+ router.delete('/:id', ProductAreaComponent.deleteOne);
+ 
+ /**
+  * @swagger
+  *  /v1/productAreas/{id}:
+  *      put:
+  *          summary: put productArea in the DB
+  *          tags: ["productAreas"]
+  *          requestBody:
+  *              required: true
+  *              content:
+  *                  application/json:
+  *                      schema:
+  *                           $ref: '#/components/schemas/productAreas'
+  *          responses:
+  *              200:
+  *                  description: update productArea successfully
+  *              401:
+  *                  description: user not authorized to update productAreas
+  *          parameters: [
+  *           {
+  *              name: id,
+  *              in: path,
+  *              description: id of the productArea,
+  *              required: true,
+  *              schema: {
+  *                  type: string,
+  *              }
+  *           },
+  *          ]
+  */
+ 
+ router.put('/:id', ProductAreaComponent.updateOne);
+ 
+ /**
+  * @swagger
+  *  /v1/productAreas:
+  *      post:
+  *          summary: added a productArea
+  *          tags: ["productAreas"]
+  *          requestBody:
+  *              required: true
+  *              content:
+  *                  application/json:
+  *                      schema:
+  *                          $ref: '#/components/schemas/productAreas'
+  *          responses:
+  *              200:
+  *                  description: productArea add successfully
+  *              401:
+  *                  descripion: user not authorized to add productAreas
+  */
+ router.post('/', ProductAreaComponent.create)
+ 
+ /**
+  * @swagger
+  * tags:
+  *  name: productAreas
+  *  description: endpoints for managing api productAreas.
+  * components:
+  *  schemas:
+  *      productAreas:
+  *          type: object
+  *          required:
+  *              -name
+  *              -accountingAccount
+  *          properties:
+  *              id:
+  *                  type: string
+  *              name:
+  *                  type: string,
+  *              accountingAccount:
+  *                    type: string
+  *          example:
+  *              attentionArea: false
+  *              name: area prueba
+  *              description: prueba descripcion
+  *              isActive: true
+  *      Error:    
+  *          type: object
+  *          required:
+  *              -status
+  *              -message
+  *          properties:
+  *              status: 
+  *                  type: integer
+  *                  description: HTTP status code
+  *                  example: 400
+  *              message:
+  *                  type: string
+  *                  description: Error description
+  *                  example: entity no created
+  */
+ 
+ module.exports = router;

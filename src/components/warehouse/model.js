@@ -39,6 +39,4 @@ const Warehouse = sequelize.define('Warehouse', {
   timestamps: true
 })
 
-BillingResolution.hasMany(Warehouse);
-
 module.exports = Warehouse;

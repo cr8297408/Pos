@@ -6,196 +6,161 @@ const MeasureUnitService = require('../components/measure-unit/service');
 
 const router = Router();
 
-
 /**
- * GET method route
- * @example http://localhost:PORT/v1/MeasureUnits
- *
  * @swagger
- * /v1/MeasureUnits:
- *   get:
- *     description: Get all stored MeasureUnits in Database
- *     tags: ["MeasureUnit"]
- *     security:
- *      - bearerAuth: []
- *     responses:
- *       200:
- *         description: An array of MeasureUnits
- *         content:
- *           application/json:
- *             schema:
- *               oneOf:
- *                - $ref: '#/components/schemas/MeasureUnits'
- *       default:
- *          description: unexpected error
- *          content:
- *            application/json:
- *              schema:
- *                $ref: '#/components/schemas/Error'
+ *  /v1/measureUnits:
+ *      get:
+ *          summary: det all the measureUnits;
+ *          tags: ["measureUnits"]
+ *          responses:
+ *              200:
+ *                  description: get measureUnits successfully 
+ *                  content:
+ *                      application/json:
+ *                          squema:
+ *                              type: array
+ *                              items:
+ *                                  $ref: '#/components/schemas/measureUnits'
+ *              401:
+ *                  description: error in get measureUnits
  */
+ router.get('/', MeasureUnitComponent.findAll)
 
-router.get('/', MeasureUnitComponent.findAll)
-
-/**
- * GET method route
- * @example http://localhost:PORT/v1/MeasureUnits/id
- *
- * @swagger
- * /v1/MeasureUnits/{id}:
- *   get:
- *     description: Get one MeasureUnit in Database
- *     tags: ["MeasureUnit"]
- *     parameters: [
- *        {
- *          name: id,
- *          in: path,
- *          description: id of the MeasureUnit
- *          required: true,
- *          schema: {
- *            type: string,
- *          }
- *        }
- *     ] 
- *     security:
- *      - bearerAuth: []
- *     responses:
- *       200:
- *         description: A entity od MeasureUnit
- *         content:
- *           application/json:
- *             schema:
- *               oneOf:
- *                - $ref: '#/components/schemas/MeasureUnits'
- *       default:
- *          description: unexpected error
- *          content:
- *            application/json:
- *              schema:
- *                $ref: '#/components/schemas/Error'
- */
-
-router.get('/:id', MeasureUnitComponent.findOne);
-
-/**
- * DELETE method route
- * @example http://localhost:PORT/v1/MeasureUnits/id
- *
- * @swagger
- * /v1/MeasureUnits/{id}:
- *   get:
- *     description: delete one MeasureUnits in Database
- *     tags: ["MeasureUnit"]
- *     parameters: [
- *        {
- *          name: id,
- *          in: path,
- *          description: id of the MeasureUnit
- *          required: true,
- *          schema: {
- *            type: string,
- *          }
- *        }
- *     ] 
- *     security:
- *      - bearerAuth: []
- *     responses:
- *       200:
- *         description: a MeasureUnit updated
- *         content:
- *           application/json:
- *             schema:
- *               oneOf:
- *                - $ref: '#/components/schemas/MeasureUnits'
- *       default:
- *          description: unexpected error
- *          content:
- *            application/json:
- *              schema:
- *                $ref: '#/components/schemas/Error'
- */
-
-router.delete('/:id', MeasureUnitComponent.deleteOne);
-
-/**
- * PUT method route
- * @example http://localhost:PORT/v1/MeasureUnits/id
- *
- * @swagger
- * /v1/MeasureUnits/{id}:
- *   get:
- *     description: update a MeasureUnit in Database
- *     tags: ["MeasureUnit"]
- *     parameters: [
- *        {
- *          name: id,
- *          in: path,
- *          description: id of the MeasureUnit
- *          required: true,
- *          schema: {
- *            type: string,
- *          }
- *        }
- *     ] 
- *     security:
- *      - bearerAuth: []
- *     responses:
- *       200:
- *         description: a number, 1 true, 0 false
- *         content:
- *           application/json:
- *             schema:
- *               oneOf:
- *                - $ref: '#/components/schemas/MeasureUnits'
- *       default:
- *          description: unexpected error
- *          content:
- *            application/json:
- *              schema:
- *                $ref: '#/components/schemas/Error'
- */
-
-router.put('/:id', MeasureUnitComponent.updateOne);
-
-/**
- * POST method route
- * @example http://localhost:PORT/v1/MeasureUnits
- *
- * @swagger
- * /v1/MeasureUnits:
- *   post:
- *      description: Create new MeasureUnit
- *      tags: ["MeasureUnit"]
- *      security:
- *       - bearerAuth: []
- *      requestBody:
- *        description: MeasureUnit creation request body
- *        required: true
- *        content:
- *          application/json:
- *            schema:
- *              $ref: '#/components/schemas/MeasureUnitSchema'
- *            example:
- *              client: idclientprueba,
- *              serial: tyrue363jasdjd7eserial,
- *              start_date: 2022-09-06T05:00:00.000Z,
- *              expired_date: 09-06-2023,
- *              nodes: 2,
- *              isActive: true
- *      responses:
- *        201:
- *          description: return created MeasureUnit
- *          content:
- *            application/json:
- *              schema:
- *                oneOf:
- *                  - $ref: '#/components/schemas/MeasureUnitSchema'
- *        default:
- *          description: unexpected error
- *          content:
- *            application/json:
- *              schema:
- *                $ref: '#/components/schemas/Error'
- */
-router.post('/', MeasureUnitComponent.create)
-
-module.exports = router;
+ /**
+  * @swagger
+  *  /v1/measureUnits/{id}:
+  *      get:
+  *          summary: get one measureUnit by id
+  *          tags: ["measureUnits"]
+  *          responses:
+  *              200:
+  *                  description: get measureUnit succefully  
+  *              401:
+  *                  description: user not authorized to get measureUnit
+  *          parameters: [
+  *           {
+  *              name: idProducto,
+  *              in: path,
+  *              description: id con el que está registrado en el sistema el producto a eliminar,
+  *              required: true,
+  *              schema: {
+  *                  type: string
+  *              }
+  *           },
+  *          ]
+  */
+ 
+ router.get('/:id', MeasureUnitComponent.findOne);
+ 
+ /**
+  * @swagger
+  *  /v1/measureUnits/{id}:
+  *      delete:
+  *          summary: delete a measureUnit
+  *          tags: ["measureUnits"]
+  *          responses:
+  *              200:
+  *                  description: measureUnit deleted succesfully
+  *              401:
+  *                  description: user not authorized to delete measureUnits
+  *          parameters: [
+  *           {
+  *              name: id,
+  *              in: path,
+  *              description: id of the measureUnit,
+  *              required: true,
+  *              schema: {
+  *                  type: string,
+  *              }
+  *           },
+  *          ]
+  */
+ router.delete('/:id', MeasureUnitComponent.deleteOne);
+ 
+ /**
+  * @swagger
+  *  /v1/measureUnits/{id}:
+  *      put:
+  *          summary: put measureUnit in the DB
+  *          tags: ["measureUnits"]
+  *          requestBody:
+  *              required: true
+  *              content:
+  *                  application/json:
+  *                      schema:
+  *                           $ref: '#/components/schemas/measureUnits'
+  *          responses:
+  *              200:
+  *                  description: update measureUnit successfully
+  *              401:
+  *                  description: user not authorized to update measureUnits
+  *          parameters: [
+  *           {
+  *              name: id,
+  *              in: path,
+  *              description: id of the measureUnit,
+  *              required: true,
+  *              schema: {
+  *                  type: string,
+  *              }
+  *           },
+  *          ]
+  */
+ 
+ router.put('/:id', MeasureUnitComponent.updateOne);
+ 
+ /**
+  * @swagger
+  *  /v1/measureUnits:
+  *      post:
+  *          summary: added a measureUnit
+  *          tags: ["measureUnits"]
+  *          requestBody:
+  *              required: true
+  *              content:
+  *                  application/json:
+  *                      schema:
+  *                          $ref: '#/components/schemas/measureUnits'
+  *          responses:
+  *              200:
+  *                  description: measureUnit add successfully
+  *              401:
+  *                  descripion: user not authorized to add measureUnits
+  */
+ router.post('/', MeasureUnitComponent.create)
+ 
+ /**
+  * @swagger
+  * tags:
+  *  name: measureUnits
+  *  description: endpoints for managing api measureUnits.
+  * components:
+  *  schemas:
+  *      measureUnits:
+  *          type: object
+  *          required:
+  *              -name
+  *          properties:
+  *              id:
+  *                  type: string
+  *              name:
+  *                  type: string,
+  *          example:
+  *              name: unit prueba
+  *      Error:    
+  *          type: object
+  *          required:
+  *              -status
+  *              -message
+  *          properties:
+  *              status: 
+  *                  type: integer
+  *                  description: HTTP status code
+  *                  example: 400
+  *              message:
+  *                  type: string
+  *                  description: Error description
+  *                  example: entity no created
+  */
+ 
+ module.exports = router;

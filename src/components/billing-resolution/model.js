@@ -43,7 +43,10 @@ const BillingResolution = sequelize.define('BillingResolution', {
 
 },{
   tableName: "billingResolutions",
-  timestamps: true
-})
+  timestamps: true,
+  classMethods: {
+    associate: function(models) {
+      BillingResolution.hasMany(models.BillingResolution, { foreignKey: 'BillingResolution_id' })
+}}})
 
 module.exports = BillingResolution;

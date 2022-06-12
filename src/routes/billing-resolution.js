@@ -6,196 +6,170 @@ const BillingResolutionService = require('../components/Billing-resolution/servi
 
 const router = Router();
 
-
 /**
- * GET method route
- * @example http://localhost:PORT/v1/BillingResolutions
- *
  * @swagger
- * /v1/BillingResolutions:
- *   get:
- *     description: Get all stored BillingResolutions in Database
- *     tags: ["BillingResolution"]
- *     security:
- *      - bearerAuth: []
- *     responses:
- *       200:
- *         description: An array of BillingResolutions
- *         content:
- *           application/json:
- *             schema:
- *               oneOf:
- *                - $ref: '#/components/schemas/BillingResolutions'
- *       default:
- *          description: unexpected error
- *          content:
- *            application/json:
- *              schema:
- *                $ref: '#/components/schemas/Error'
+ *  /v1/billingResolutions:
+ *      get:
+ *          summary: det all the billingResolutions;
+ *          tags: ["billingResolutions"]
+ *          responses:
+ *              200:
+ *                  description: get billingResolutions successfully 
+ *                  content:
+ *                      application/json:
+ *                          squema:
+ *                              type: array
+ *                              items:
+ *                                  $ref: '#/components/schemas/billingResolutions'
+ *              401:
+ *                  description: error in get billingResolutions
  */
-
-router.get('/', BillingResolutionComponent.findAll)
-
-/**
- * POST method route
- * @example http://localhost:PORT/v1/BillingResolutions
- *
- * @swagger
- * /v1/BillingResolutions:
- *   post:
- *      description: Create new BillingResolution
- *      tags: ["BillingResolution"]
- *      security:
- *       - bearerAuth: []
- *      requestBody:
- *        description: BillingResolution creation request body
- *        required: true
- *        content:
- *          application/json:
- *            schema:
- *              $ref: '#/components/schemas/BillingResolutionSchema'
- *            example:
- *              client: idclientprueba,
- *              serial: tyrue363jasdjd7eserial,
- *              start_date: 2022-09-06T05:00:00.000Z,
- *              expired_date: 09-06-2023,
- *              nodes: 2,
- *              isActive: true
- *      responses:
- *        201:
- *          description: return created BillingResolution
- *          content:
- *            application/json:
- *              schema:
- *                oneOf:
- *                  - $ref: '#/components/schemas/BillingResolutionSchema'
- *        default:
- *          description: unexpected error
- *          content:
- *            application/json:
- *              schema:
- *                $ref: '#/components/schemas/Error'
- */
-router.post('/', BillingResolutionComponent.create)
-
-/**
- * GET method route
- * @example http://localhost:PORT/v1/billingResolutions/id
- *
- * @swagger
- * /v1/BillingResolutions/{id}:
- *   get:
- *     description: Get one BillingResolution in Database
- *     tags: ["BillingResolution"]
- *     parameters: [
- *        {
- *          name: id,
- *          in: path,
- *          description: id of the BillingResolution
- *          required: true,
- *          schema: {
- *            type: string,
- *          }
- *        }
- *     ] 
- *     security:
- *      - bearerAuth: []
- *     responses:
- *       200:
- *         description: A entity od BillingResolution
- *         content:
- *           application/json:
- *             schema:
- *               oneOf:
- *                - $ref: '#/components/schemas/BillingResolutions'
- *       default:
- *          description: unexpected error
- *          content:
- *            application/json:
- *              schema:
- *                $ref: '#/components/schemas/Error'
- */
-
- router.get('/:id', BillingResolutionComponent.findOne);
+ router.get('/', BillingResolutionComponent.findAll)
 
  /**
-  * DELETE method route
-  * @example http://localhost:PORT/v1/BillingResolutions/id
-  *
   * @swagger
-  * /v1/BillingResolutions/{id}:
-  *   get:
-  *     description: delete one BillingResolutions in Database
-  *     tags: ["BillingResolution"]
-  *     parameters: [
-  *        {
-  *          name: id,
-  *          in: path,
-  *          description: id of the BillingResolution
-  *          required: true,
-  *          schema: {
-  *            type: string,
-  *          }
-  *        }
-  *     ] 
-  *     security:
-  *      - bearerAuth: []
-  *     responses:
-  *       200:
-  *         description: a BillingResolution updated
-  *         content:
-  *           application/json:
-  *             schema:
-  *               oneOf:
-  *                - $ref: '#/components/schemas/BillingResolutions'
-  *       default:
-  *          description: unexpected error
-  *          content:
-  *            application/json:
-  *              schema:
-  *                $ref: '#/components/schemas/Error'
+  *  /v1/billingResolutions/{id}:
+  *      get:
+  *          summary: get one billingResolution by id
+  *          tags: ["billingResolutions"]
+  *          responses:
+  *              200:
+  *                  description: get billingResolution succefully  
+  *              401:
+  *                  description: user not authorized to get billingResolution
+  *          parameters: [
+  *           {
+  *              name: idProducto,
+  *              in: path,
+  *              description: id con el que está registrado en el sistema el producto a eliminar,
+  *              required: true,
+  *              schema: {
+  *                  type: string
+  *              }
+  *           },
+  *          ]
   */
  
+ router.get('/:id', BillingResolutionComponent.findOne);
+ 
+ /**
+  * @swagger
+  *  /v1/billingResolutions/{id}:
+  *      delete:
+  *          summary: delete a billingResolution
+  *          tags: ["billingResolutions"]
+  *          responses:
+  *              200:
+  *                  description: billingResolution deleted succesfully
+  *              401:
+  *                  description: user not authorized to delete billingResolutions
+  *          parameters: [
+  *           {
+  *              name: id,
+  *              in: path,
+  *              description: id of the billingResolution,
+  *              required: true,
+  *              schema: {
+  *                  type: string,
+  *              }
+  *           },
+  *          ]
+  */
  router.delete('/:id', BillingResolutionComponent.deleteOne);
  
  /**
-  * PUT method route
-  * @example http://localhost:PORT/v1/BillingResolutions/id
-  *
   * @swagger
-  * /v1/BillingResolutions/{id}:
-  *   get:
-  *     description: update a BillingResolution in Database
-  *     tags: ["BillingResolution"]
-  *     parameters: [
-  *        {
-  *          name: id,
-  *          in: path,
-  *          description: id of the BillingResolution
-  *          required: true,
-  *          schema: {
-  *            type: string,
-  *          }
-  *        }
-  *     ] 
-  *     security:
-  *      - bearerAuth: []
-  *     responses:
-  *       200:
-  *         description: a number, 1 true, 0 false
-  *         content:
-  *           application/json:
-  *             schema:
-  *               oneOf:
-  *                - $ref: '#/components/schemas/BillingResolutions'
-  *       default:
-  *          description: unexpected error
-  *          content:
-  *            application/json:
-  *              schema:
-  *                $ref: '#/components/schemas/Error'
+  *  /v1/billingResolutions/{id}:
+  *      put:
+  *          summary: put billingResolution in the DB
+  *          tags: ["billingResolutions"]
+  *          requestBody:
+  *              required: true
+  *              content:
+  *                  application/json:
+  *                      schema:
+  *                           $ref: '#/components/schemas/billingResolutions'
+  *          responses:
+  *              200:
+  *                  description: update billingResolution successfully
+  *              401:
+  *                  description: user not authorized to update billingResolutions
+  *          parameters: [
+  *           {
+  *              name: id,
+  *              in: path,
+  *              description: id of the billingResolution,
+  *              required: true,
+  *              schema: {
+  *                  type: string,
+  *              }
+  *           },
+  *          ]
   */
  
  router.put('/:id', BillingResolutionComponent.updateOne);
-
-module.exports = router;
+ 
+ /**
+  * @swagger
+  *  /v1/billingResolutions:
+  *      post:
+  *          summary: added a billingResolution
+  *          tags: ["billingResolutions"]
+  *          requestBody:
+  *              required: true
+  *              content:
+  *                  application/json:
+  *                      schema:
+  *                          $ref: '#/components/schemas/billingResolutions'
+  *          responses:
+  *              200:
+  *                  description: billingResolution add successfully
+  *              401:
+  *                  descripion: user not authorized to add billingResolutions
+  */
+ router.post('/', BillingResolutionComponent.create)
+ 
+ /**
+  * @swagger
+  * tags:
+  *  name: billingResolutions
+  *  description: endpoints for managing api billingResolutions.
+  * components:
+  *  schemas:
+  *      billingResolutions:
+  *          type: object
+  *          required:
+  *              -name
+  *              -accountingAccount
+  *          properties:
+  *              id:
+  *                  type: string
+  *              name:
+  *                  type: string,
+  *              accountingAccount:
+  *                    type: string
+  *          example:
+  *             resolutionClass: class prueba
+  *             resolutionType: type prueba
+  *             resolutionNumber: 1234
+  *             prefix: res
+  *             initialNumber: 2
+  *             finalNumber: 3
+  *             localBilling: false
+  *      Error:    
+  *          type: object
+  *          required:
+  *              -status
+  *              -message
+  *          properties:
+  *              status: 
+  *                  type: integer
+  *                  description: HTTP status code
+  *                  example: 400
+  *              message:
+  *                  type: string
+  *                  description: Error description
+  *                  example: entity no created
+  */
+ 
+ module.exports = router;

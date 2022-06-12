@@ -8,194 +8,164 @@ const router = Router();
 
 
 /**
- * GET method route
- * @example http://localhost:PORT/v1/Taxs
- *
  * @swagger
- * /v1/Taxs:
- *   get:
- *     description: Get all stored Taxs in Database
- *     tags: ["Tax"]
- *     security:
- *      - bearerAuth: []
- *     responses:
- *       200:
- *         description: An array of Taxs
- *         content:
- *           application/json:
- *             schema:
- *               oneOf:
- *                - $ref: '#/components/schemas/Taxs'
- *       default:
- *          description: unexpected error
- *          content:
- *            application/json:
- *              schema:
- *                $ref: '#/components/schemas/Error'
+ *  /v1/taxes:
+ *      get:
+ *          summary: det all the taxes;
+ *          tags: ["taxes"]
+ *          responses:
+ *              200:
+ *                  description: get taxes successfully 
+ *                  content:
+ *                      application/json:
+ *                          squema:
+ *                              type: array
+ *                              items:
+ *                                  $ref: '#/components/schemas/taxes'
+ *              401:
+ *                  description: error in get taxes
  */
+ router.get('/', TaxComponent.findAll)
 
-router.get('/', TaxComponent.findAll)
-
-/**
- * GET method route
- * @example http://localhost:PORT/v1/Taxs/id
- *
- * @swagger
- * /v1/Taxs/{id}:
- *   get:
- *     description: Get one Tax in Database
- *     tags: ["Tax"]
- *     parameters: [
- *        {
- *          name: id,
- *          in: path,
- *          description: id of the Tax
- *          required: true,
- *          schema: {
- *            type: string,
- *          }
- *        }
- *     ] 
- *     security:
- *      - bearerAuth: []
- *     responses:
- *       200:
- *         description: A entity od Tax
- *         content:
- *           application/json:
- *             schema:
- *               oneOf:
- *                - $ref: '#/components/schemas/Taxs'
- *       default:
- *          description: unexpected error
- *          content:
- *            application/json:
- *              schema:
- *                $ref: '#/components/schemas/Error'
- */
-
-router.get('/:id', TaxComponent.findOne);
-
-/**
- * DELETE method route
- * @example http://localhost:PORT/v1/Taxs/id
- *
- * @swagger
- * /v1/Taxs/{id}:
- *   get:
- *     description: delete one Taxs in Database
- *     tags: ["Tax"]
- *     parameters: [
- *        {
- *          name: id,
- *          in: path,
- *          description: id of the Tax
- *          required: true,
- *          schema: {
- *            type: string,
- *          }
- *        }
- *     ] 
- *     security:
- *      - bearerAuth: []
- *     responses:
- *       200:
- *         description: a Tax updated
- *         content:
- *           application/json:
- *             schema:
- *               oneOf:
- *                - $ref: '#/components/schemas/Taxs'
- *       default:
- *          description: unexpected error
- *          content:
- *            application/json:
- *              schema:
- *                $ref: '#/components/schemas/Error'
- */
-
-router.delete('/:id', TaxComponent.deleteOne);
-
-/**
- * PUT method route
- * @example http://localhost:PORT/v1/Taxs/id
- *
- * @swagger
- * /v1/Taxs/{id}:
- *   get:
- *     description: update a Tax in Database
- *     tags: ["Tax"]
- *     parameters: [
- *        {
- *          name: id,
- *          in: path,
- *          description: id of the Tax
- *          required: true,
- *          schema: {
- *            type: string,
- *          }
- *        }
- *     ] 
- *     security:
- *      - bearerAuth: []
- *     responses:
- *       200:
- *         description: a number, 1 true, 0 false
- *         content:
- *           application/json:
- *             schema:
- *               oneOf:
- *                - $ref: '#/components/schemas/Taxs'
- *       default:
- *          description: unexpected error
- *          content:
- *            application/json:
- *              schema:
- *                $ref: '#/components/schemas/Error'
- */
-
-router.put('/:id', TaxComponent.updateOne);
-
-/**
- * POST method route
- * @example http://localhost:PORT/v1/Taxs
- *
- * @swagger
- * /v1/Taxs:
- *   post:
- *      description: Create new Tax
- *      tags: ["Tax"]
- *      security:
- *       - bearerAuth: []
- *      requestBody:
- *        description: Tax creation request body
- *        required: true
- *        content:
- *          application/json:
- *            schema:
- *              $ref: '#/components/schemas/TaxSchema'
- *            example:
- *              client: idclientprueba,
- *              serial: tyrue363jasdjd7eserial,
- *              start_date: 2022-09-06T05:00:00.000Z,
- *              expired_date: 09-06-2023,
- *              nodes: 2,
- *              isActive: true
- *      responses:
- *        201:
- *          description: return created Tax
- *          content:
- *            application/json:
- *              schema:
- *                oneOf:
- *                  - $ref: '#/components/schemas/TaxSchema'
- *        default:
- *          description: unexpected error
- *          content:
- *            application/json:
- *              schema:
- *                $ref: '#/components/schemas/Error'
- */
-router.post('/', TaxComponent.create)
-
-module.exports = router;
+ /**
+  * @swagger
+  *  /v1/taxes/{id}:
+  *      get:
+  *          summary: get one taxe by id
+  *          tags: ["taxes"]
+  *          responses:
+  *              200:
+  *                  description: get taxe succefully  
+  *              401:
+  *                  description: user not authorized to get taxe
+  *          parameters: [
+  *           {
+  *              name: idProducto,
+  *              in: path,
+  *              description: id con el que está registrado en el sistema el producto a eliminar,
+  *              required: true,
+  *              schema: {
+  *                  type: string
+  *              }
+  *           },
+  *          ]
+  */
+ 
+ router.get('/:id',TaxComponent.findOne);
+ 
+ /**
+  * @swagger
+  *  /v1/taxes/{id}:
+  *      delete:
+  *          summary: delete a taxe
+  *          tags: ["taxes"]
+  *          responses:
+  *              200:
+  *                  description: taxe deleted succesfully
+  *              401:
+  *                  description: user not authorized to delete taxes
+  *          parameters: [
+  *           {
+  *              name: id,
+  *              in: path,
+  *              description: id of the taxe,
+  *              required: true,
+  *              schema: {
+  *                  type: string,
+  *              }
+  *           },
+  *          ]
+  */
+ router.delete('/:id', TaxComponent.deleteOne);
+ 
+ /**
+  * @swagger
+  *  /v1/taxes/{id}:
+  *      put:
+  *          summary: put taxe in the DB
+  *          tags: ["taxes"]
+  *          requestBody:
+  *              required: true
+  *              content:
+  *                  application/json:
+  *                      schema:
+  *                           $ref: '#/components/schemas/taxes'
+  *          responses:
+  *              200:
+  *                  description: update taxe successfully
+  *              401:
+  *                  description: user not authorized to update taxes
+  *          parameters: [
+  *           {
+  *              name: id,
+  *              in: path,
+  *              description: id of the taxe,
+  *              required: true,
+  *              schema: {
+  *                  type: string,
+  *              }
+  *           },
+  *          ]
+  */
+ 
+ router.put('/:id', TaxComponent.updateOne);
+ 
+ /**
+  * @swagger
+  *  /v1/taxes:
+  *      post:
+  *          summary: added a taxe
+  *          tags: ["taxes"]
+  *          requestBody:
+  *              required: true
+  *              content:
+  *                  application/json:
+  *                      schema:
+  *                          $ref: '#/components/schemas/taxes'
+  *          responses:
+  *              200:
+  *                  description: taxe add successfully
+  *              401:
+  *                  descripion: user not authorized to add taxes
+  */
+ router.post('/', TaxComponent.create)
+ 
+ /**
+  * @swagger
+  * tags:
+  *  name: taxes
+  *  description: endpoints for managing api taxes.
+  * components:
+  *  schemas:
+  *      taxes:
+  *          type: object
+  *          required:
+  *              -name
+  *              -accountingAccount
+  *          properties:
+  *              id:
+  *                  type: string
+  *              name:
+  *                  type: string,
+  *              accountingAccount:
+  *                    type: string
+  *          example:
+  *              name: bancolombia
+  *              accountingAccount: 123
+  *      Error:    
+  *          type: object
+  *          required:
+  *              -status
+  *              -message
+  *          properties:
+  *              status: 
+  *                  type: integer
+  *                  description: HTTP status code
+  *                  example: 400
+  *              message:
+  *                  type: string
+  *                  description: Error description
+  *                  example: entity no created
+  */
+ 
+ module.exports = router;

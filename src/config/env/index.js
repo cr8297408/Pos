@@ -10,6 +10,7 @@ const development = {
     DB_DIALECT: process.env.DB_DIALECT || 'mysql',
     JWT_SECRET: process.env.SECRET || 'secret',
     JWT_ALGORITHMS: process.env.JWT_ALGORITHMS,
+    URL_SWAGGER: process.env.URL_SWAGGER,
 }
 
 module.exports = development;
