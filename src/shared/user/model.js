@@ -8,10 +8,12 @@ const User = sequelize.define('User', {
     defaultValue: UUIDV4,
     primaryKey: true,
     allowNull: false,
+    unique: true,
   },
   username: {
     type: DataTypes.STRING,
     allowNull: false,
+    unique: true,
   },
   password: {
     type: DataTypes.STRING,
@@ -19,7 +21,8 @@ const User = sequelize.define('User', {
   },
   email: {
     type: DataTypes.STRING,
-    allowNull:  false
+    allowNull:  false,
+    unique: true,
   },
   firstName: {
     type: DataTypes.STRING,
@@ -31,6 +34,10 @@ const User = sequelize.define('User', {
   roles: DataTypes.JSON,
   profile: DataTypes.JSON,
   isActive:  {
+    type: DataTypes.BOOLEAN,
+    defaultValue: true
+  },
+  verified:  {
     type: DataTypes.BOOLEAN,
     defaultValue: true
   },

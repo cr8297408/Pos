@@ -20,7 +20,7 @@ const BillingResolution = sequelize.define('BillingResolution', {
   resolutionNumber: {
     type: DataTypes.INTEGER,
     allowNull: false,
-    unique:true
+    unique:true,
   },
   from: DataTypes.DATE,
   to: DataTypes.DATE,
