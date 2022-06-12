@@ -11,7 +11,7 @@ const UserRouter = require('./user');
 
 
 router.use('/v1/banks', BankRouter);
-router.use('/v1/billingResolution', BillingResolutionRouter);
+router.use('/v1/billingResolutions', BillingResolutionRouter);
 router.use('/v1/warehouses', WarehouseRouter);
 router.use('/v1/taxes', TaxesRouter);
 router.use('/v1/monetaryDenominations', MonetaryDenominationRouter);

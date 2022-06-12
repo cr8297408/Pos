@@ -40,9 +40,9 @@ const router = Router();
   *                  description: user not authorized to get productArea
   *          parameters: [
   *           {
-  *              name: idProducto,
+  *              name: id,
   *              in: path,
-  *              description: id con el que está registrado en el sistema el producto a eliminar,
+  *              description: id product area,
   *              required: true,
   *              schema: {
   *                  type: string

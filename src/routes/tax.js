@@ -40,9 +40,9 @@ const router = Router();
   *                  description: user not authorized to get taxe
   *          parameters: [
   *           {
-  *              name: idProducto,
+  *              name: id,
   *              in: path,
-  *              description: id con el que está registrado en el sistema el producto a eliminar,
+  *              description: id tax,
   *              required: true,
   *              schema: {
   *                  type: string

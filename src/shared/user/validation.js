@@ -22,7 +22,7 @@ class UserValidation {
           tlds: { allow: ['com', 'net'] } 
         }).required(),
         password: Joi.string().required(),
-        firstname: Joi.string().required(),
+        firstName: Joi.string().required(),
         lastName: Joi.string(),
         roles: Joi.object().required(),
         profile: Joi.object(),

@@ -30,8 +30,8 @@ const UserService = {
         throw new Error(validate.error)
       }
 
-      const createUser = await User.create(body);
-      return createUser;
+      const createdUser = await User.create(body);
+      return createdUser;
 
     } catch (error) {
       throw new Error(error.message)
@@ -49,8 +49,8 @@ const UserService = {
       if (validate.error) {
         throw new Error(validate.error)
       }
-      const getUser = await User.findByPk(id)
-      return getUser;
+      const getsUser = await User.findByPk(id)
+      return getsUser;
 
 
     } catch (error) {

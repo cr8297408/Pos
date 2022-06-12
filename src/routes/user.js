@@ -2,7 +2,7 @@ const { Router } = require('express');
 const { UserComponent } = require('../components');
 
 const User = require('./user');
-const UserService = require('../components/user/service');
+const UserService = require('../shared/user/service');
 
 const router = Router();
 
@@ -40,9 +40,9 @@ const router = Router();
   *                  description: user not authorized to get user
   *          parameters: [
   *           {
-  *              name: idProducto,
+  *              name: id,
   *              in: path,
-  *              description: id con el que está registrado en el sistema el producto a eliminar,
+  *              description: id of the user,
   *              required: true,
   *              schema: {
   *                  type: string

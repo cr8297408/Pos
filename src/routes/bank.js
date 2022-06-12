@@ -40,9 +40,9 @@ router.get('/', BankComponent.findAll)
  *                  description: user not authorized to get bank
  *          parameters: [
  *           {
- *              name: idProducto,
+ *              name: id,
  *              in: path,
- *              description: id con el que está registrado en el sistema el producto a eliminar,
+ *              description: id of the bank,
  *              required: true,
  *              schema: {
  *                  type: string

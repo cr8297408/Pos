@@ -30,8 +30,8 @@ const __name__Service = {
         throw new Error(validate.error)
       }
 
-      const create__name__ = await __name__.create(body);
-      return create__name__;
+      const created__name__ = await __name__.create(body);
+      return created__name__;
 
     } catch (error) {
       throw new Error(error.message)
@@ -49,8 +49,8 @@ const __name__Service = {
       if (validate.error) {
         throw new Error(validate.error)
       }
-      const get__name__ = await __name__.findByPk(id)
-      return get__name__;
+      const gets__name__ = await __name__.findByPk(id)
+      return gets__name__;
 
 
     } catch (error) {
@@ -70,11 +70,11 @@ const __name__Service = {
         throw new Error(validate.error)
       }
 
-      const get__name__ = await __name__.findByPk(id);
+      const gets__name__ = await __name__.findByPk(id);
       
-      await get__name__.destroy()
+      await gets__name__.destroy()
 
-      return get__name__;
+      return gets__name__;
       
 
     } catch (error) {
