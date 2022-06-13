@@ -1,6 +1,8 @@
 const User = require('./model');
 const db = require('../../config/connection/connectBD');
 const UserValidation = require('./validation');
+// const findPagination = require('../middlewares/pagination')
+const { Op } = require("sequelize");
 
 sequelize = db.sequelize;
 
@@ -54,7 +56,16 @@ const UserService = {
         }
       }
 
-      const createdUser = await User.create(body);
+      const createdUser = await User.create({
+        email: body.email,
+        username: body.username,
+        firstName: body.firstName,
+        lastName: body.lastName,
+        password: bcrypt.hashSync(body.password, 10),
+        roles: body.roles,
+        profile: body.profile,
+        avatarFile: body.avatarFile,
+      });
       return createdUser;
 
     } catch (error) {
@@ -101,7 +112,7 @@ const UserService = {
         {where: {id}}
       )
 
-      return getUser;
+      return newUser;
       
 
     } catch (error) {
@@ -146,7 +157,30 @@ const UserService = {
     } catch (error) {
       
     }
-  }
+  },
+
+  async findPagination(sizeAsNumber, pageAsNumber){
+    try {
+        let page = 0;
+        if (!Number.isNaN(pageAsNumber) && pageAsNumber > 0 ) {
+            page = pageAsNumber - 1;
+        }
+
+        let size = 0;
+        if (!Number.isNaN(sizeAsNumber) && sizeAsNumber > 0 && sizeAsNumber < 10) {
+            size = sizeAsNumber;
+        }
+        const Users = await User.findAll({
+          limit: size,
+          offset: size * page
+        })
+        
+        return Users
+
+    } catch (error) {
+        throw new Error(error.message);
+    }
+},
 
 }
 

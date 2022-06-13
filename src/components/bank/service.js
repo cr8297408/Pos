@@ -118,9 +118,30 @@ const BankService = {
     } catch (error) {
       
     }
-  }
+  },
 
+  async findPagination(sizeAsNumber, pageAsNumber, bearerHeader){
+    try {
 
+        let page = 0;
+        if (!Number.isNaN(pageAsNumber) && pageAsNumber > 0 ) {
+            page = pageAsNumber - 1;
+        }
+
+        let size = 0;
+        if (!Number.isNaN(sizeAsNumber) && sizeAsNumber > 0 && sizeAsNumber < 10) {
+            size = sizeAsNumber;
+        }
+        const users = await User.findAll({
+          limit: size,
+          offset: size*page
+        })
+        return users
+
+    } catch (error) {
+        throw new Error(error.message);
+    }
+  },
 }
 
 module.exports = BankService;

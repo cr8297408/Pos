@@ -5,6 +5,7 @@ const swaggerJsDoc = require('swagger-jsdoc');
 const config = require('../env')
 const db = require('../connection/connectBD')
 const swaggerDoc = require('../swagger/swaggerOptions');
+const expressJWT = require('../JWT');
 
 const Routes = require('../../routes')
 
@@ -14,6 +15,7 @@ app.use(express.json());
 
 const swaggerSpecs = swaggerJsDoc(swaggerDoc);
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerSpecs));
+app.use(expressJWT)
 
 const port = config.port;
 

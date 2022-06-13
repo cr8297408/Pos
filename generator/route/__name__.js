@@ -125,7 +125,7 @@ const router = Router();
   *              200:
   *                  description: __name__ add successfully
   *              401:
-  *                  descripion: user not authorized to add __name__s
+  *                  description: user not authorized to add __name__s
   */
  router.post('/', __name__Component.create)
  

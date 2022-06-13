@@ -37,7 +37,7 @@ router.get('/', BankComponent.findAll)
  *              200:
  *                  description: get bank succefully  
  *              401:
- *                  description: user not authorized to get bank
+ *                  description: bank not authorized to get bank
  *          parameters: [
  *           {
  *              name: id,
@@ -63,7 +63,7 @@ router.get('/:id', BankComponent.findOne);
  *              200:
  *                  description: bank deleted succesfully
  *              401:
- *                  description: user not authorized to delete banks
+ *                  description: bank not authorized to delete banks
  *          parameters: [
  *           {
  *              name: id,
@@ -94,7 +94,7 @@ router.delete('/:id', BankComponent.deleteOne);
  *              200:
  *                  description: update bank successfully
  *              401:
- *                  description: user not authorized to update banks
+ *                  description: bank not authorized to update banks
  *          parameters: [
  *           {
  *              name: id,
@@ -126,9 +126,42 @@ router.put('/:id', BankComponent.updateOne);
  *              200:
  *                  description: bank add successfully
  *              401:
- *                  descripion: user not authorized to add banks
+ *                  descripion: bank not authorized to add banks
  */
 router.post('/', BankComponent.create)
+
+
+ /**
+  * @swagger
+  *  /v1/banks/pagination:
+  *      get:
+  *          summary: get one bank by id
+  *          tags: ["banks"]
+  *          responses:
+  *              200:
+  *                  description: get bank succefully  
+  *              401:
+  *                  description: bank not authorized to get bank
+  *          parameters: [
+  *           {
+  *              name: size,
+  *              in: query,
+  *              description: size to pagination,
+  *              schema: {
+  *                  type: number
+  *              }
+  *           },
+  *           {
+  *              name: page,
+  *              in: query,
+  *              description: number of page paginate,
+  *              schema: {
+  *                  type: number
+  *              }
+  *           },
+  *          ]
+  */
+  router.get('/pagination', BankComponent.findpagination);
 
 /**
  * @swagger

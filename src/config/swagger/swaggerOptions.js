@@ -14,20 +14,20 @@ const swaggerOptions = {
                 description: "local server",
             },
         ],
-        // components: {
-        //     securitySchemes: {
-        //         bearerAuth: {
-        //             type: 'http',
-        //             scheme: 'bearer',
-        //             in: 'header'
-        //         },
-        //     },
-        // },
-        // security: [
-        //     {
-        //         bearerAuth: [],
-        //     },
-        // ],
+        components: {
+            securitySchemes: {
+                bearerAuth: {
+                    type: 'http',
+                    scheme: 'bearer',
+                    in: 'header'
+                },
+            },
+        },
+        security: [
+            {
+                bearerAuth: [],
+            },
+        ],
     },
     apis: ['./src/routes/*.js'],
 };

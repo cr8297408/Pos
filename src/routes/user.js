@@ -130,6 +130,40 @@ const router = Router();
   */
  router.post('/', UserComponent.create)
  
+
+ /**
+  * @swagger
+  *  /v1/users/page?:
+  *      get:
+  *          summary: get users paginated
+  *          tags: ["users"]
+  *          responses:
+  *              200:
+  *                  description: get user succefully  
+  *              401:
+  *                  description: user not authorized to get user
+  *          parameters: [
+  *           {
+  *              name: size,
+  *              in: query,
+  *              description: size to pagination,
+  *              schema: {
+  *                  type: number
+  *              }
+  *           },
+  *           {
+  *              name: page,
+  *              in: query,
+  *              description: number of page paginate,
+  *              schema: {
+  *                  type: number
+  *              }
+  *           },
+  *          ]
+  */
+ router.get('/page/', UserComponent.findpagination);
+
+
  /**
   * @swagger
   * tags:
@@ -145,10 +179,22 @@ const router = Router();
   *          properties:
   *              id:
   *                  type: string
-  *              name:
+  *              username:
   *                  type: string,
-  *              accountingAccount:
+  *              password:
   *                    type: string
+  *              email:
+  *                    type: string
+  *              firstName:
+  *                    type: string
+  *              lastName:
+  *                    type: string
+  *              roles: 
+  *                    type: json
+  *              profile:
+  *                    type: json
+  *              avatarFile:
+  *                     type: string
   *          example:
   *              username: user prueba
   *              password: pass123

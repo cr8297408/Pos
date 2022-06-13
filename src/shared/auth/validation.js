@@ -1,5 +1,4 @@
 const Joi = require('joi');
-const Auth = require('./model');
 
 /**
  * @export
@@ -16,10 +15,12 @@ class AuthValidation {
 
     createAuth(body){
       const schema = Joi.object().keys({
-        email: Joi.string().required(),
+        email: Joi.string().email({ 
+          minDomainSegments: 2,
+        }).required(),
         password: Joi.string().required(),
-        lastname: Joi.string(),
-        firstname: Joi.string().required(),
+        lastName: Joi.string(),
+        firstName: Joi.string().required(),
         username: Joi.string().required(),
       })
 
@@ -31,14 +32,16 @@ class AuthValidation {
      * @returns {Joi.ValidationResult<{ id: string }>}
      * @memberof UserValidation
      */
-     getAuth(email, password) {
+     getAuth(body) {
       const schema = Joi.object().keys({
-        email: Joi.string().required(),
+        email: Joi.string().email({ 
+          minDomainSegments: 2,
+        }).required(),
         password: Joi.string().required(),
       })
 
 
-      return schema.validate(id);
+      return schema.validate(body);
   }
 }
 module.exports = new AuthValidation();

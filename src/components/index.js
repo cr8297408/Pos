@@ -6,6 +6,7 @@ const MonetaryDenominationComponent = require('./monetary-denomination');
 const ProductAreaComponent = require('./product-area');
 const MeasureUnitComponent = require('./measure-unit');
 const UserComponent = require('../shared/user');
+const AuthComponent = require('../shared/auth');
 
 module.exports = { 
   BankComponent, 
@@ -15,5 +16,6 @@ module.exports = {
   MonetaryDenominationComponent,
   ProductAreaComponent,
   MeasureUnitComponent,
-  UserComponent
+  UserComponent,
+  AuthComponent
 }

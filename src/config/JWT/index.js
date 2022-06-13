@@ -1,17 +1,17 @@
-const expressjwt = require('express-jwt');
+const { expressjwt: jwt } = require('express-jwt');
 
 const config = require('../env');
 
-const JWT_SECRET = config.security.JWT_SECRET;
-const JWT_ALGORITHMS = config.security.JWT_ALGORITHMS;
+const JWT_SECRET = config.JWT_SECRET;
+const JWT_ALGORITHMS = config.JWT_ALGORITHMS;
 
-const expressJWT = expressjwt({
+const expressJWT = jwt({
     secret: JWT_SECRET,
     algorithms: [JWT_ALGORITHMS],
 }).unless({
     path: [ 
-        '/auth/login', 
-        '/auth/registro',
+        '/v1/auth/signUp',
+        '/v1/auth/signIn',
     ],
 });
 

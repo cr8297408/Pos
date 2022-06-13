@@ -30,7 +30,7 @@ async function findOne(req, res, next){
   }
 }
 
-async function deleteOne(req, res, next){
+async function deleteOne(req, res){
   try {
     const getUser = await UserService.delete(req.params.id)
 
@@ -49,11 +49,23 @@ async function updateOne(req, res){
   }
 }
 
+async function findpagination(req, res){
+  try {
+    const sizeAsNumber = Number(req.query.size);
+    const pageAsNumber = Number(req.query.page);
+    const Users = await UserService.findPagination(sizeAsNumber, pageAsNumber);
+    res.json(Users)    
+  } catch (error) {
+      throw new Error(error.message)
+  }
+}
+
 
 module.exports = {
   findAll,
   create,
   findOne,
   deleteOne,
-  updateOne
+  updateOne,
+  findpagination
 }

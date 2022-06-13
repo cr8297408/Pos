@@ -159,11 +159,7 @@ const router = Router();
   *              name: impuesto prueba
   *              description: descripcion impuesto prueba
   *              tax: 1
-  *              taxType: {
-  *                  INCLUDED_IN_PRICE: INCLUDED_IN_PRICE
-  *                  CONSUMPTION_TAX: CONSUMPTION_TAX
-  *                  GENERAL_TAX: GENERAL_TAX
-  *              }
+  *              taxType: {}
   *      Error:    
   *          type: object
   *          required:
