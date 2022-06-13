@@ -11,7 +11,7 @@ const swaggerOptions = {
         servers: [
             {
 		    url: URL_SWAGGER,
-                description: "local server",
+                description: "server test",
             },
         ],
         components: {
