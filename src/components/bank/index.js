@@ -53,8 +53,9 @@ async function findpagination(req, res){
   try {
     const sizeAsNumber = Number(req.query.size);
     const pageAsNumber = Number(req.query.page);
-    const users = await UserService.findPagination(sizeAsNumber, pageAsNumber);
-    res.json(users)    
+    const where = req.body.where;
+    const banks = await BankService.findPagination(sizeAsNumber, pageAsNumber, where);
+    res.json(banks)    
   } catch (error) {
       throw new Error(error.message)
   }

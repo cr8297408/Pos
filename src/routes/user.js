@@ -1,8 +1,6 @@
 const { Router } = require('express');
 const { UserComponent } = require('../components');
 
-const User = require('./user');
-const UserService = require('../shared/user/service');
 
 const router = Router();
 
@@ -129,39 +127,7 @@ const router = Router();
   *                  descripion: user not authorized to add users
   */
  router.post('/', UserComponent.create)
- 
 
- /**
-  * @swagger
-  *  /v1/users/page?:
-  *      get:
-  *          summary: get users paginated
-  *          tags: ["users"]
-  *          responses:
-  *              200:
-  *                  description: get user succefully  
-  *              401:
-  *                  description: user not authorized to get user
-  *          parameters: [
-  *           {
-  *              name: size,
-  *              in: query,
-  *              description: size to pagination,
-  *              schema: {
-  *                  type: number
-  *              }
-  *           },
-  *           {
-  *              name: page,
-  *              in: query,
-  *              description: number of page paginate,
-  *              schema: {
-  *                  type: number
-  *              }
-  *           },
-  *          ]
-  */
- router.get('/page/', UserComponent.findpagination);
 
 
  /**

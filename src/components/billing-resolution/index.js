@@ -49,11 +49,23 @@ async function updateOne(req, res){
   }
 }
 
+async function findpagination(req, res){
+  try {
+    const sizeAsNumber = Number(req.query.size);
+    const pageAsNumber = Number(req.query.page);
+    const where = req.body.where;
+    const BillingResolutions = await BillingResolutionService.findPagination(sizeAsNumber, pageAsNumber, where);
+    res.json(BillingResolutions)    
+  } catch (error) {
+      throw new Error(error.message)
+  }
+}
 
 module.exports = {
   findAll,
   create,
   findOne,
   deleteOne,
-  updateOne
+  updateOne,
+  findpagination
 }

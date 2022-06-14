@@ -49,11 +49,23 @@ async function updateOne(req, res){
   }
 }
 
+async function findpagination(req, res){
+  try {
+    const sizeAsNumber = Number(req.query.size);
+    const pageAsNumber = Number(req.query.page);
+    const MeasureUnits = await MeasureUnitService.findPagination(sizeAsNumber, pageAsNumber);
+    res.json(MeasureUnits)    
+  } catch (error) {
+      throw new Error(error.message)
+  }
+}
+
 
 module.exports = {
   findAll,
   create,
   findOne,
   deleteOne,
-  updateOne
+  updateOne,
+  findpagination
 }

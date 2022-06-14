@@ -140,8 +140,51 @@ const BillingResolutionService = {
     } catch (error) {
       
     }
-  }
+  },
 
+  async findPagination(sizeAsNumber, pageAsNumber){
+    try {
+
+        let page = 0;
+        if (!Number.isNaN(pageAsNumber) && pageAsNumber > 0 ) {
+            page = pageAsNumber - 1;
+        }
+
+        let size = 0;
+        if (!Number.isNaN(sizeAsNumber) && sizeAsNumber > 0 && sizeAsNumber < 10) {
+            size = sizeAsNumber;
+        }
+        const banks = await Bank.findAll({
+          limit: size,
+          offset: size*page
+        })
+        return banks
+
+    } catch (error) {
+        throw new Error(error.message);
+    }
+  },
+
+  async findPagination(sizeAsNumber, pageAsNumber, wherecond){
+    try {
+        let page = 0;
+        if (!Number.isNaN(pageAsNumber) && pageAsNumber > 0 ) {
+            page = pageAsNumber - 1;
+        }
+
+        let size = 0;
+        if (!Number.isNaN(sizeAsNumber) && sizeAsNumber > 0 && sizeAsNumber < 10) {
+            size = sizeAsNumber;
+        }
+        const offset = page*size;
+        const billingResolutions = await sequelize.query(`SELECT * FROM billingResolutions WHERE ${wherecond} LIMIT ${offset},${size}`)
+        console.log(wherecond);
+        return billingResolutions[0]
+
+    } catch (error) {
+        throw new Error(error.message);
+    }
+  },
 
 }
 

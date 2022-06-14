@@ -159,7 +159,7 @@ const UserService = {
     }
   },
 
-  async findPagination(sizeAsNumber, pageAsNumber){
+  async findPagination(sizeAsNumber, pageAsNumber, wherecond){
     try {
         let page = 0;
         if (!Number.isNaN(pageAsNumber) && pageAsNumber > 0 ) {
@@ -170,17 +170,15 @@ const UserService = {
         if (!Number.isNaN(sizeAsNumber) && sizeAsNumber > 0 && sizeAsNumber < 10) {
             size = sizeAsNumber;
         }
-        const Users = await User.findAll({
-          limit: size,
-          offset: size * page
-        })
-        
-        return Users
+        const offset = page*size;
+        const Users = await sequelize.query(`SELECT * FROM users WHERE ${wherecond} LIMIT ${offset},${size}`)
+        console.log(wherecond);
+        return Users[0]
 
     } catch (error) {
         throw new Error(error.message);
     }
-},
+  },
 
 }
 

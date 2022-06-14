@@ -113,8 +113,26 @@ const MonetaryDenominationService = {
     } catch (error) {
       
     }
-  }
+  },
+  async findPagination(sizeAsNumber, pageAsNumber,where){
+    try {
+        let page = 0;
+        if (!Number.isNaN(pageAsNumber) && pageAsNumber > 0 ) {
+            page = pageAsNumber - 1;
+        }
 
+        let size = 0;
+        if (!Number.isNaN(sizeAsNumber) && sizeAsNumber > 0 && sizeAsNumber < 10) {
+            size = sizeAsNumber;
+        }
+        const offset = page*size;
+        const monetaryDenominations = await sequelize.query(`SELECT * FROM monetaryDenominations WHERE ${where} LIMIT ${offset},${size}`)
+        return monetaryDenominations
+
+    } catch (error) {
+        throw new Error(error.message);
+    }
+  },
 }
 
 module.exports = MonetaryDenominationService;

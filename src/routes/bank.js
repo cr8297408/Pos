@@ -131,38 +131,6 @@ router.put('/:id', BankComponent.updateOne);
 router.post('/', BankComponent.create)
 
 
- /**
-  * @swagger
-  *  /v1/banks/pagination:
-  *      get:
-  *          summary: get one bank by id
-  *          tags: ["banks"]
-  *          responses:
-  *              200:
-  *                  description: get bank succefully  
-  *              401:
-  *                  description: bank not authorized to get bank
-  *          parameters: [
-  *           {
-  *              name: size,
-  *              in: query,
-  *              description: size to pagination,
-  *              schema: {
-  *                  type: number
-  *              }
-  *           },
-  *           {
-  *              name: page,
-  *              in: query,
-  *              description: number of page paginate,
-  *              schema: {
-  *                  type: number
-  *              }
-  *           },
-  *          ]
-  */
-  router.get('/pagination', BankComponent.findpagination);
-
 /**
  * @swagger
  * tags:

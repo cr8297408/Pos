@@ -111,7 +111,29 @@ const MeasureUnitService = {
     } catch (error) {
       
     }
-  }
+  },
+  async findPagination(sizeAsNumber, pageAsNumber, wherecond){
+    try {
+        let page = 0;
+        if (!Number.isNaN(pageAsNumber) && pageAsNumber > 0 ) {
+            page = pageAsNumber - 1;
+        }
+
+        let size = 0;
+        if (!Number.isNaN(sizeAsNumber) && sizeAsNumber > 0 && sizeAsNumber < 10) {
+            size = sizeAsNumber;
+        }
+        const offset = page*size;
+        const measureUnits = await MeasureUnit.findAll({
+          limit: size,
+          offset: offset,
+        })
+        return measureUnits
+
+    } catch (error) {
+        throw new Error(error.message);
+    }
+  },
 
 }
 

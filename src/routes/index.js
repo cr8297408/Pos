@@ -9,6 +9,7 @@ const ProductAreaRouter = require('./product-area');
 const MeasureAreaRouter = require('./measure-unit');
 const UserRouter = require('./user');
 const AuthRouter = require('./auth');
+const PaginationRouter = require('./pagination')
 
 
 router.use('/v1/banks', BankRouter);
@@ -19,6 +20,7 @@ router.use('/v1/monetaryDenominations', MonetaryDenominationRouter);
 router.use('/v1/productAreas', ProductAreaRouter);
 router.use('/v1/measureUnits', MeasureAreaRouter);
 router.use('/v1/users', UserRouter);
-router.use('/v1/auth', AuthRouter)
+router.use('/v1/auth', AuthRouter);
+router.use('/v1/page', PaginationRouter)
 
 module.exports = router;
