@@ -27,7 +27,8 @@ class UserValidation {
         profile: Joi.object(),
         isActive: Joi.boolean(),
         isAdmin: Joi.boolean(),
-        avatarFile: Joi.string()
+        avatarFile: Joi.string(),
+        typeUser: Joi.string()
       })
 
       return schema.validate(body)

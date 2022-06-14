@@ -1,19 +1,23 @@
-const USER_ADMIN = {
-  FIND_ALL = "findAll",
-  FIND_ONE = "findOne",
-  FIND_PAGINATION = "findPagination",
-  CREATE = "create",
-  UPDATE = "update",
-  DELETE = "delete"
+const permissions = {
+
+  USER_ADMIN: {
+    FIND_ALL: true,
+    FIND_ONE: true,
+    FIND_PAGINATION: true,
+    CREATE: true,
+    UPDATE: true,
+    DELETE: true
+  },
+  
+  USER_READ: {
+    FIND_ALL: true,
+    FIND_ONE: true,
+    FIND_PAGINATION: true,
+    CREATE: false,
+    UPDATE: false,
+    DELETE: false
+  }
 }
 
-const USER_READ = {
-  FIND_ALL = "findAll",
-  FIND_ONE = "findOne",
-  FIND_PAGINATION = "findPagination",
-}
 
-module.exports = {
-  USER_ADMIN,
-  USER_READ
-}
+module.exports = permissions;

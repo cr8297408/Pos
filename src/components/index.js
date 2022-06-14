@@ -5,8 +5,8 @@ const TaxComponent = require('./tax');
 const MonetaryDenominationComponent = require('./monetary-denomination');
 const ProductAreaComponent = require('./product-area');
 const MeasureUnitComponent = require('./measure-unit');
-const UserComponent = require('../shared/user');
-const AuthComponent = require('../shared/auth');
+const UserComponent = require('../shared/modules/user');
+const AuthComponent = require('../shared/modules/auth');
 
 module.exports = { 
   BankComponent, 

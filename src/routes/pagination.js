@@ -4,7 +4,10 @@ const {
   BankComponent, 
   BillingResolutionComponent, 
   MeasureUnitComponent,
-  MonetaryDenominationComponent
+  MonetaryDenominationComponent,
+  ProductAreaComponent,
+  TaxComponent,
+  WarehouseComponent
 } = require('../components');
 
 
@@ -195,6 +198,120 @@ router.post('/billingResolutions/?', BillingResolutionComponent.findpagination);
   */
 router.post('/monetaryDenominations/?', MonetaryDenominationComponent.findpagination);
 
+ /**
+  * @swagger
+  *  /v1/page/productAreas?:
+  *      post:
+  *          summary: get productAreas paginated
+  *          tags: ["pagination"]
+  *          requestBody:
+  *              required: true
+  *              content:
+  *                  application/json:
+  *                      schema:
+  *                          $ref: '#/components/schemas/productA'
+  *          responses:
+  *              200:
+  *                  description: get productArea succefully  
+  *              401:
+  *                  description: productArea not authorized to get productArea
+  *          parameters: [
+  *           {
+  *              name: size,
+  *              in: query,
+  *              description: size to pagination,
+  *              schema: {
+  *                  type: string
+  *              }
+  *           },
+  *           {
+  *              name: page,
+  *              in: query,
+  *              description: number of page paginate,
+  *              schema: {
+  *                  type: string
+  *              }
+  *           },
+  *          ]
+  */
+  router.post('/productAreas/?', ProductAreaComponent.findpagination);
+
+ /**
+* @swagger
+*  /v1/page/taxes?:
+*      post:
+*          summary: get taxes paginated
+*          tags: ["pagination"]
+*          requestBody:
+*              required: true
+*              content:
+*                  application/json:
+*                      schema:
+*                          $ref: '#/components/schemas/tax'
+*          responses:
+*              200:
+*                  description: get tax succefully  
+*              401:
+*                  description: tax not authorized to get tax
+*          parameters: [
+*           {
+*              name: size,
+*              in: query,
+*              description: size to pagination,
+*              schema: {
+*                  type: string
+*              }
+*           },
+*           {
+*              name: page,
+*              in: query,
+*              description: number of page paginate,
+*              schema: {
+*                  type: string
+*              }
+*           },
+*          ]
+*/
+router.post('/taxes/?', TaxComponent.findpagination);
+
+ /**
+* @swagger
+*  /v1/page/warehouses?:
+*      post:
+*          summary: get warehouses paginated
+*          tags: ["pagination"]
+*          requestBody:
+*              required: true
+*              content:
+*                  application/json:
+*                      schema:
+*                          $ref: '#/components/schemas/wareh'
+*          responses:
+*              200:
+*                  description: get tax succefully  
+*              401:
+*                  description: tax not authorized to get tax
+*          parameters: [
+*           {
+*              name: size,
+*              in: query,
+*              description: size to pagination,
+*              schema: {
+*                  type: string
+*              }
+*           },
+*           {
+*              name: page,
+*              in: query,
+*              description: number of page paginate,
+*              schema: {
+*                  type: string
+*              }
+*           },
+*          ]
+*/
+router.post('/warehouses/?', WarehouseComponent.findpagination);
+
 
 
 /**
@@ -228,6 +345,24 @@ router.post('/monetaryDenominations/?', MonetaryDenominationComponent.findpagina
   *              where
   *          example:
   *              where: monetaryDenominationTypes=coin
+  *      productA:
+  *         type: string
+  *         required:
+  *             where:
+  *         example:
+  *              where: attentionArea=false
+  *      tax:
+  *          type: string
+  *          required:
+  *              where
+  *          example:
+  *              where: isActive=true
+  *      wareh:
+  *          type: string
+  *          required:
+  *              where
+  *          example:
+  *              where: location=risaralda
   *      Error:    
   *          type: object
   *          required:

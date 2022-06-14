@@ -1,7 +1,8 @@
 const MonetaryDenomination = require('./model');
 const db = require('../../config/connection/connectBD');
 const MonetaryDenominationValidation = require('./validation');
-
+const Pagination = require('../../shared/middlewares/pagination')
+const permissions = require('../../shared/middlewares/permissions');
 sequelize = db.sequelize;
 
 /**
@@ -9,10 +10,17 @@ sequelize = db.sequelize;
  * @implements {MonetaryDenomination} model
  */
 const MonetaryDenominationService = {
-  async findAll(){
+  async findAll(bearerHeader){
     try {
-      const MonetaryDenominations = await MonetaryDenomination.findAll()
-      return MonetaryDenominations;
+      const validatePermission = await permissions(bearerHeader, 'FIND_ALL')
+      if (validatePermission) {
+        const MonetaryDenominations = await MonetaryDenomination.findAll()
+        return MonetaryDenominations;  
+      } 
+      return {
+        message: 'no tienes permisos para esta acción',
+        status: 401
+      }
     } catch(error) {
       throw new Error(error.message)
     }
@@ -23,15 +31,23 @@ const MonetaryDenominationService = {
    * @param {*} body
    * @implements {MonetaryDenomination} model 
    */
-  async create(body) {
+  async create(bearerHeader, body) {
     try {
-      const validate = MonetaryDenominationValidation.createMonetaryDenomination(body);
-      if (validate.error) {
-        throw new Error(validate.error)
+      const validatePermission = await permissions(bearerHeader, 'CREATE')
+      if (validatePermission) {
+        const validate = MonetaryDenominationValidation.createMonetaryDenomination(body);
+        if (validate.error) {
+          throw new Error(validate.error)
+        }
+  
+        const createMonetaryDenomination = await MonetaryDenomination.create(body);
+        return createMonetaryDenomination;
+          
+      } 
+      return {
+        message: 'no tienes permisos para esta acción',
+        status: 401
       }
-
-      const createMonetaryDenomination = await MonetaryDenomination.create(body);
-      return createMonetaryDenomination;
 
     } catch (error) {
       throw new Error(error.message)
@@ -43,14 +59,21 @@ const MonetaryDenominationService = {
    * @implements {MonetaryDenomination} model
    */
 
-   async findOne(id){
+   async findOne(bearerHeader, id){
     try {
-      const validate = MonetaryDenominationValidation.getMonetaryDenomination(id);
-      if (validate.error) {
-        throw new Error(validate.error)
+      const validatePermission = await permissions(bearerHeader, 'FIND_ONE')
+      if (validatePermission) {
+        const validate = MonetaryDenominationValidation.getMonetaryDenomination(id);
+        if (validate.error) {
+          throw new Error(validate.error)
+        }
+        const getMonetaryDenomination = await MonetaryDenomination.findByPk(id)
+        return getMonetaryDenomination;
+      } 
+      return {
+        message: 'no tienes permisos para esta acción',
+        status: 401
       }
-      const getMonetaryDenomination = await MonetaryDenomination.findByPk(id)
-      return getMonetaryDenomination;
 
 
     } catch (error) {
@@ -62,19 +85,26 @@ const MonetaryDenominationService = {
    * @param {*} id
    * @implements {MonetaryDenomination} model
    */
-  async delete(id){
+  async delete(bearerHeader, id){
     try {
-      const validate = await MonetaryDenominationValidation.getMonetaryDenomination(id)
-
-      if (validate.error) {
-        throw new Error(validate.error)
+      const validatePermission = await permissions(bearerHeader, 'DELETE')
+      if (validatePermission) {
+        const validate = await MonetaryDenominationValidation.getMonetaryDenomination(id)
+  
+        if (validate.error) {
+          throw new Error(validate.error)
+        }
+  
+        const getMonetaryDenomination = await MonetaryDenomination.findByPk(id);
+        
+        await getMonetaryDenomination.destroy()
+  
+        return getMonetaryDenomination;
+      } 
+      return {
+        message: 'no tienes permisos para esta acción',
+        status: 401
       }
-
-      const getMonetaryDenomination = await MonetaryDenomination.findByPk(id);
-      
-      await getMonetaryDenomination.destroy()
-
-      return getMonetaryDenomination;
       
 
     } catch (error) {
@@ -88,47 +118,52 @@ const MonetaryDenominationService = {
    * @param {*} body 
    * @description update a MonetaryDenomination in the db
    */
-  async update(id, body){
+  async update(bearerHeader, id, body){
     try {
-      const validateid = await MonetaryDenominationValidation.getMonetaryDenomination(id);
-      
-      if (validateid.error) {
-        throw new Error(validate.error)
+      const validatePermission = await permissions(bearerHeader, 'UPDATE')
+      if (validatePermission) {
+        
+        const validateid = await MonetaryDenominationValidation.getMonetaryDenomination(id);
+        
+        if (validateid.error) {
+          throw new Error(validate.error)
+        }
+  
+        const validateBody = await MonetaryDenominationValidation.createMonetaryDenomination(body)
+        if (validateBody.error) {
+          throw new Error(validate.error)
+        }
+        const newMonetaryDenomination = await MonetaryDenomination.update(
+          {
+            photoFile: body.photoFile,
+            value: body.value,
+            monetaryDenominationTypes: body.monetaryDenominationTypes 
+          },
+          {where: {id}}
+        )
+  
+        return newMonetaryDenomination;
+        
+      } 
+      return {
+        message: 'no tienes permisos para esta acción',
+        status: 401
       }
-
-      const validateBody = await MonetaryDenominationValidation.createMonetaryDenomination(body)
-      if (validateBody.error) {
-        throw new Error(validate.error)
-      }
-      const newMonetaryDenomination = await MonetaryDenomination.update(
-        {
-          photoFile: body.photoFile,
-          value: body.value,
-          monetaryDenominationTypes: body.monetaryDenominationTypes 
-        },
-        {where: {id}}
-      )
-
-      return newMonetaryDenomination;
     } catch (error) {
       
     }
   },
-  async findPagination(sizeAsNumber, pageAsNumber,where){
+  async findPagination(bearerHeader, sizeAsNumber, pageAsNumber,where){
     try {
-        let page = 0;
-        if (!Number.isNaN(pageAsNumber) && pageAsNumber > 0 ) {
-            page = pageAsNumber - 1;
-        }
-
-        let size = 0;
-        if (!Number.isNaN(sizeAsNumber) && sizeAsNumber > 0 && sizeAsNumber < 10) {
-            size = sizeAsNumber;
-        }
-        const offset = page*size;
-        const monetaryDenominations = await sequelize.query(`SELECT * FROM monetaryDenominations WHERE ${where} LIMIT ${offset},${size}`)
+      const validatePermission = await permissions(bearerHeader, 'FIND_PAGINATION')
+      if (validatePermission) {
+        const monetaryDenominations = await Pagination('monetaryDenominations',sequelize,sizeAsNumber, pageAsNumber,where)
         return monetaryDenominations
-
+      } 
+      return {
+        message: 'no tienes permisos para esta acción',
+        status: 401
+      }
     } catch (error) {
         throw new Error(error.message);
     }

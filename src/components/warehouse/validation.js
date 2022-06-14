@@ -17,7 +17,7 @@ class WarehouseValidation {
     createWarehouse(body){
       const schema = Joi.object().keys({
         name: Joi.string().required(),
-        code: Joi.string().required(),
+        code: Joi.number().required(),
         location: Joi.string().required(),
         description: Joi.string(),
         warehouseTypes: Joi.string().required(),

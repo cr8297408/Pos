@@ -3,7 +3,7 @@ const BillingResolutionService = require('./service');
 
 async function findAll(req, res, next) {
   try {
-    const BillingResolutions = await BillingResolutionService.findAll()
+    const BillingResolutions = await BillingResolutionService.findAll(req.headers["authorization"])
     res.status(200).json(BillingResolutions)
   } catch (error) {
     res.json(error.message)
@@ -12,7 +12,7 @@ async function findAll(req, res, next) {
 
 async function create(req, res, next){
   try {
-    const BillingResolution = await BillingResolutionService.create(req.body);
+    const BillingResolution = await BillingResolutionService.create(req.headers["authorization"],req.body);
     res.status(201).json(BillingResolution)
   
   } catch (error) {
@@ -23,7 +23,7 @@ async function create(req, res, next){
 async function findOne(req, res, next){
   try {
     console.log(req.params.id)
-    const getBillingResolution = await BillingResolutionService.findOne(req.params.id)
+    const getBillingResolution = await BillingResolutionService.findOne(req.headers["authorization"],req.params.id)
     res.status(200).json(getBillingResolution)
   } catch (error) {
     res.status(404).json(error.message)
@@ -32,7 +32,7 @@ async function findOne(req, res, next){
 
 async function deleteOne(req, res, next){
   try {
-    const getBillingResolution = await BillingResolutionService.delete(req.params.id)
+    const getBillingResolution = await BillingResolutionService.delete(req.headers["authorization"],req.params.id)
 
     res.json(getBillingResolution)
   } catch (error) {
@@ -42,7 +42,7 @@ async function deleteOne(req, res, next){
 
 async function updateOne(req, res){
   try {
-    const getBillingResolution = await BillingResolutionService.update(req.params.id, req.body)
+    const getBillingResolution = await BillingResolutionService.update(req.headers["authorization"],req.params.id, req.body)
     res.json(getBillingResolution)
   } catch (error) {
     res.json(error.message)
@@ -54,7 +54,7 @@ async function findpagination(req, res){
     const sizeAsNumber = Number(req.query.size);
     const pageAsNumber = Number(req.query.page);
     const where = req.body.where;
-    const BillingResolutions = await BillingResolutionService.findPagination(sizeAsNumber, pageAsNumber, where);
+    const BillingResolutions = await BillingResolutionService.findPagination(req.headers["authorization"],sizeAsNumber, pageAsNumber, where);
     res.json(BillingResolutions)    
   } catch (error) {
       throw new Error(error.message)

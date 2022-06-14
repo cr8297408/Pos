@@ -1,6 +1,8 @@
 const db = require('../../config/connection/connectBD');
 const BankValidation = require('./validation');
 const Bank = require('./model');
+const Pagination = require('../../shared/middlewares/pagination')
+const permissions = require('../../shared/middlewares/permissions')
 
 sequelize = db.sequelize;
 
@@ -14,10 +16,17 @@ const BankService = {
    * @implements {Bank} model
    * @description get all banks 
    */
-  async findAll(){
+  async findAll(bearerHeader){
     try {
-      const Banks = await Bank.findAll()
-      return Banks;
+      const validatePermission = await permissions(bearerHeader, 'FIND_ALL')
+      if (validatePermission) {
+        const Banks = await Bank.findAll()
+        return Banks;
+      } 
+      return {
+        message: 'no tienes permisos para esta acción',
+        status: 401
+      }
     } catch(error) {
       throw new Error(error.message)
     }
@@ -29,15 +38,22 @@ const BankService = {
    * @param {*} body
    * @implements {Bank} model 
    */
-  async create(body) {
+  async create(bearerHeader, body) {
     try {
-      const validate = BankValidation.createBank(body);
-      if (validate.error) {
-        throw new Error(validate.error)
+      const validatePermission = await permissions(bearerHeader, 'CREATE')
+      if (validatePermission) {
+        const validate = BankValidation.createBank(body);
+        if (validate.error) {
+          throw new Error(validate.error)
+        }
+  
+        const createBank = await Bank.create(body);
+        return createBank;
+      } 
+      return {
+        message: 'no tienes permisos para esta acción',
+        status: 401
       }
-
-      const createBank = await Bank.create(body);
-      return createBank;
       
     } catch (error) {
       throw new Error(error.message)
@@ -49,16 +65,21 @@ const BankService = {
    * @implements {Bank} model
    */
 
-  async findOne(id){
+  async findOne(bearerHeader, id){
     try {
-      const validate = BankValidation.getBank(id);
-      if (validate.error) {
-        throw new Error(validate.error)
+      const validatePermission = await permissions(bearerHeader, 'FIND_ONE')
+      if (validatePermission) {
+        const validate = BankValidation.getBank(id);
+        if (validate.error) {
+          throw new Error(validate.error)
+        }
+        const getbank = await Bank.findByPk(id)
+        return getbank;
+      } 
+      return {
+        message: 'no tienes permisos para esta acción',
+        status: 401
       }
-      const getbank = await Bank.findByPk(id)
-      return getbank;
-
-
     } catch (error) {
       throw new Error(error.message)
     }
@@ -68,21 +89,27 @@ const BankService = {
    * @param {*} id
    * @implements {Bank} model
    */
-  async delete(id){
+  async delete(bearerHeader, id){
     try {
-      const validate = await BankValidation.getBank(id)
+      const validatePermission = await permissions(bearerHeader, 'DELETE')
+      if (validatePermission) {
+        const validate = await BankValidation.getBank(id)
 
-      if (validate.error) {
-        throw new Error(validate.error)
+        if (validate.error) {
+          throw new Error(validate.error)
+        }
+
+        const getbank = await Bank.findByPk(id);
+        
+        await getbank.destroy()
+
+        return getbank;
+        
+      } 
+      return {
+        message: 'no tienes permisos para esta acción',
+        status: 401
       }
-
-      const getbank = await Bank.findByPk(id);
-      
-      await getbank.destroy()
-
-      return getbank;
-      
-
     } catch (error) {
       throw new Error(error)
     }
@@ -94,48 +121,52 @@ const BankService = {
    * @param {*} body 
    * @description update a bank in the db
    */
-  async update(id, body){
+  async update(bearerHeader, id, body){
     try {
-      const validateid = await BankValidation.getBank(id);
-      
-      if (validateid.error) {
-        throw new Error(validate.error)
+      const validatePermission = await permissions(bearerHeader, 'UPDATE')
+      if (validatePermission) {
+        
+        const validateid = await BankValidation.getBank(id);
+        
+        if (validateid.error) {
+          throw new Error(validate.error)
+        }
+  
+        const validateBody = await BankValidation.createBank(body)
+        if (validateBody.error) {
+          throw new Error(validate.error)
+        }
+        const newBank = await Bank.update(
+          {
+            name: body.name,
+            accountingAccount: body.accountingAccount 
+          },
+          {where: {id}}
+        )
+  
+        return newBank;
+        
+      } 
+      return {
+        message: 'no tienes permisos para esta acción',
+        status: 401
       }
-
-      const validateBody = await BankValidation.createBank(body)
-      if (validateBody.error) {
-        throw new Error(validate.error)
-      }
-      const newBank = await Bank.update(
-        {
-          name: body.name,
-          accountingAccount: body.accountingAccount 
-        },
-        {where: {id}}
-      )
-
-      return newBank;
     } catch (error) {
       
     }
   },
 
-  async findPagination(sizeAsNumber, pageAsNumber, wherecond){
+  async findPagination(bearerHeader, sizeAsNumber, pageAsNumber, wherecond){
     try {
-
-        let page = 0;
-        if (!Number.isNaN(pageAsNumber) && pageAsNumber > 0 ) {
-            page = pageAsNumber-1;
-        }
-
-        let size = 0;
-        if (!Number.isNaN(sizeAsNumber) && sizeAsNumber > 0 && sizeAsNumber < 10) {
-            size = sizeAsNumber;
-        }
-        const offset = page*size;
-        const banks = await sequelize.query(`SELECT * FROM banks WHERE ${wherecond} LIMIT ${offset},${size}`)
-        return banks[0]
-
+      const validatePermission = await permissions(bearerHeader, 'FIND_PAGINATION')
+      if (validatePermission) {
+        const banks = await Pagination('banks',sequelize,sizeAsNumber, pageAsNumber, wherecond)
+        return banks
+      } 
+      return {
+        message: 'no tienes permisos para esta acción',
+        status: 401
+      }
     } catch (error) {
         throw new Error(error.message);
     }

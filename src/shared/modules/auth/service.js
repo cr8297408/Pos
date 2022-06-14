@@ -1,10 +1,10 @@
 const bcrypt = require('bcrypt');
 const jsonwebtoken = require('jsonwebtoken');
 
-const db = require('../../config/connection/connectBD');
+const db = require('../../../config/connection/connectBD');
 const AuthValidation = require('./validation');
 const User = require('../user/model');
-const config = require('../../config/env')
+const config = require('../../../config/env')
 
 sequelize = db.sequelize;
 
@@ -73,7 +73,8 @@ const AuthService = {
         id : user.id,
         isAdmin : user.isAdmin,
         isActive : user.isActive,
-        verified : user.verified
+        verified : user.verified,
+        typeUser: user.typeUser,
       }
 
       const token = jsonwebtoken.sign({dataToken}, config.JWT_SECRET);

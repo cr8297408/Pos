@@ -3,7 +3,7 @@ const MonetaryDenominationService = require('./service');
 
 async function findAll(req, res, next) {
   try {
-    const MonetaryDenominations = await MonetaryDenominationService.findAll()
+    const MonetaryDenominations = await MonetaryDenominationService.findAll(req.headers['authorization'])
     res.status(200).json(MonetaryDenominations)
   } catch (error) {
     res.json(error.message)
@@ -12,7 +12,7 @@ async function findAll(req, res, next) {
 
 async function create(req, res, next){
   try {
-    const getMonetaryDenomination = await MonetaryDenominationService.create(req.body);
+    const getMonetaryDenomination = await MonetaryDenominationService.create(req.headers['authorization'],req.body);
     res.status(201).json(getMonetaryDenomination)
   
   } catch (error) {
@@ -23,7 +23,7 @@ async function create(req, res, next){
 async function findOne(req, res, next){
   try {
     console.log(req.params.id)
-    const getMonetaryDenomination = await MonetaryDenominationService.findOne(req.params.id)
+    const getMonetaryDenomination = await MonetaryDenominationService.findOne(req.headers['authorization'],req.params.id)
     res.status(200).json(getMonetaryDenomination)
   } catch (error) {
     res.status(404).json(error.message)
@@ -32,7 +32,7 @@ async function findOne(req, res, next){
 
 async function deleteOne(req, res, next){
   try {
-    const getMonetaryDenomination = await MonetaryDenominationService.delete(req.params.id)
+    const getMonetaryDenomination = await MonetaryDenominationService.delete(req.headers['authorization'],req.params.id)
 
     res.json(getMonetaryDenomination)
   } catch (error) {
@@ -42,7 +42,7 @@ async function deleteOne(req, res, next){
 
 async function updateOne(req, res){
   try {
-    const getMonetaryDenomination = await MonetaryDenominationService.update(req.params.id, req.body)
+    const getMonetaryDenomination = await MonetaryDenominationService.update(req.headers['authorization'],req.params.id, req.body)
     res.json(getMonetaryDenomination)
   } catch (error) {
     res.json(error.message)
@@ -54,7 +54,7 @@ async function findpagination(req, res){
     const sizeAsNumber = Number(req.query.size);
     const pageAsNumber = Number(req.query.page);
     const where = req.body.where;
-    const MonetaryDenominations = await MonetaryDenominationService.findPagination(sizeAsNumber, pageAsNumber, where);
+    const MonetaryDenominations = await MonetaryDenominationService.findPagination(req.headers['authorization'],sizeAsNumber, pageAsNumber, where);
     res.json(MonetaryDenominations)    
   } catch (error) {
       throw new Error(error.message)

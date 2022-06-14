@@ -1,5 +1,5 @@
 const { DataTypes, Model, UUIDV4} = require('sequelize');
-const db = require('../../config/connection/connectBD');
+const db = require('../../../config/connection/connectBD');
 sequelize = db.sequelize;
 
 const User = sequelize.define('User', {
@@ -8,12 +8,10 @@ const User = sequelize.define('User', {
     defaultValue: UUIDV4,
     primaryKey: true,
     allowNull: false,
-    unique: true,
   },
   username: {
     type: DataTypes.STRING,
     allowNull: false,
-    unique: true,
   },
   password: {
     type: DataTypes.STRING,
@@ -22,7 +20,6 @@ const User = sequelize.define('User', {
   email: {
     type: DataTypes.STRING,
     allowNull:  false,
-    unique: true,
   },
   firstName: {
     type: DataTypes.STRING,
@@ -43,6 +40,10 @@ const User = sequelize.define('User', {
   },
   lastLogin: {
     type: DataTypes.DATE
+  },
+  typeUser: {
+    type: DataTypes.STRING,
+    defaultValue: "USER_READ"
   },
   isAdmin: {
     type: DataTypes.BOOLEAN,
