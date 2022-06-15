@@ -47,7 +47,7 @@ const AuthService = {
       const createdAuth = await User.create(dataUser);
       const emailFrom = config.MAIL_USER;
       const emailTo = body.email;
-      const text = ""
+      const text = "<h1>Hello world</h1>"
       const subject = 'Registro en Pos API'
       await sendMail('te has registrado a mi API', emailFrom, emailTo, subject, text)
       return createdAuth;
@@ -69,11 +69,11 @@ const AuthService = {
       })
 
       if (!user) {
-        throw new Error('el email no pertenece a ningun usuario.')
+        throw new Error('credenciales incorrectas')
       }
       const result = bcrypt.compareSync(body.password, user.password);
       if (!result) {
-        throw new Error('contraseña incorrecta')
+        throw new Error('credenciales incorrectas')
       }
       const dataToken = {
         id : user.id,
