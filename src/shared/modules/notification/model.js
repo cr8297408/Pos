@@ -1,6 +1,8 @@
 const { DataTypes, Model, UUIDV4} = require('sequelize');
 const db = require('../../../config/connection/connectBd');
 sequelize = db.sequelize;
+const User = require('../user/model');
+
 
 const Notification = sequelize.define('Notification', {
   id: {
@@ -18,8 +20,7 @@ const Notification = sequelize.define('Notification', {
     defaultValue: false,
   },
   type: {
-    type: DataTypes.STRING,
-    allowNull: false
+    type: DataTypes.ENUM('PERSONAL', 'BY_USER_POSITION', 'BY_TYPE', 'GROUP')
   },
   typeNotification: {
     type: DataTypes.STRING,
@@ -27,10 +28,15 @@ const Notification = sequelize.define('Notification', {
   },
   icon: {
     type: DataTypes.STRING,
-  }
+  },
+  module: DataTypes.STRING,
 },{
   tableName: "notifications",
   timestamps: true
 })
+
+User.hasMany(Notification, {
+  foreignKey: 'userId'
+});
 
 module.exports = Notification;

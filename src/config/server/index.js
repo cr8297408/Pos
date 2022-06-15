@@ -1,15 +1,18 @@
-const server = require('./server')
+const http = require('http')
+const app = require('./server')
+const server = http.createServer(app)
 const db = require('../connection/connectBd');
 
-const port = server.get('port');
+const port = app.get('port');
 
 async function dbConnection(){
   try {
-      await db.sequelize.sync({ alter: true })
-      console.log('Database connect');
-      server.listen(port, () => {
-          console.log('APP LISTENING IN PORT: ',port);
-      })
+    await db.sequelize.sync({ alter: true })
+    console.log('Database connect');
+    require('../socket.io')
+    server.listen(port, () => {
+        console.log('APP LISTENING IN PORT: ',port);
+    })
   } catch (error) {
       throw new Error(error.message)
   }
@@ -17,3 +20,5 @@ async function dbConnection(){
 }
 
 dbConnection()
+
+module.exports = server;

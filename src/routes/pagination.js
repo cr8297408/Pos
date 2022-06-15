@@ -401,12 +401,12 @@ router.post('/notifications/?', NotificationComponent.findpagination);
   *              where
   *          example:
   *              where: location=risaralda
-  *      wareh:
+  *      notif:
   *          type: string
   *          required:
   *              where
   *          example:
-  *              where: type=LOGIN
+  *              where: type=PERSONAL
   *      Error:    
   *          type: object
   *          required:

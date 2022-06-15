@@ -1,4 +1,5 @@
 const express = require('express')
+const path = require('path');
 const router = express.Router();
 const BankRouter = require('./bank')
 const BillingResolutionRouter = require('./billing-resolution')
@@ -24,5 +25,11 @@ router.use('/v1/users', UserRouter);
 router.use('/v1/auth', AuthRouter);
 router.use('/v1/page', PaginationRouter);
 router.use('/v1/notifications', NotificationRouter)
+
+// prueba socket
+
+router.use('/v1/sockets', (req,res) => {
+  res.sendFile(path.join(__dirname, '../../front', 'index.html'));
+})
 
 module.exports = router;
