@@ -7,7 +7,8 @@ const {
   MonetaryDenominationComponent,
   ProductAreaComponent,
   TaxComponent,
-  WarehouseComponent
+  WarehouseComponent,
+  NotificationComponent
 } = require('../components');
 
 
@@ -312,6 +313,43 @@ router.post('/taxes/?', TaxComponent.findpagination);
 */
 router.post('/warehouses/?', WarehouseComponent.findpagination);
 
+ /**
+* @swagger
+*  /v1/page/notifications?:
+*      post:
+*          summary: get notifications paginated
+*          tags: ["pagination"]
+*          requestBody:
+*              required: true
+*              content:
+*                  application/json:
+*                      schema:
+*                          $ref: '#/components/schemas/notif'
+*          responses:
+*              200:
+*                  description: get tax succefully  
+*              401:
+*                  description: tax not authorized to get tax
+*          parameters: [
+*           {
+*              name: size,
+*              in: query,
+*              description: size to pagination,
+*              schema: {
+*                  type: string
+*              }
+*           },
+*           {
+*              name: page,
+*              in: query,
+*              description: number of page paginate,
+*              schema: {
+*                  type: string
+*              }
+*           },
+*          ]
+*/
+router.post('/notifications/?', NotificationComponent.findpagination);
 
 
 /**
@@ -363,6 +401,12 @@ router.post('/warehouses/?', WarehouseComponent.findpagination);
   *              where
   *          example:
   *              where: location=risaralda
+  *      wareh:
+  *          type: string
+  *          required:
+  *              where
+  *          example:
+  *              where: type=LOGIN
   *      Error:    
   *          type: object
   *          required:

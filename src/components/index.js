@@ -7,6 +7,7 @@ const ProductAreaComponent = require('./product-area');
 const MeasureUnitComponent = require('./measure-unit');
 const UserComponent = require('../shared/modules/user');
 const AuthComponent = require('../shared/modules/auth');
+const NotificationComponent = require('../shared/modules/notification');
 
 module.exports = { 
   BankComponent, 
@@ -17,5 +18,6 @@ module.exports = {
   ProductAreaComponent,
   MeasureUnitComponent,
   UserComponent,
-  AuthComponent
+  AuthComponent,
+  NotificationComponent
 }

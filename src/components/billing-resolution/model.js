@@ -1,7 +1,6 @@
-const { DataTypes, Model, UUIDV4} = require('sequelize');
+const { DataTypes, UUIDV4} = require('sequelize');
 const db = require('../../config/connection/connectBD');
 sequelize = db.sequelize;
-
 const BillingResolution = sequelize.define('BillingResolution', {
   id: {
     type: DataTypes.STRING,
@@ -44,9 +43,6 @@ const BillingResolution = sequelize.define('BillingResolution', {
 },{
   tableName: "billingResolutions",
   timestamps: true,
-  classMethods: {
-    associate: function(models) {
-      BillingResolution.hasMany(models.BillingResolution, { foreignKey: 'BillingResolution_id' })
-}}})
+})
 
 module.exports = BillingResolution;

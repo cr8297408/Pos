@@ -36,7 +36,11 @@ const Warehouse = sequelize.define('Warehouse', {
   } 
 },{
   tableName: "warehouses",
-  timestamps: true
+  timestamps: true,
+})
+BillingResolution.hasMany(Warehouse, {
+  foreignKey: 'BillingResolutionId'
 })
 
+Warehouse.sync({ alter: true })
 module.exports = Warehouse;

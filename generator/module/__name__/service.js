@@ -1,4 +1,4 @@
-const db = require('../../config/connection/connectBD');
+const db = require('../../config/connection/connectBd');
 const __name__Validation = require('./validation');
 const __name__ = require('./model');
 const Pagination = require('../../shared/middlewares/pagination')
