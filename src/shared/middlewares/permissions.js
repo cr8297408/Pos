@@ -10,11 +10,15 @@ async function havePermissions(bearerHeader, action){
       if (decoded) {
         const usertype = decoded.dataToken.typeUser
         const type = permissions[usertype];
-        if (!decoded.isAdmin) {
-          return type[action]
-        } else {
-          return true
+        console.log(decoded.dataToken.isActive);
+        if (decoded.dataToken.isActive) {
+          if (!decoded.dataToken.isAdmin) {
+            return type[action]
+          } else {
+            return true
+          }
         }
+        return false
       }
   }
 }

@@ -67,6 +67,7 @@ const AuthService = {
       const user = await User.findOne({
         where: {email: body.email}
       })
+      console.log(user);
 
       if (!user) {
         throw new Error('credenciales incorrectas')
