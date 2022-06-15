@@ -5,6 +5,7 @@ const db = require('../../../config/connection/connectBD');
 const AuthValidation = require('./validation');
 const User = require('../user/model');
 const config = require('../../../config/env')
+const sendMail = require('../../resources/send-mail');
 
 sequelize = db.sequelize;
 
@@ -36,14 +37,19 @@ const AuthService = {
       if (validateEmail) {
         throw new Error('el email ya está en uso...')
       }
-
-      const createdAuth = await User.create({
+      const dataUser = {
         email: body.email,
         username: body.username,
         firstName: body.firstName,
         lastName: body.lastName,
         password: bcrypt.hashSync(body.password, 10),
-      });
+      }
+      const createdAuth = await User.create(dataUser);
+      const emailFrom = config.MAIL_USER;
+      const emailTo = body.email;
+      const text = ""
+      const subject = 'Registro en Pos API'
+      await sendMail('te has registrado a mi API', emailFrom, emailTo, subject, text)
       return createdAuth;
 
     } catch (error) {
