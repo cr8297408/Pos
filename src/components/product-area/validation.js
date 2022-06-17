@@ -16,7 +16,7 @@ class ProductAreaValidation {
 
     createProductArea(body){
       const schema = Joi.object().keys({
-        name: Joi.string().required(),
+        name: Joi.string().required().unique(),
         description: Joi.string(),
         attentionArea: Joi.boolean().required(),
         isActive: Joi.boolean()

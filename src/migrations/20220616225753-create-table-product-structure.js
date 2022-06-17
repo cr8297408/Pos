@@ -3,23 +3,22 @@ const { UUIDV4, DataTypes } = require('sequelize')
 
 module.exports = {
   async up (queryInterface, Sequelize) {
-    await queryInterface.createTable('monetaryDenominations', { 
+    await queryInterface.createTable('productStructures', { 
       id: {
-        type: Sequelize.DataTypes.STRING,
+        type: DataTypes.STRING,
         defaultValue: UUIDV4,
         primaryKey: true,
         allowNull: false,
       },
-      photoFile: {
-        type: Sequelize.DataTypes.STRING,
-      },
-      value: {
-        type: Sequelize.DataTypes.INTEGER,
+      name: {
+        type: DataTypes.STRING,
         allowNull: false,
+        unique: true
       },
-      monetaryDenominationTypes: {
-        type: Sequelize.DataTypes.ENUM('BILL', 'COIN'),
+      code: {
+        type: DataTypes.STRING,
         allowNull: false,
+        unique: true
       },
       createdAt: {
         type: Sequelize.DataTypes.STRING,
@@ -30,10 +29,9 @@ module.exports = {
         defaultValue: new Date(),
       }
     });
-     
   },
 
   async down (queryInterface, Sequelize) {
-    await queryInterface.dropTable('monetaryDenominations');
+    await queryInterface.dropTable('productStructures');
   }
 };

@@ -12,10 +12,12 @@ const Bank = sequelize.define('Bank', {
   name: {
     type: DataTypes.STRING,
     allowNull: false,
+    unique: true
   },
   accountingAccount: {
     type: DataTypes.INTEGER,
     allowNull: false,
+    unique: true
   },
 },{
   tableName: "banks",

@@ -6,16 +6,19 @@ module.exports = {
     await queryInterface.createTable('banks', { 
       id: {
         type: Sequelize.DataTypes.STRING,
+        defaultValue: UUIDV4,
         primaryKey: true,
-        allowNull: false
+        allowNull: false,
       },
       name: {
         type: Sequelize.DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
+        unique: true
       },
       accountingAccount: {
         type: Sequelize.DataTypes.INTEGER,
-        allowNull: false
+        allowNull: false,
+        unique: true
       },
       createdAt: {
         type: Sequelize.DataTypes.STRING,

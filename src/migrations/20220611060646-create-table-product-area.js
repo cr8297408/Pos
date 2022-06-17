@@ -17,10 +17,10 @@ module.exports = {
       name: {
         type: Sequelize.DataTypes.STRING,
         allowNull: false,
+        unique: true
       },
       description: {
         type: Sequelize.DataTypes.STRING,
-        allowNull: false,
       },
       isActive: {
         type: Sequelize.DataTypes.BOOLEAN,

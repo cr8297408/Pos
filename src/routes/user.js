@@ -75,6 +75,31 @@ const router = Router();
   *          ]
   */
  router.delete('/:id', UserComponent.deleteOne);
+
+  /**
+  * @swagger
+  *  /v1/users/activate/{id}:
+  *      put:
+  *          summary: activate a user
+  *          tags: ["users"]
+  *          responses:
+  *              200:
+  *                  description: user activated succesfully
+  *              401:
+  *                  description: user not authorized to activate users
+  *          parameters: [
+  *           {
+  *              name: id,
+  *              in: path,
+  *              description: id of the user,
+  *              required: true,
+  *              schema: {
+  *                  type: string,
+  *              }
+  *           },
+  *          ]
+  */
+   router.put('/activate/:id', UserComponent.activateUser);
  
  /**
   * @swagger
@@ -162,11 +187,11 @@ const router = Router();
   *              avatarFile:
   *                     type: string
   *          example:
-  *              username: user prueba
+  *              username: userPrueba1
   *              password: pass123
-  *              email: email@test.com
-  *              firstName: user
-  *              lastName: test
+  *              email: email1@test.com
+  *              firstName: user1
+  *              lastName: test1
   *              roles: {}
   *              profile: {}
   *              avatarFile: avaatarlink

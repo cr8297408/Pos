@@ -3,45 +3,56 @@ const { UUIDV4, DataTypes } = require('sequelize')
 
 module.exports = {
   async up (queryInterface, Sequelize) {
-    await queryInterface.createTable('billingresolutions', { 
+    await queryInterface.createTable('users', {
       id: {
         type: Sequelize.DataTypes.STRING,
         defaultValue: UUIDV4,
         primaryKey: true,
         allowNull: false,
       },
-      resolutionClass: {
-        type: Sequelize.DataTypes.STRING,
-        allowNull: false,
-      },
-      resolutionType: {
-        type: Sequelize.DataTypes.STRING,
-        allowNull: false,
-      },
-      resolutionNumber: {
-        type: Sequelize.DataTypes.INTEGER,
-        allowNull: false,
-        unique:true,
-      },
-      from: Sequelize.DataTypes.DATE,
-      to: Sequelize.DataTypes.DATE,
-      prefix: {
+      username: {
         type: Sequelize.DataTypes.STRING,
         allowNull: false,
         unique: true
       },
-      initialNumber: {
-        type: Sequelize.DataTypes.INTEGER,
+      password: {
+        type: Sequelize.DataTypes.STRING,
         allowNull: false,
       },
-      finalNumber: {
-        type: Sequelize.DataTypes.INTEGER,
-        allowNull: false,
+      email: {
+        type: Sequelize.DataTypes.STRING,
+        allowNull:  false,
+        unique: true
       },
-      localBilling: {
+      firstName: {
+        type: Sequelize.DataTypes.STRING,
+        allowNull:  false
+      },
+      lastName: {
+        type: Sequelize.DataTypes.STRING,
+      },
+      roles: Sequelize.DataTypes.JSON,
+      profile: Sequelize.DataTypes.JSON,
+      isActive:  {
         type: Sequelize.DataTypes.BOOLEAN,
         defaultValue: true
       },
+      verified:  {
+        type: Sequelize.DataTypes.BOOLEAN,
+        defaultValue: false
+      },
+      lastLogin: {
+        type: Sequelize.DataTypes.DATE
+      },
+      typeUser: {
+        type: Sequelize.DataTypes.STRING,
+        defaultValue: "USER_READ"
+      },
+      isAdmin: {
+        type: Sequelize.DataTypes.BOOLEAN,
+        defaultValue: false
+      },
+      avatarFile: Sequelize.DataTypes.STRING,
       createdAt: {
         type: Sequelize.DataTypes.STRING,
         defaultValue: new Date(),
@@ -51,9 +62,10 @@ module.exports = {
         defaultValue: new Date(),
       }
     });
+     
   },
 
   async down (queryInterface, Sequelize) {
-    await queryInterface.dropTable('billingresolutions');
+    await queryInterface.dropTable('users');
   }
 };

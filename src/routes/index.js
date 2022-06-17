@@ -13,7 +13,7 @@ const AuthRouter = require('./auth');
 const PaginationRouter = require('./pagination');
 const NotificationRouter = require('./notification');
 const ProductStructureRouter = require('./product-structure');
-
+const ProductLinesRouter = require('./product-line');
 
 router.use('/v1/banks', BankRouter);
 router.use('/v1/billingResolutions', BillingResolutionRouter);
@@ -26,7 +26,8 @@ router.use('/v1/users', UserRouter);
 router.use('/v1/auth', AuthRouter);
 router.use('/v1/page', PaginationRouter);
 router.use('/v1/notifications', NotificationRouter);
-router.use('/v1/productStructures', ProductStructureRouter)
+router.use('/v1/productStructures', ProductStructureRouter);
+router.use('/v1/productLines', ProductLinesRouter)
 
 // prueba socket
 

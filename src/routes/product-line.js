@@ -1,44 +1,44 @@
 const { Router } = require('express');
-const { ProductStructureComponent } = require('../components');
+const { ProductLineComponent } = require('../components');
 
 const router = Router();
 
 /**
  * @swagger
- *  /v1/productStructures:
+ *  /v1/productLines:
  *      get:
- *          summary: det all the ProductStructures;
- *          tags: ["ProductStructures"]
+ *          summary: det all the ProductLines;
+ *          tags: ["ProductLines"]
  *          responses:
  *              200:
- *                  description: get ProductStructures successfully 
+ *                  description: get ProductLines successfully 
  *                  content:
  *                      application/json:
  *                          squema:
  *                              type: array
  *                              items:
- *                                  $ref: '#/components/schemas/ProductStructures'
+ *                                  $ref: '#/components/schemas/ProductLines'
  *              401:
- *                  description: error in get ProductStructures
+ *                  description: error in get ProductLines
  */
- router.get('/', ProductStructureComponent.findAll)
+ router.get('/', ProductLineComponent.findAll)
 
  /**
   * @swagger
-  *  /v1/productStructures/{id}:
+  *  /v1/productLines/{id}:
   *      get:
-  *          summary: get one ProductStructure by id
-  *          tags: ["ProductStructures"]
+  *          summary: get one ProductLine by id
+  *          tags: ["ProductLines"]
   *          responses:
   *              200:
-  *                  description: get ProductStructure succefully  
+  *                  description: get ProductLine succefully  
   *              401:
-  *                  description: user not authorized to get ProductStructure
+  *                  description: user not authorized to get ProductLine
   *          parameters: [
   *           {
   *              name: id,
   *              in: path,
-  *              description: id of the ProductStructure,
+  *              description: id of the ProductLine,
   *              required: true,
   *              schema: {
   *                  type: string
@@ -47,24 +47,24 @@ const router = Router();
   *          ]
   */
  
- router.get('/:id', ProductStructureComponent.findOne);
+ router.get('/:id', ProductLineComponent.findOne);
  
  /**
   * @swagger
-  *  /v1/productStructures/{id}:
+  *  /v1/productLines/{id}:
   *      delete:
-  *          summary: delete a ProductStructure
-  *          tags: ["ProductStructures"]
+  *          summary: delete a ProductLine
+  *          tags: ["ProductLines"]
   *          responses:
   *              200:
-  *                  description: ProductStructure deleted succesfully
+  *                  description: ProductLine deleted succesfully
   *              401:
-  *                  description: user not authorized to delete ProductStructures
+  *                  description: user not authorized to delete ProductLines
   *          parameters: [
   *           {
   *              name: id,
   *              in: path,
-  *              description: id of the ProductStructure,
+  *              description: id of the ProductLine,
   *              required: true,
   *              schema: {
   *                  type: string,
@@ -72,30 +72,30 @@ const router = Router();
   *           },
   *          ]
   */
- router.delete('/:id', ProductStructureComponent.deleteOne);
+ router.delete('/:id', ProductLineComponent.deleteOne);
  
  /**
   * @swagger
-  *  /v1/productStructures/{id}:
+  *  /v1/productLines/{id}:
   *      put:
-  *          summary: put ProductStructure in the DB
-  *          tags: ["ProductStructures"]
+  *          summary: put ProductLine in the DB
+  *          tags: ["ProductLines"]
   *          requestBody:
   *              required: true
   *              content:
   *                  application/json:
   *                      schema:
-  *                           $ref: '#/components/schemas/ProductStructures'
+  *                           $ref: '#/components/schemas/ProductLines'
   *          responses:
   *              200:
-  *                  description: update ProductStructure successfully
+  *                  description: update ProductLine successfully
   *              401:
-  *                  description: user not authorized to update ProductStructures
+  *                  description: user not authorized to update ProductLines
   *          parameters: [
   *           {
   *              name: id,
   *              in: path,
-  *              description: id of the ProductStructure,
+  *              description: id of the ProductLine,
   *              required: true,
   *              schema: {
   *                  type: string,
@@ -104,40 +104,39 @@ const router = Router();
   *          ]
   */
  
- router.put('/:id', ProductStructureComponent.updateOne);
+ router.put('/:id', ProductLineComponent.updateOne);
  
  /**
   * @swagger
-  *  /v1/productStructures:
+  *  /v1/productLines:
   *      post:
-  *          summary: added a ProductStructure
-  *          tags: ["ProductStructures"]
+  *          summary: added a ProductLine
+  *          tags: ["ProductLines"]
   *          requestBody:
   *              required: true
   *              content:
   *                  application/json:
   *                      schema:
-  *                          $ref: '#/components/schemas/ProductStructures'
+  *                          $ref: '#/components/schemas/ProductLines'
   *          responses:
   *              200:
-  *                  description: ProductStructure add successfully
+  *                  description: ProductLine add successfully
   *              401:
-  *                  description: user not authorized to add ProductStructures
+  *                  description: user not authorized to add ProductLines
   */
- router.post('/', ProductStructureComponent.create)
+ router.post('/', ProductLineComponent.create)
  
  /**
   * @swagger
   * tags:
-  *  name: ProductStructures
-  *  description: endpoints for managing api ProductStructures.
+  *  name: ProductLines
+  *  description: endpoints for managing api ProductLines.
   * components:
   *  schemas:
-  *      ProductStructures:
+  *      ProductLines:
   *          type: object
   *          required:
   *              -name
-  *              -code
   *          properties:
   *              id:
   *                  type: string
@@ -145,9 +144,12 @@ const router = Router();
   *                  type: string,
   *              code:
   *                  type: string,
+  *              ProductStructureId:
+  *                  type: string,
   *          example:
-  *              name: product structure prueba
-  *              code: codigoprueba
+  *              name: product line prueba
+  *              code: codigopruebaline
+  *              ProductStructureId: 6efb1a83-1dc9-41b6-acd5-3d248266b1ee
   *      Error:    
   *          type: object
   *          required:

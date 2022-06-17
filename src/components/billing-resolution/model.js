@@ -26,6 +26,7 @@ const BillingResolution = sequelize.define('BillingResolution', {
   prefix: {
     type: DataTypes.STRING,
     allowNull: false,
+    unique: true
   },
   initialNumber: {
     type: DataTypes.INTEGER,

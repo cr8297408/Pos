@@ -34,4 +34,6 @@ const Tax = sequelize.define('Tax', {
   timestamps: true
 })
 
+// Tax.sync()
+
 module.exports = Tax;

@@ -7,11 +7,11 @@ const port = app.get('port');
 
 async function dbConnection(){
   try {
-    await db.sequelize.sync({ alter: true })
+    await db.sequelize.sync()
     console.log('Database connect');
     require('../socket.io')
     server.listen(port, () => {
-        console.log('APP LISTENING IN PORT: ',port);
+      console.log('APP LISTENING IN PORT: ',port);
     })
   } catch (error) {
       throw new Error(error.message)

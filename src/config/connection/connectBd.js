@@ -17,4 +17,5 @@ var db = {};
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
+
 module.exports = db;

@@ -12,10 +12,12 @@ const MeasureUnit = sequelize.define('MeasureUnit', {
   name: {
     type: DataTypes.STRING,
     allowNull: false,
+    unique: true
   }
 },{
   tableName: "measureUnits",
   timestamps: true
 })
+// MeasureUnit.sync()
 
 module.exports = MeasureUnit;
