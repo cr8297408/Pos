@@ -18,6 +18,5 @@ const MeasureUnit = sequelize.define('MeasureUnit', {
   tableName: "measureUnits",
   timestamps: true
 })
-// MeasureUnit.sync()
 
 module.exports = MeasureUnit;

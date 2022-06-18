@@ -42,5 +42,4 @@ BillingResolution.hasMany(Warehouse, {
   foreignKey: 'BillingResolutionId'
 })
 
-// Warehouse.sync()
 module.exports = Warehouse;

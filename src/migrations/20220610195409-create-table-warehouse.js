@@ -35,14 +35,15 @@ module.exports = {
         type: Sequelize.DataTypes.BOOLEAN,
         defaultValue: true
       },
-      // BillingResolutionId:{
-      //   type: Sequelize.DataTypes.STRING,
-      //   references: {
-      //     model: {
-      //       tableName: 'billingresolutions'
-      //     }
-      //   },
-      // },
+      BillingResolutionId:{
+        type: Sequelize.DataTypes.STRING,
+        references: {
+          model: 'billingResolutions',
+          key: 'id'
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
+      },
       createdAt: {
         type: Sequelize.DataTypes.STRING,
         defaultValue: new Date(),
