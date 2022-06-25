@@ -1,8 +1,9 @@
 const { DataTypes, Model, UUIDV4} = require('sequelize');
 const db = require('../../../../config/connection/connectBd');
+const Preparation = require('../preparation/model');
 sequelize = db.sequelize;
 
-const UnitMeasurement = sequelize.define('UnitMeasurement', {
+const PreparationType = sequelize.define('PreparationType', {
   id: {
     type: DataTypes.STRING,
     defaultValue: UUIDV4,
@@ -17,8 +18,12 @@ const UnitMeasurement = sequelize.define('UnitMeasurement', {
     type: DataTypes.STRING,
   },
 },{
-  tableName: 'unitMeasurements',
+  tableName: 'preparationTypes',
   timestamps: true
 })
 
-module.exports = UnitMeasurement;
+Preparation.hasMany(PreparationType, {
+  foreignKey: 'PreparationId'
+})
+
+module.exports = PreparationType;

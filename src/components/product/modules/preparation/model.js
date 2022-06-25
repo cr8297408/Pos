@@ -17,7 +17,7 @@ const Preparation = sequelize.define('Preparation', {
     type: DataTypes.STRING,
   },
 },{
-  tableName: Preparations,
+  tableName: 'preparations',
   timestamps: true
 })
 
