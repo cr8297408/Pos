@@ -1,8 +1,8 @@
 const { DataTypes, Model, UUIDV4} = require('sequelize');
-const db = require('../../config/connection/connectBd');
+const db = require('../../../../config/connection/connectBd');
 sequelize = db.sequelize;
 
-const __name__ = sequelize.define('__name__', {
+const UnitMeasurement = sequelize.define('UnitMeasurement', {
   id: {
     type: DataTypes.STRING,
     defaultValue: UUIDV4,
@@ -17,8 +17,8 @@ const __name__ = sequelize.define('__name__', {
     type: DataTypes.STRING,
   },
 },{
-  tableName: __name__s,
+  tableName: UnitMeasurements,
   timestamps: true
 })
 
-module.exports = __name__;
+module.exports = UnitMeasurement;

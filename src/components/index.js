@@ -12,6 +12,7 @@ const ProductStructureComponent = require('./product/modules/product-structure')
 const ProductLineComponent = require('./product/modules/product-line');
 const ProductCategoryComponent = require('./product/modules/product-category');
 const ProductGroupComponent = require('./product/modules/product-group');
+const UnitMeasurementComponent = require('./product/modules/unit-measurement');
 
 
 module.exports = { 
@@ -28,5 +29,6 @@ module.exports = {
   ProductAreaComponent,
   ProductLineComponent,
   ProductCategoryComponent,
-  ProductGroupComponent
+  ProductGroupComponent,
+  UnitMeasurementComponent
 }
