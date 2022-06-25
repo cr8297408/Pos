@@ -13,6 +13,7 @@ const ProductLineComponent = require('./product/modules/product-line');
 const ProductCategoryComponent = require('./product/modules/product-category');
 const ProductGroupComponent = require('./product/modules/product-group');
 const UnitMeasurementComponent = require('./product/modules/unit-measurement');
+const PreparationComponent = require('./product/modules/preparations')
 
 
 module.exports = { 
@@ -30,5 +31,6 @@ module.exports = {
   ProductLineComponent,
   ProductCategoryComponent,
   ProductGroupComponent,
-  UnitMeasurementComponent
+  UnitMeasurementComponent,
+  PreparationComponent
 }
