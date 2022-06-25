@@ -3,13 +3,16 @@ const BillingResolutionComponent = require('./billing-resolution')
 const WarehouseComponent = require('./warehouse')
 const TaxComponent = require('./tax');
 const MonetaryDenominationComponent = require('./monetary-denomination');
-const ProductAreaComponent = require('./product-area');
 const MeasureUnitComponent = require('./measure-unit');
 const UserComponent = require('../shared/modules/user');
 const AuthComponent = require('../shared/modules/auth');
 const NotificationComponent = require('../shared/modules/notification');
-const ProductStructureComponent = require('./product-structure');
-const ProductLineComponent = require('./product-line');
+const ProductAreaComponent = require('./product/modules/product-area');
+const ProductStructureComponent = require('./product/modules/product-structure');
+const ProductLineComponent = require('./product/modules/product-line');
+const ProductCategoryComponent = require('./product/modules/product-category');
+const ProductGroupComponent = require('./product/modules/product-group');
+
 
 module.exports = { 
   BankComponent, 
@@ -17,11 +20,13 @@ module.exports = {
   WarehouseComponent,
   TaxComponent,
   MonetaryDenominationComponent,
-  ProductAreaComponent,
   MeasureUnitComponent,
   UserComponent,
   AuthComponent,
   NotificationComponent,
   ProductStructureComponent,
-  ProductLineComponent
+  ProductAreaComponent,
+  ProductLineComponent,
+  ProductCategoryComponent,
+  ProductGroupComponent
 }

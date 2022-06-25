@@ -1,8 +1,8 @@
 const { DataTypes, Model, UUIDV4} = require('sequelize');
-const db = require('../../config/connection/connectBd');
+const db = require('../../../../config/connection/connectBd');
 sequelize = db.sequelize;
 
-const ProductCategory = sequelize.define('ProductCategory', {
+const ProductGroup = sequelize.define('ProductGroup', {
   id: {
     type: DataTypes.STRING,
     defaultValue: UUIDV4,
@@ -11,7 +11,6 @@ const ProductCategory = sequelize.define('ProductCategory', {
   },
   name: {
     type: DataTypes.STRING,
-    unique: true,
     allowNull: false,
   },
   description: {
@@ -19,8 +18,8 @@ const ProductCategory = sequelize.define('ProductCategory', {
     allowNull: false,
   },
 },{
-  tableName: ProductCategorys,
+  tableName: 'productGroups',
   timestamps: true
 })
 
-module.exports = ProductCategory;
+module.exports = ProductGroup;

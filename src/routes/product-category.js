@@ -1,45 +1,44 @@
 const { Router } = require('express');
-const { ProductAreaComponent } = require('../components');
+const { ProductCategoryComponent } = require('../components');
 
 const router = Router();
 
-
 /**
  * @swagger
- *  /v1/productAreas:
+ *  /v1/ProductCategorys:
  *      get:
- *          summary: det all the productAreas;
- *          tags: ["productAreas"]
+ *          summary: det all the ProductCategorys;
+ *          tags: ["ProductCategorys"]
  *          responses:
  *              200:
- *                  description: get productAreas successfully 
+ *                  description: get ProductCategorys successfully 
  *                  content:
  *                      application/json:
  *                          squema:
  *                              type: array
  *                              items:
- *                                  $ref: '#/components/schemas/productAreas'
+ *                                  $ref: '#/components/schemas/ProductCategorys'
  *              401:
- *                  description: error in get productAreas
+ *                  description: error in get ProductCategorys
  */
- router.get('/', ProductAreaComponent.findAll)
+ router.get('/', ProductCategoryComponent.findAll)
 
  /**
   * @swagger
-  *  /v1/productAreas/{id}:
+  *  /v1/ProductCategorys/{id}:
   *      get:
-  *          summary: get one productArea by id
-  *          tags: ["productAreas"]
+  *          summary: get one ProductCategory by id
+  *          tags: ["ProductCategorys"]
   *          responses:
   *              200:
-  *                  description: get productArea succefully  
+  *                  description: get ProductCategory succefully  
   *              401:
-  *                  description: user not authorized to get productArea
+  *                  description: user not authorized to get ProductCategory
   *          parameters: [
   *           {
   *              name: id,
   *              in: path,
-  *              description: id product area,
+  *              description: id of the ProductCategory,
   *              required: true,
   *              schema: {
   *                  type: string
@@ -48,24 +47,24 @@ const router = Router();
   *          ]
   */
  
- router.get('/:id', ProductAreaComponent.findOne);
+ router.get('/:id', ProductCategoryComponent.findOne);
  
  /**
   * @swagger
-  *  /v1/productAreas/{id}:
+  *  /v1/ProductCategorys/{id}:
   *      delete:
-  *          summary: delete a productArea
-  *          tags: ["productAreas"]
+  *          summary: delete a ProductCategory
+  *          tags: ["ProductCategorys"]
   *          responses:
   *              200:
-  *                  description: productArea deleted succesfully
+  *                  description: ProductCategory deleted succesfully
   *              401:
-  *                  description: user not authorized to delete productAreas
+  *                  description: user not authorized to delete ProductCategorys
   *          parameters: [
   *           {
   *              name: id,
   *              in: path,
-  *              description: id of the productArea,
+  *              description: id of the ProductCategory,
   *              required: true,
   *              schema: {
   *                  type: string,
@@ -73,30 +72,30 @@ const router = Router();
   *           },
   *          ]
   */
- router.delete('/:id', ProductAreaComponent.deleteOne);
+ router.delete('/:id', ProductCategoryComponent.deleteOne);
  
  /**
   * @swagger
-  *  /v1/productAreas/{id}:
+  *  /v1/ProductCategorys/{id}:
   *      put:
-  *          summary: put productArea in the DB
-  *          tags: ["productAreas"]
+  *          summary: put ProductCategory in the DB
+  *          tags: ["ProductCategorys"]
   *          requestBody:
   *              required: true
   *              content:
   *                  application/json:
   *                      schema:
-  *                           $ref: '#/components/schemas/productAreas'
+  *                           $ref: '#/components/schemas/ProductCategorys'
   *          responses:
   *              200:
-  *                  description: update productArea successfully
+  *                  description: update ProductCategory successfully
   *              401:
-  *                  description: user not authorized to update productAreas
+  *                  description: user not authorized to update ProductCategorys
   *          parameters: [
   *           {
   *              name: id,
   *              in: path,
-  *              description: id of the productArea,
+  *              description: id of the ProductCategory,
   *              required: true,
   *              schema: {
   *                  type: string,
@@ -105,52 +104,46 @@ const router = Router();
   *          ]
   */
  
- router.put('/:id', ProductAreaComponent.updateOne);
+ router.put('/:id', ProductCategoryComponent.updateOne);
  
  /**
   * @swagger
-  *  /v1/productAreas:
+  *  /v1/ProductCategorys:
   *      post:
-  *          summary: added a productArea
-  *          tags: ["productAreas"]
+  *          summary: added a ProductCategory
+  *          tags: ["ProductCategorys"]
   *          requestBody:
   *              required: true
   *              content:
   *                  application/json:
   *                      schema:
-  *                          $ref: '#/components/schemas/productAreas'
+  *                          $ref: '#/components/schemas/ProductCategorys'
   *          responses:
   *              200:
-  *                  description: productArea add successfully
+  *                  description: ProductCategory add successfully
   *              401:
-  *                  descripion: user not authorized to add productAreas
+  *                  description: user not authorized to add ProductCategorys
   */
- router.post('/', ProductAreaComponent.create)
+ router.post('/', ProductCategoryComponent.create)
  
  /**
   * @swagger
   * tags:
-  *  name: productAreas
-  *  description: endpoints for managing api productAreas.
+  *  name: ProductCategorys
+  *  description: endpoints for managing api ProductCategorys.
   * components:
   *  schemas:
-  *      productAreas:
+  *      ProductCategorys:
   *          type: object
   *          required:
   *              -name
-  *              -accountingAccount
   *          properties:
   *              id:
   *                  type: string
   *              name:
   *                  type: string,
-  *              accountingAccount:
-  *                    type: string
   *          example:
-  *              attentionArea: false
-  *              name: area prueba
-  *              description: prueba descripcion
-  *              isActive: true
+  *              name: unit prueba
   *      Error:    
   *          type: object
   *          required:

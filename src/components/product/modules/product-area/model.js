@@ -1,5 +1,5 @@
 const { DataTypes, Model, UUIDV4} = require('sequelize');
-const db = require('../../config/connection/connectBD');
+const db = require('../../../../config/connection/connectBD');
 sequelize = db.sequelize;
 
 const ProductArea = sequelize.define('ProductArea', {

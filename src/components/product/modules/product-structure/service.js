@@ -1,9 +1,9 @@
-const db = require('../../config/connection/connectBd');
+const { Op } = require('sequelize');
+const db = require('../../../../config/connection/connectBd');
 const ProductStructureValidation = require('./validation');
 const ProductStructure = require('./model');
-const Pagination = require('../../shared/middlewares/pagination')
-const permissions = require('../../shared/middlewares/permissions');
-const { Op } = require('sequelize');
+const Pagination = require('../../../../shared/middlewares/pagination')
+const permissions = require('../../../../shared/middlewares/permissions');
 
 sequelize = db.sequelize;
 

@@ -1,21 +1,27 @@
-const ProductArea = require('./model');
-const db = require('../../config/connection/connectBD');
-const ProductAreaValidation = require('./validation');
-const Pagination = require('../../shared/middlewares/pagination')
-const permissions = require('../../shared/middlewares/permissions')
+const db = require('../../../../config/connection/connectBd');
+const ProductGroupValidation = require('./validation');
+const ProductGroup = require('./model');
+const Pagination = require('../../../../shared/middlewares/pagination')
+const permissions = require('../../../../shared/middlewares/permissions')
+
 sequelize = db.sequelize;
 
 /**
  * @exports
- * @implements {ProductArea} model
+ * @implements {ProductGroup} model
  */
-const ProductAreaService = {
+const ProductGroupService = {
+  /**
+   * @exports
+   * @implements {ProductGroup} model
+   * @description get all ProductGroups 
+   */
   async findAll(bearerHeader){
     try {
       const validatePermission = await permissions(bearerHeader, 'FIND_ALL')
       if (validatePermission) {
-        const ProductAreas = await ProductArea.findAll()
-        return ProductAreas;
+        const ProductGroups = await ProductGroup.findAll()
+        return ProductGroups;
       } 
       return {
         message: 'no tienes permisos para esta acción',
@@ -26,37 +32,29 @@ const ProductAreaService = {
     }
   },
 
+  
   /**
    * @exports
    * @param {*} body
-   * @implements {ProductArea} model 
+   * @implements {ProductGroup} model 
    */
-  async create(bearerHeader ,body) {
+  async create(bearerHeader, body) {
     try {
       const validatePermission = await permissions(bearerHeader, 'CREATE')
       if (validatePermission) {
-        const validate = ProductAreaValidation.createProductArea(body);
+        const validate = ProductGroupValidation.createProductGroup(body);
         if (validate.error) {
           throw new Error(validate.error)
         }
   
-        const validateName = await ProductArea.findOne({
-          where: {
-            name: body.name
-          }
-        })
-        if (validateName) {
-          throw new Error('el nombre está en uso')
-        }
-  
-        const createProductArea = await ProductArea.create(body);
-        return createProductArea;
+        const createProductGroup = await ProductGroup.create(body);
+        return createProductGroup;
       } 
       return {
         message: 'no tienes permisos para esta acción',
         status: 401
       }
-
+      
     } catch (error) {
       throw new Error(error.message)
     }
@@ -64,26 +62,24 @@ const ProductAreaService = {
 
   /**
    * @exports
-   * @implements {ProductArea} model
+   * @implements {ProductGroup} model
    */
 
-   async findOne(bearerHeader, id){
+  async findOne(bearerHeader, id){
     try {
       const validatePermission = await permissions(bearerHeader, 'FIND_ONE')
-      if (validatePermission) { 
-        const validate = ProductAreaValidation.getProductArea(id);
+      if (validatePermission) {
+        const validate = ProductGroupValidation.getProductGroup(id);
         if (validate.error) {
           throw new Error(validate.error)
         }
-        const getProductArea = await ProductArea.findByPk(id)
-        return getProductArea;
+        const getProductGroup = await ProductGroup.findByPk(id)
+        return getProductGroup;
       } 
       return {
         message: 'no tienes permisos para esta acción',
         status: 401
       }
-
-
     } catch (error) {
       throw new Error(error.message)
     }
@@ -91,30 +87,29 @@ const ProductAreaService = {
   /**
    * @exports
    * @param {*} id
-   * @implements {ProductArea} model
+   * @implements {ProductGroup} model
    */
-  async delete(bearerHeader ,id){
+  async delete(bearerHeader, id){
     try {
       const validatePermission = await permissions(bearerHeader, 'DELETE')
-      if (validatePermission) { 
-        const validate = await ProductAreaValidation.getProductArea(id)
-  
+      if (validatePermission) {
+        const validate = await ProductGroupValidation.getProductGroup(id)
+
         if (validate.error) {
           throw new Error(validate.error)
         }
-  
-        const getProductArea = await ProductArea.findByPk(id);
+
+        const getProductGroup = await ProductGroup.findByPk(id);
         
-        await getProductArea.destroy()
-  
-        return getProductArea;
+        await getProductGroup.destroy()
+
+        return getProductGroup;
+        
       } 
       return {
         message: 'no tienes permisos para esta acción',
         status: 401
       }
-      
-
     } catch (error) {
       throw new Error(error)
     }
@@ -124,41 +119,33 @@ const ProductAreaService = {
    * @exports
    * @param {*} id 
    * @param {*} body 
-   * @description update a ProductArea in the db
+   * @description update a ProductGroup in the db
    */
-  async update(bearerHeader ,id, body){
+  async update(bearerHeader, id, body){
     try {
       const validatePermission = await permissions(bearerHeader, 'UPDATE')
-      if (validatePermission) { 
-        const validateid = await ProductAreaValidation.getProductArea(id);
+      if (validatePermission) {
+        
+        const validateid = await ProductGroupValidation.getProductGroup(id);
         
         if (validateid.error) {
           throw new Error(validate.error)
         }
   
-        const validateBody = await ProductAreaValidation.createProductArea(body)
+        const validateBody = await ProductGroupValidation.createProductGroup(body)
         if (validateBody.error) {
           throw new Error(validate.error)
         }
-        const validateName = await ProductArea.findOne({
-          where: {
-            name: body.name
-          }
-        })
-        if (validateName) {
-          throw new Error('el nombre está en uso')
-        }
-        const newProductArea = await ProductArea.update(
+        const newProductGroup = await ProductGroup.update(
           {
             name: body.name,
-            attentionArea: body.attentionArea,
-            description: body.description,
-            isActive: body.isActive 
+            accountingAccount: body.accountingAccount 
           },
           {where: {id}}
         )
   
-        return newProductArea;
+        return newProductGroup;
+        
       } 
       return {
         message: 'no tienes permisos para esta acción',
@@ -169,12 +156,12 @@ const ProductAreaService = {
     }
   },
 
-  async findPagination(bearerHeader, sizeAsNumber, pageAsNumber,where){
+  async findPagination(bearerHeader, sizeAsNumber, pageAsNumber, wherecond){
     try {
       const validatePermission = await permissions(bearerHeader, 'FIND_PAGINATION')
       if (validatePermission) {
-        const productAreas = await Pagination('productAreas',sequelize,sizeAsNumber, pageAsNumber,where)
-        return productAreas
+        const ProductGroups = await Pagination('ProductGroups',sequelize,sizeAsNumber, pageAsNumber, wherecond)
+        return ProductGroups
       } 
       return {
         message: 'no tienes permisos para esta acción',
@@ -186,4 +173,4 @@ const ProductAreaService = {
   },
 }
 
-module.exports = ProductAreaService;
+module.exports = ProductGroupService;

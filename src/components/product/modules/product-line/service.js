@@ -1,27 +1,28 @@
-const db = require('../../config/connection/connectBd');
-const ProductCategoryValidation = require('./validation');
-const ProductCategory = require('./model');
-const Pagination = require('../../shared/middlewares/pagination')
-const permissions = require('../../shared/middlewares/permissions')
+const db = require('../../../../config/connection/connectBd');
+const ProductLineValidation = require('./validation');
+const ProductLine = require('./model');
+const Pagination = require('../../../../shared/middlewares/pagination')
+const permissions = require('../../../../shared/middlewares/permissions');
+const ProductStructure = require('../product-structure/model');
 
 sequelize = db.sequelize;
 
 /**
  * @exports
- * @implements {ProductCategory} model
+ * @implements {ProductLine} model
  */
-const ProductCategoryService = {
+const ProductLineService = {
   /**
    * @exports
-   * @implements {ProductCategory} model
-   * @description get all ProductCategorys 
+   * @implements {ProductLine} model
+   * @description get all ProductLines 
    */
   async findAll(bearerHeader){
     try {
       const validatePermission = await permissions(bearerHeader, 'FIND_ALL')
       if (validatePermission) {
-        const ProductCategorys = await ProductCategory.findAll()
-        return ProductCategorys;
+        const ProductLines = await ProductLine.findAll()
+        return ProductLines;
       } 
       return {
         message: 'no tienes permisos para esta acción',
@@ -36,19 +37,45 @@ const ProductCategoryService = {
   /**
    * @exports
    * @param {*} body
-   * @implements {ProductCategory} model 
+   * @implements {ProductLine} model 
    */
   async create(bearerHeader, body) {
     try {
       const validatePermission = await permissions(bearerHeader, 'CREATE')
       if (validatePermission) {
-        const validate = ProductCategoryValidation.createProductCategory(body);
+        const validate = ProductLineValidation.createProductLine(body);
         if (validate.error) {
           throw new Error(validate.error)
         }
-  
-        const createProductCategory = await ProductCategory.create(body);
-        return createProductCategory;
+
+        const existsLine = await ProductLine.findOne({
+          where: {
+            [Op.or]: [
+              {name: body.name},
+              {code: body.code}
+            ]
+          }
+        })
+
+        if (existsLine) {
+          return {
+            message: 'nombre o codigo en uso',
+            status: 400
+          }
+        }
+        const searchStructure = await ProductStructure.findOne({
+          where: {
+            id: body.ProductStructureId
+          }
+        })
+        if (searchStructure) {
+          const createProductLine = await ProductLine.create(body);
+          return createProductLine;
+        }
+        return {
+          message: 'el campo ProductStructureId no corresponde a ningun ProductStructure en la BD',
+          status: 400
+        }
       } 
       return {
         message: 'no tienes permisos para esta acción',
@@ -62,19 +89,19 @@ const ProductCategoryService = {
 
   /**
    * @exports
-   * @implements {ProductCategory} model
+   * @implements {ProductLine} model
    */
 
   async findOne(bearerHeader, id){
     try {
       const validatePermission = await permissions(bearerHeader, 'FIND_ONE')
       if (validatePermission) {
-        const validate = ProductCategoryValidation.getProductCategory(id);
+        const validate = ProductLineValidation.getProductLine(id);
         if (validate.error) {
           throw new Error(validate.error)
         }
-        const getProductCategory = await ProductCategory.findByPk(id)
-        return getProductCategory;
+        const getProductLine = await ProductLine.findByPk(id)
+        return getProductLine;
       } 
       return {
         message: 'no tienes permisos para esta acción',
@@ -87,23 +114,23 @@ const ProductCategoryService = {
   /**
    * @exports
    * @param {*} id
-   * @implements {ProductCategory} model
+   * @implements {ProductLine} model
    */
   async delete(bearerHeader, id){
     try {
       const validatePermission = await permissions(bearerHeader, 'DELETE')
       if (validatePermission) {
-        const validate = await ProductCategoryValidation.getProductCategory(id)
+        const validate = await ProductLineValidation.getProductLine(id)
 
         if (validate.error) {
           throw new Error(validate.error)
         }
 
-        const getProductCategory = await ProductCategory.findByPk(id);
+        const getProductLine = await ProductLine.findByPk(id);
         
-        await getProductCategory.destroy()
+        await getProductLine.destroy()
 
-        return getProductCategory;
+        return getProductLine;
         
       } 
       return {
@@ -119,32 +146,33 @@ const ProductCategoryService = {
    * @exports
    * @param {*} id 
    * @param {*} body 
-   * @description update a ProductCategory in the db
+   * @description update a ProductLine in the db
    */
   async update(bearerHeader, id, body){
     try {
       const validatePermission = await permissions(bearerHeader, 'UPDATE')
       if (validatePermission) {
         
-        const validateid = await ProductCategoryValidation.getProductCategory(id);
+        const validateid = await ProductLineValidation.getProductLine(id);
         
         if (validateid.error) {
           throw new Error(validate.error)
         }
   
-        const validateBody = await ProductCategoryValidation.createProductCategory(body)
+        const validateBody = await ProductLineValidation.createProductLine(body)
         if (validateBody.error) {
           throw new Error(validate.error)
         }
-        const newProductCategory = await ProductCategory.update(
+        const newProductLine = await ProductLine.update(
           {
             name: body.name,
-            accountingAccount: body.accountingAccount 
+            code: body.code,
+            ProductStructureId: body.ProductStructureId 
           },
           {where: {id}}
         )
   
-        return newProductCategory;
+        return newProductLine;
         
       } 
       return {
@@ -160,8 +188,8 @@ const ProductCategoryService = {
     try {
       const validatePermission = await permissions(bearerHeader, 'FIND_PAGINATION')
       if (validatePermission) {
-        const ProductCategorys = await Pagination('ProductCategorys',sequelize,sizeAsNumber, pageAsNumber, wherecond)
-        return ProductCategorys
+        const ProductLines = await Pagination('ProductLines',sequelize,sizeAsNumber, pageAsNumber, wherecond)
+        return ProductLines
       } 
       return {
         message: 'no tienes permisos para esta acción',
@@ -173,4 +201,4 @@ const ProductCategoryService = {
   },
 }
 
-module.exports = ProductCategoryService;
+module.exports = ProductLineService;
