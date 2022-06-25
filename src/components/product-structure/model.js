@@ -24,6 +24,5 @@ const ProductStructure = sequelize.define('ProductStructure', {
   timestamps: true
 })
 
-// ProductStructure.sync()
 
 module.exports = ProductStructure;

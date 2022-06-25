@@ -30,6 +30,5 @@ const ProductArea = sequelize.define('ProductArea', {
   timestamps: true
 })
 
-// ProductArea.sync()
 
 module.exports = ProductArea;

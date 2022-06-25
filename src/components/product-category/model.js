@@ -1,9 +1,8 @@
 const { DataTypes, Model, UUIDV4} = require('sequelize');
 const db = require('../../config/connection/connectBd');
 sequelize = db.sequelize;
-const ProductStructure = require('../product-structure/model');
 
-const ProductLine = sequelize.define('ProductLine', {
+const ProductCategory = sequelize.define('ProductCategory', {
   id: {
     type: DataTypes.STRING,
     defaultValue: UUIDV4,
@@ -12,19 +11,16 @@ const ProductLine = sequelize.define('ProductLine', {
   },
   name: {
     type: DataTypes.STRING,
+    unique: true,
     allowNull: false,
   },
-  code: {
+  description: {
     type: DataTypes.STRING,
     allowNull: false,
   },
 },{
-  tableName: "productLines",
+  tableName: ProductCategorys,
   timestamps: true
 })
-ProductStructure.hasMany(ProductLine, {
-  foreignKey: 'ProductStructureId', 
-})
 
-
-module.exports = ProductLine;
+module.exports = ProductCategory;

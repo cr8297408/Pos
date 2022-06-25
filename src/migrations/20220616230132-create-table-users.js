@@ -39,7 +39,7 @@ module.exports = {
       },
       verified:  {
         type: Sequelize.DataTypes.BOOLEAN,
-        defaultValue: false
+        defaultValue: true
       },
       lastLogin: {
         type: Sequelize.DataTypes.DATE
