@@ -16,7 +16,7 @@ class MeasureUnitValidation {
 
     createMeasureUnit(body){
       const schema = Joi.object().keys({
-        name: Joi.string().required().unique(),
+        name: Joi.string().required(),
       })
 
       return schema.validate(body)

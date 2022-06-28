@@ -1,27 +1,28 @@
 const db = require('../../../../config/connection/connectBd');
-const ProductGroupValidation = require('./validation');
-const ProductGroup = require('./model');
+const CompositionValidation = require('./validation');
+const Composition = require('./model');
 const Pagination = require('../../../../shared/middlewares/pagination')
-const permissions = require('../../../../shared/middlewares/permissions')
+const permissions = require('../../../../shared/middlewares/permissions');
+const Product = require('../../model');
 
 sequelize = db.sequelize;
 
 /**
  * @exports
- * @implements {ProductGroup} model
+ * @implements {Composition} model
  */
-const ProductGroupService = {
+const CompositionService = {
   /**
    * @exports
-   * @implements {ProductGroup} model
-   * @description get all ProductGroups 
+   * @implements {Composition} model
+   * @description get all Compositions 
    */
   async findAll(bearerHeader){
     try {
       const validatePermission = await permissions(bearerHeader, 'FIND_ALL')
       if (validatePermission) {
-        const ProductGroups = await ProductGroup.findAll()
-        return ProductGroups;
+        const Compositions = await Composition.findAll()
+        return Compositions;
       } 
       return {
         message: 'no tienes permisos para esta acción',
@@ -36,19 +37,36 @@ const ProductGroupService = {
   /**
    * @exports
    * @param {*} body
-   * @implements {ProductGroup} model 
+   * @implements {Composition} model 
    */
   async create(bearerHeader, body) {
     try {
       const validatePermission = await permissions(bearerHeader, 'CREATE')
       if (validatePermission) {
-        const validate = ProductGroupValidation.createProductGroup(body);
+        const validate = CompositionValidation.createComposition(body);
         if (validate.error) {
           throw new Error(validate.error)
         }
+        let jsonP = body.supplies
+
+        /**
+         * validar que todos los supplies del compuesto sean productos registrados 
+         */
+        for (let i = 0; i < jsonP.length; i++) {
+          let productoVal = await Product.findByPk(jsonP[i])
+          if (!productVal) {
+            throw new Error('los supplies deben de ser productos validos...')
+          }
+        }
   
-        const createProductGroup = await ProductGroup.create(body);
-        return createProductGroup;
+        const createComposition = await Composition.create({
+          name: body.name,
+          description: body.description,
+          ProductId: body.ProductId,
+          supplies: body.supplies,
+          portion: body.portion
+        });
+        return createComposition;
       } 
       return {
         message: 'no tienes permisos para esta acción',
@@ -62,19 +80,19 @@ const ProductGroupService = {
 
   /**
    * @exports
-   * @implements {ProductGroup} model
+   * @implements {Composition} model
    */
 
   async findOne(bearerHeader, id){
     try {
       const validatePermission = await permissions(bearerHeader, 'FIND_ONE')
       if (validatePermission) {
-        const validate = ProductGroupValidation.getProductGroup(id);
+        const validate = CompositionValidation.getComposition(id);
         if (validate.error) {
           throw new Error(validate.error)
         }
-        const getProductGroup = await ProductGroup.findByPk(id)
-        return getProductGroup;
+        const getComposition = await Composition.findByPk(id)
+        return getComposition;
       } 
       return {
         message: 'no tienes permisos para esta acción',
@@ -87,23 +105,23 @@ const ProductGroupService = {
   /**
    * @exports
    * @param {*} id
-   * @implements {ProductGroup} model
+   * @implements {Composition} model
    */
   async delete(bearerHeader, id){
     try {
       const validatePermission = await permissions(bearerHeader, 'DELETE')
       if (validatePermission) {
-        const validate = await ProductGroupValidation.getProductGroup(id)
+        const validate = await CompositionValidation.getComposition(id)
 
         if (validate.error) {
           throw new Error(validate.error)
         }
 
-        const getProductGroup = await ProductGroup.findByPk(id);
+        const getComposition = await Composition.findByPk(id);
         
-        await getProductGroup.destroy()
+        await getComposition.destroy()
 
-        return getProductGroup;
+        return getComposition;
         
       } 
       return {
@@ -119,32 +137,35 @@ const ProductGroupService = {
    * @exports
    * @param {*} id 
    * @param {*} body 
-   * @description update a ProductGroup in the db
+   * @description update a Composition in the db
    */
   async update(bearerHeader, id, body){
     try {
       const validatePermission = await permissions(bearerHeader, 'UPDATE')
       if (validatePermission) {
         
-        const validateid = await ProductGroupValidation.getProductGroup(id);
+        const validateid = await CompositionValidation.getComposition(id);
         
         if (validateid.error) {
           throw new Error(validate.error)
         }
   
-        const validateBody = await ProductGroupValidation.createProductGroup(body)
+        const validateBody = await CompositionValidation.createComposition(body)
         if (validateBody.error) {
           throw new Error(validate.error)
         }
-        const newProductGroup = await ProductGroup.update(
+        const newComposition = await Composition.update(
           {
             name: body.name,
-            description: body.description 
+            description: body.description,
+            ProductId: body.ProductId,
+            supplies: body.supplies,
+            portion: body.portion
           },
           {where: {id}}
         )
   
-        return newProductGroup;
+        return newComposition;
         
       } 
       return {
@@ -160,8 +181,8 @@ const ProductGroupService = {
     try {
       const validatePermission = await permissions(bearerHeader, 'FIND_PAGINATION')
       if (validatePermission) {
-        const ProductGroups = await Pagination('ProductGroups',sequelize,sizeAsNumber, pageAsNumber, wherecond)
-        return ProductGroups
+        const Compositions = await Pagination('Compositions',sequelize,sizeAsNumber, pageAsNumber, wherecond)
+        return Compositions
       } 
       return {
         message: 'no tienes permisos para esta acción',
@@ -173,4 +194,4 @@ const ProductGroupService = {
   },
 }
 
-module.exports = ProductGroupService;
+module.exports = CompositionService;

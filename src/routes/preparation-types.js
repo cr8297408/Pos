@@ -1,34 +1,34 @@
 const { Router } = require('express');
-const { PreparationTypesComponent } = require('../components');
+const { PreparationTypeComponent } = require('../components');
 
 const router = Router();
 
 /**
  * @swagger
- *  /v1/PreparationTypess:
+ *  /v1/PreparationTypes:
  *      get:
- *          summary: det all the PreparationTypess;
- *          tags: ["PreparationTypess"]
+ *          summary: det all the PreparationTypes;
+ *          tags: ["PreparationTypes"]
  *          responses:
  *              200:
- *                  description: get PreparationTypess successfully 
+ *                  description: get PreparationTypes successfully 
  *                  content:
  *                      application/json:
  *                          squema:
  *                              type: array
  *                              items:
- *                                  $ref: '#/components/schemas/PreparationTypess'
+ *                                  $ref: '#/components/schemas/PreparationTypes'
  *              401:
- *                  description: error in get PreparationTypess
+ *                  description: error in get PreparationTypes
  */
- router.get('/', PreparationTypesComponent.findAll)
+ router.get('/', PreparationTypeComponent.findAll)
 
  /**
   * @swagger
-  *  /v1/PreparationTypess/{id}:
+  *  /v1/PreparationTypes/{id}:
   *      get:
   *          summary: get one PreparationTypes by id
-  *          tags: ["PreparationTypess"]
+  *          tags: ["PreparationTypes"]
   *          responses:
   *              200:
   *                  description: get PreparationTypes succefully  
@@ -47,19 +47,19 @@ const router = Router();
   *          ]
   */
  
- router.get('/:id', PreparationTypesComponent.findOne);
+ router.get('/:id', PreparationTypeComponent.findOne);
  
  /**
   * @swagger
-  *  /v1/PreparationTypess/{id}:
+  *  /v1/PreparationTypes/{id}:
   *      delete:
   *          summary: delete a PreparationTypes
-  *          tags: ["PreparationTypess"]
+  *          tags: ["PreparationTypes"]
   *          responses:
   *              200:
   *                  description: PreparationTypes deleted succesfully
   *              401:
-  *                  description: user not authorized to delete PreparationTypess
+  *                  description: user not authorized to delete PreparationTypes
   *          parameters: [
   *           {
   *              name: id,
@@ -72,25 +72,25 @@ const router = Router();
   *           },
   *          ]
   */
- router.delete('/:id', PreparationTypesComponent.deleteOne);
+ router.delete('/:id', PreparationTypeComponent.deleteOne);
  
  /**
   * @swagger
-  *  /v1/PreparationTypess/{id}:
+  *  /v1/PreparationTypes/{id}:
   *      put:
   *          summary: put PreparationTypes in the DB
-  *          tags: ["PreparationTypess"]
+  *          tags: ["PreparationTypes"]
   *          requestBody:
   *              required: true
   *              content:
   *                  application/json:
   *                      schema:
-  *                           $ref: '#/components/schemas/PreparationTypess'
+  *                           $ref: '#/components/schemas/PreparationTypes'
   *          responses:
   *              200:
   *                  description: update PreparationTypes successfully
   *              401:
-  *                  description: user not authorized to update PreparationTypess
+  *                  description: user not authorized to update PreparationTypes
   *          parameters: [
   *           {
   *              name: id,
@@ -104,36 +104,36 @@ const router = Router();
   *          ]
   */
  
- router.put('/:id', PreparationTypesComponent.updateOne);
+ router.put('/:id', PreparationTypeComponent.updateOne);
  
  /**
   * @swagger
-  *  /v1/PreparationTypess:
+  *  /v1/PreparationTypes:
   *      post:
   *          summary: added a PreparationTypes
-  *          tags: ["PreparationTypess"]
+  *          tags: ["PreparationTypes"]
   *          requestBody:
   *              required: true
   *              content:
   *                  application/json:
   *                      schema:
-  *                          $ref: '#/components/schemas/PreparationTypess'
+  *                          $ref: '#/components/schemas/PreparationTypes'
   *          responses:
   *              200:
   *                  description: PreparationTypes add successfully
   *              401:
-  *                  description: user not authorized to add PreparationTypess
+  *                  description: user not authorized to add PreparationTypes
   */
- router.post('/', PreparationTypesComponent.create)
+ router.post('/', PreparationTypeComponent.create)
  
  /**
   * @swagger
   * tags:
-  *  name: PreparationTypess
-  *  description: endpoints for managing api PreparationTypess.
+  *  name: PreparationTypes
+  *  description: endpoints for managing api PreparationTypes.
   * components:
   *  schemas:
-  *      PreparationTypess:
+  *      PreparationTypes:
   *          type: object
   *          required:
   *              -name

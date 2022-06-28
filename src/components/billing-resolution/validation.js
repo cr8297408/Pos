@@ -18,10 +18,10 @@ class BillingResolutionValidation {
       const schema = Joi.object().keys({
         resolutionClass: Joi.string().required(),
         resolutionType: Joi.string().required(),
-        resolutionNumber: Joi.number().required().unique(),
+        resolutionNumber: Joi.number().required(),
         from: Joi.date(),
         to: Joi.date(),
-        prefix: Joi.string().required().unique(),
+        prefix: Joi.string().required(),
         initialNumber: Joi.number().required(),
         finalNumber: Joi.number().required(),
         localBilling: Joi.boolean()

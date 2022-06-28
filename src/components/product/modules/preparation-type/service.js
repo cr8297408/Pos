@@ -139,7 +139,8 @@ const PreparationTypeService = {
         const newPreparationType = await PreparationType.update(
           {
             name: body.name,
-            accountingAccount: body.accountingAccount 
+            description: body.description,
+            PreparationId: body.PreparationId
           },
           {where: {id}}
         )

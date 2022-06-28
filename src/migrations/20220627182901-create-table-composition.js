@@ -3,7 +3,7 @@ const { UUIDV4, DataTypes } = require('sequelize')
 
 module.exports = {
   async up (queryInterface, Sequelize) {
-    await queryInterface.createTable('unitMeasurements', {
+    await queryInterface.createTable('compositions', {
       id: {
         type: DataTypes.STRING,
         defaultValue: UUIDV4,
@@ -17,6 +17,20 @@ module.exports = {
       description: {
         type: DataTypes.STRING,
       },
+      supplies: {
+        type: DataTypes.JSON,
+        allowNull: false
+      },
+      portion: {
+        type: DataTypes.INTEGER,
+      },
+      ProductId: {
+        type: DataTypes.STRING,
+        references: {
+          model: 'products',
+          key: 'id'
+        }
+      },
       createdAt: {
         type: Sequelize.DataTypes.STRING,
         defaultValue: new Date(),
@@ -29,6 +43,6 @@ module.exports = {
   },
 
   async down (queryInterface, Sequelize) {
-    await queryInterface.dropTable('unitMeasurements');
+    await queryInterface.dropTable('compositions');
   }
 };

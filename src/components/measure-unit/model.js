@@ -15,7 +15,7 @@ const MeasureUnit = sequelize.define('MeasureUnit', {
     unique: true
   }
 },{
-  tableName: "measureUnits",
+  tableName: "unitMeasurements",
   timestamps: true
 })
 

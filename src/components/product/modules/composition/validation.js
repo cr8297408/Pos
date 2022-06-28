@@ -1,24 +1,26 @@
 const Joi = require('joi');
-const PreparationType = require('./model');
+const Composition = require('./model');
 
 /**
  * @export
- * @class PreparationTypeValidation
+ * @class CompositionValidation
  * 
  */
-class PreparationTypeValidation {
+class CompositionValidation {
     /**
-     * create an instance of PreparationTypeValidation
-     * @memberof PreparationTypeValidation
-     * @param {PreparationType}
+     * create an instance of CompositionValidation
+     * @memberof CompositionValidation
+     * @param {Composition}
      * @returns {Joi.validationResult}
      */
 
-    createPreparationType(body){
+    createComposition(body){
       const schema = Joi.object().keys({
         name: Joi.string().required(),
         description: Joi.string().required(),
-        PreparationId: Joi.string().required()
+        ProductId: Joi.string().required(),
+        supplies: Joi.object(),
+        portion: Joi.number().required()
       })
 
       return schema.validate(body)
@@ -29,10 +31,10 @@ class PreparationTypeValidation {
      * @returns {Joi.ValidationResult<{ id: string }>}
      * @memberof UserValidation
      */
-     getPreparationType(id) {
+     getComposition(id) {
       const schema = Joi.string().required();
 
       return schema.validate(id);
   }
 }
-module.exports = new PreparationTypeValidation();
+module.exports = new CompositionValidation();

@@ -139,7 +139,7 @@ const UnitMeasurementService = {
         const newUnitMeasurement = await UnitMeasurement.update(
           {
             name: body.name,
-            accountingAccount: body.accountingAccount 
+            description: body.description 
           },
           {where: {id}}
         )

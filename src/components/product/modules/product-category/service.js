@@ -139,7 +139,7 @@ const ProductCategoryService = {
         const newProductCategory = await ProductCategory.update(
           {
             name: body.name,
-            accountingAccount: body.accountingAccount 
+            description: body.description 
           },
           {where: {id}}
         )

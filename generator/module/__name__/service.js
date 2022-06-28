@@ -139,7 +139,7 @@ const __name__Service = {
         const new__name__ = await __name__.update(
           {
             name: body.name,
-            accountingAccount: body.accountingAccount 
+            description: body.description 
           },
           {where: {id}}
         )
