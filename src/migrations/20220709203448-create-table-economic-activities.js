@@ -3,19 +3,28 @@ const { UUIDV4, DataTypes } = require('sequelize')
 
 module.exports = {
   async up (queryInterface, Sequelize) {
-    await queryInterface.createTable('preparations', {
+    await queryInterface.createTable('users', {
       id: {
         type: DataTypes.STRING,
         defaultValue: UUIDV4,
         primaryKey: true,
         allowNull: false,
       },
-      name: {
+      nameActivity: {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      description: {
-        type: DataTypes.STRING,
+      codeCiu: {
+        type: DataTypes.NUMBER,
+        allowNull: false
+      },
+      codeActivity: {
+        type: DataTypes.NUMBER,
+        allowNull: false
+      },
+      rate: {
+        type: DataTypes.NUMBER,
+        allowNull: false
       },
       createdAt: {
         type: Sequelize.DataTypes.STRING,
@@ -35,6 +44,6 @@ module.exports = {
   },
 
   async down (queryInterface, Sequelize) {
-    await queryInterface.dropTable('preparations');
+    await queryInterface.dropTable('users');
   }
 };

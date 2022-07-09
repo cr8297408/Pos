@@ -10,7 +10,6 @@ const {
   WarehouseComponent,
   NotificationComponent,
   ProductStructureComponent,
-  ChatComponent,
   EventComponent,
   FileComponent,
   MessageComponent,
@@ -251,44 +250,6 @@ const router = Router();
   */
  router.post('/events/?', EventComponent.findpagination);
 
-
-/**
-  * @swagger
-  *  /v1/page/chats?:
-  *      post:
-  *          summary: get chats paginated
-  *          tags: ["pagination"]
-  *          requestBody:
-  *              required: true
-  *              content:
-  *                  application/json:
-  *                      schema:
-  *                          $ref: '#/components/schemas/chat'
-  *          responses:
-  *              200:
-  *                  description: get chat succefully  
-  *              401:
-  *                  description: user not authorized to get chat
-  *          parameters: [
-  *           {
-  *              name: size,
-  *              in: query,
-  *              description: size to pagination,
-  *              schema: {
-  *                  type: string
-  *              }
-  *           },
-  *           {
-  *              name: page,
-  *              in: query,
-  *              description: number of page paginate,
-  *              schema: {
-  *                  type: string
-  *              }
-  *           },
-  *          ]
-  */
- router.post('/chats/?', ChatComponent.findpagination);
 
 /**
   * @swagger

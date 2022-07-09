@@ -17,6 +17,12 @@ const PreparationType = sequelize.define('PreparationType', {
   description: {
     type: DataTypes.STRING,
   },
+  createdBy: {
+    type: DataTypes.STRING,
+  },
+  updatedBy: {
+    type: DataTypes.STRING,
+  }
 },{
   tableName: 'preparationTypes',
   timestamps: true

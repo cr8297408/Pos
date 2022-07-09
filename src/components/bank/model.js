@@ -19,6 +19,12 @@ const Bank = sequelize.define('Bank', {
     allowNull: false,
     unique: true
   },
+  createdBy: {
+    type: DataTypes.STRING,
+  },
+  updatedBy: {
+    type: DataTypes.STRING,
+  }
 },{
   tableName: "banks",
   timestamps: true

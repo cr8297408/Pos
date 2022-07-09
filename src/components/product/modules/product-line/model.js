@@ -18,6 +18,12 @@ const ProductLine = sequelize.define('ProductLine', {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  createdBy: {
+    type: DataTypes.STRING,
+  },
+  updatedBy: {
+    type: DataTypes.STRING,
+  }
 },{
   tableName: "productLines",
   timestamps: true

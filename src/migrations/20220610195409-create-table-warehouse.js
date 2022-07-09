@@ -51,6 +51,12 @@ module.exports = {
       updatedAt: {
         type: Sequelize.DataTypes.STRING,
         defaultValue: new Date(),
+      },
+      createdBy: {
+        type: DataTypes.STRING,
+      },
+      updatedBy: {
+        type: DataTypes.STRING,
       }
     })
   },

@@ -25,6 +25,12 @@ const ProductArea = sequelize.define('ProductArea', {
     type: DataTypes.BOOLEAN,
     defaultValue: true
   },
+  createdBy: {
+    type: DataTypes.STRING,
+  },
+  updatedBy: {
+    type: DataTypes.STRING,
+  }
 },{
   tableName: "productAreas",
   timestamps: true

@@ -39,8 +39,13 @@ const BillingResolution = sequelize.define('BillingResolution', {
   localBilling: {
     type: DataTypes.BOOLEAN,
     defaultValue: true
+  },
+  createdBy: {
+    type: DataTypes.STRING,
+  },
+  updatedBy: {
+    type: DataTypes.STRING,
   }
-
 },{
   tableName: "billingResolutions",
   timestamps: true,

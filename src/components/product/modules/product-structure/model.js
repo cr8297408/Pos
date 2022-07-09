@@ -19,6 +19,12 @@ const ProductStructure = sequelize.define('ProductStructure', {
     allowNull: false,
     unique: true
   },
+  createdBy: {
+    type: DataTypes.STRING,
+  },
+  updatedBy: {
+    type: DataTypes.STRING,
+  }
 },{
   tableName: 'productStructures',
   timestamps: true

@@ -16,6 +16,12 @@ const UnitMeasurement = sequelize.define('UnitMeasurement', {
   description: {
     type: DataTypes.STRING,
   },
+  createdBy: {
+    type: DataTypes.STRING,
+  },
+  updatedBy: {
+    type: DataTypes.STRING,
+  }
 },{
   tableName: 'unitMeasurements',
   timestamps: true

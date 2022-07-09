@@ -18,6 +18,12 @@ const ProductCategory = sequelize.define('ProductCategory', {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  createdBy: {
+    type: DataTypes.STRING,
+  },
+  updatedBy: {
+    type: DataTypes.STRING,
+  }
 },{
   tableName: 'productCategorys',
   timestamps: true

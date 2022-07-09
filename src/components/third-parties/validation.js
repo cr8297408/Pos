@@ -1,20 +1,20 @@
 const Joi = require('joi');
-const __name__ = require('./model');
+const ThirdParties = require('./model');
 
 /**
  * @export
- * @class __name__Validation
+ * @class ThirdPartiesValidation
  * 
  */
-class __name__Validation {
+class ThirdPartiesValidation {
     /**
-     * create an instance of __name__Validation
-     * @memberof __name__Validation
-     * @param {__name__}
+     * create an instance of ThirdPartiesValidation
+     * @memberof ThirdPartiesValidation
+     * @param {ThirdParties}
      * @returns {Joi.validationResult}
      */
 
-    create__name__(body){
+    createThirdParties(body){
       const schema = Joi.object().keys({
         name: Joi.string().required(),
         description: Joi.string(),
@@ -28,10 +28,10 @@ class __name__Validation {
      * @returns {Joi.ValidationResult<{ id: string }>}
      * @memberof UserValidation
      */
-     get__name__(id) {
+     getThirdParties(id) {
       const schema = Joi.string().required();
 
       return schema.validate(id);
   }
 }
-module.exports = new __name__Validation();
+module.exports = new ThirdPartiesValidation();

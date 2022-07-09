@@ -27,8 +27,13 @@ const Tax = sequelize.define('Tax', {
   isActive: {
     type: DataTypes.BOOLEAN,
     defaultValue: true
+  },
+  createdBy: {
+    type: DataTypes.STRING,
+  },
+  updatedBy: {
+    type: DataTypes.STRING,
   }
-
 },{
   tableName: "taxes",
   timestamps: true

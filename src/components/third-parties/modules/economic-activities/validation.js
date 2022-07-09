@@ -1,23 +1,23 @@
 const Joi = require('joi');
-const __name__ = require('./model');
+const EconomicActivities = require('./model');
 
 /**
  * @export
- * @class __name__Validation
+ * @class EconomicActivitiesValidation
  * 
  */
-class __name__Validation {
+class EconomicActivitiesValidation {
     /**
-     * create an instance of __name__Validation
-     * @memberof __name__Validation
-     * @param {__name__}
+     * create an instance of EconomicActivitiesValidation
+     * @memberof EconomicActivitiesValidation
+     * @param {EconomicActivities}
      * @returns {Joi.validationResult}
      */
 
-    create__name__(body){
+    createEconomicActivities(body){
       const schema = Joi.object().keys({
         name: Joi.string().required(),
-        description: Joi.string(),
+        description: Joi.string().required(),
       })
 
       return schema.validate(body)
@@ -28,10 +28,10 @@ class __name__Validation {
      * @returns {Joi.ValidationResult<{ id: string }>}
      * @memberof UserValidation
      */
-     get__name__(id) {
+     getEconomicActivities(id) {
       const schema = Joi.string().required();
 
       return schema.validate(id);
   }
 }
-module.exports = new __name__Validation();
+module.exports = new EconomicActivitiesValidation();

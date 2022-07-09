@@ -91,6 +91,20 @@ module.exports = {
         type: DataTypes.BOOLEAN,
         defaultValue: false
       },
+      createdAt: {
+        type: Sequelize.DataTypes.STRING,
+        defaultValue: new Date(),
+      },
+      updatedAt: {
+        type: Sequelize.DataTypes.STRING,
+        defaultValue: new Date(),
+      },
+      createdBy: {
+        type: DataTypes.STRING,
+      },
+      updatedBy: {
+        type: DataTypes.STRING,
+      }
     });
   },
 

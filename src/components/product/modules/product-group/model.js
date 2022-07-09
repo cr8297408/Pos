@@ -16,6 +16,12 @@ const ProductGroup = sequelize.define('ProductGroup', {
   description: {
     type: DataTypes.STRING,
   },
+  createdBy: {
+    type: DataTypes.STRING,
+  },
+  updatedBy: {
+    type: DataTypes.STRING,
+  }
 },{
   tableName: 'productGroups',
   timestamps: true

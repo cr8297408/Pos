@@ -19,6 +19,12 @@ const MonetaryDenomination = sequelize.define('MonetaryDenomination', {
   monetaryDenominationTypes: {
     type: DataTypes.ENUM('BILL', 'COIN'),
     allowNull: false,
+  },
+  createdBy: {
+    type: DataTypes.STRING,
+  },
+  updatedBy: {
+    type: DataTypes.STRING,
   }
 },{
   tableName: "monetaryDenominations",

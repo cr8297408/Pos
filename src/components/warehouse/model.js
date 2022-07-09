@@ -33,6 +33,12 @@ const Warehouse = sequelize.define('Warehouse', {
   isActive: {
     type: DataTypes.BOOLEAN,
     defaultValue: true
+  },
+  createdBy: {
+    type: DataTypes.STRING,
+  },
+  updatedBy: {
+    type: DataTypes.STRING,
   } 
 },{
   tableName: "warehouses",

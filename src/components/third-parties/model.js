@@ -1,10 +1,8 @@
 const { DataTypes, Model, UUIDV4} = require('sequelize');
-const db = require('../../../../config/connection/connectBd');
-const Product = require('../../model');
-
+const db = require('../../config/connection/connectBd');
 sequelize = db.sequelize;
 
-const Composition = sequelize.define('Composition', {
+const ThirdParties = sequelize.define('ThirdParties', {
   id: {
     type: DataTypes.STRING,
     defaultValue: UUIDV4,
@@ -18,13 +16,6 @@ const Composition = sequelize.define('Composition', {
   description: {
     type: DataTypes.STRING,
   },
-  supplies: {
-    type: DataTypes.JSON,
-    allowNull: false
-  },
-  portion: {
-    type: DataTypes.NUMBER,
-  },
   createdBy: {
     type: DataTypes.STRING,
   },
@@ -32,13 +23,8 @@ const Composition = sequelize.define('Composition', {
     type: DataTypes.STRING,
   }
 },{
-  tableName: 'compositions',
+  tableName: ThirdPartiess,
   timestamps: true
 })
 
-Product.hasMany(Composition, {
-  foreignKey: 'ProductId'
-})
-
-
-module.exports = Composition;
+module.exports = ThirdParties;
