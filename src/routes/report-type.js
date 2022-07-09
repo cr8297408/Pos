@@ -1,44 +1,44 @@
 const { Router } = require('express');
-const { PreparationTypeComponent } = require('../components');
+const { ReportTypeComponent } = require('../components');
 
 const router = Router();
 
 /**
  * @swagger
- *  /v1/PreparationTypes:
+ *  /v1/ReportTypes:
  *      get:
- *          summary: det all the PreparationTypes;
- *          tags: ["PreparationTypes"]
+ *          summary: get all the ReportTypes;
+ *          tags: ["ReportTypes"]
  *          responses:
  *              200:
- *                  description: get PreparationTypes successfully 
+ *                  description: get ReportTypes successfully 
  *                  content:
  *                      application/json:
  *                          squema:
  *                              type: array
  *                              items:
- *                                  $ref: '#/components/schemas/PreparationTypes'
+ *                                  $ref: '#/components/schemas/ReportTypes'
  *              401:
- *                  description: error in get PreparationTypes
+ *                  description: error in get ReportTypes
  */
- router.get('/', PreparationTypeComponent.findAll)
+ router.get('/', ReportTypeComponent.findAll)
 
  /**
   * @swagger
-  *  /v1/PreparationTypes/{id}:
+  *  /v1/ReportTypes/{id}:
   *      get:
-  *          summary: get one PreparationTypes by id
-  *          tags: ["PreparationTypes"]
+  *          summary: get one ReportType by id
+  *          tags: ["ReportTypes"]
   *          responses:
   *              200:
-  *                  description: get PreparationTypes succefully  
+  *                  description: get ReportType succefully  
   *              401:
-  *                  description: user not authorized to get PreparationTypes
+  *                  description: user not authorized to get ReportType
   *          parameters: [
   *           {
   *              name: id,
   *              in: path,
-  *              description: id of the PreparationTypes,
+  *              description: id of the ReportType,
   *              required: true,
   *              schema: {
   *                  type: string
@@ -47,24 +47,24 @@ const router = Router();
   *          ]
   */
  
- router.get('/:id', PreparationTypeComponent.findOne);
+ router.get('/:id', ReportTypeComponent.findOne);
  
  /**
   * @swagger
-  *  /v1/PreparationTypes/{id}:
+  *  /v1/ReportTypes/{id}:
   *      delete:
-  *          summary: delete a PreparationTypes
-  *          tags: ["PreparationTypes"]
+  *          summary: delete a ReportType
+  *          tags: ["ReportTypes"]
   *          responses:
   *              200:
-  *                  description: PreparationTypes deleted succesfully
+  *                  description: ReportType deleted succesfully
   *              401:
-  *                  description: user not authorized to delete PreparationTypes
+  *                  description: user not authorized to delete ReportTypes
   *          parameters: [
   *           {
   *              name: id,
   *              in: path,
-  *              description: id of the PreparationTypes,
+  *              description: id of the ReportType,
   *              required: true,
   *              schema: {
   *                  type: string,
@@ -72,30 +72,30 @@ const router = Router();
   *           },
   *          ]
   */
- router.delete('/:id', PreparationTypeComponent.deleteOne);
+ router.delete('/:id', ReportTypeComponent.deleteOne);
  
  /**
   * @swagger
-  *  /v1/PreparationTypes/{id}:
+  *  /v1/ReportTypes/{id}:
   *      put:
-  *          summary: put PreparationTypes in the DB
-  *          tags: ["PreparationTypes"]
+  *          summary: put ReportType in the DB
+  *          tags: ["ReportTypes"]
   *          requestBody:
   *              required: true
   *              content:
   *                  application/json:
   *                      schema:
-  *                           $ref: '#/components/schemas/PreparationTypes'
+  *                           $ref: '#/components/schemas/ReportTypes'
   *          responses:
   *              200:
-  *                  description: update PreparationTypes successfully
+  *                  description: update ReportType successfully
   *              401:
-  *                  description: user not authorized to update PreparationTypes
+  *                  description: user not authorized to update ReportTypes
   *          parameters: [
   *           {
   *              name: id,
   *              in: path,
-  *              description: id of the PreparationTypes,
+  *              description: id of the ReportType,
   *              required: true,
   *              schema: {
   *                  type: string,
@@ -104,36 +104,36 @@ const router = Router();
   *          ]
   */
  
- router.put('/:id', PreparationTypeComponent.updateOne);
+ router.put('/:id', ReportTypeComponent.updateOne);
  
  /**
   * @swagger
-  *  /v1/PreparationTypes:
+  *  /v1/ReportTypes:
   *      post:
-  *          summary: added a PreparationTypes
-  *          tags: ["PreparationTypes"]
+  *          summary: added a ReportType
+  *          tags: ["ReportTypes"]
   *          requestBody:
   *              required: true
   *              content:
   *                  application/json:
   *                      schema:
-  *                          $ref: '#/components/schemas/PreparationTypes'
+  *                          $ref: '#/components/schemas/ReportTypes'
   *          responses:
   *              200:
-  *                  description: PreparationTypes add successfully
+  *                  description: ReportType add successfully
   *              401:
-  *                  description: user not authorized to add PreparationTypes
+  *                  description: user not authorized to add ReportTypes
   */
- router.post('/', PreparationTypeComponent.create)
+ router.post('/', ReportTypeComponent.create)
  
  /**
   * @swagger
   * tags:
-  *  name: PreparationTypes
-  *  description: endpoints for managing api PreparationTypes.
+  *  name: ReportTypes
+  *  description: endpoints for managing api ReportTypes.
   * components:
   *  schemas:
-  *      PreparationTypes:
+  *      ReportTypes:
   *          type: object
   *          required:
   *              -name
@@ -144,12 +144,9 @@ const router = Router();
   *                  type: string,
   *              description:
   *                  type: string,
-  *              PreparationId:
-  *                  type: string,
   *          example:
-  *              name: preparation type 1,
-  *              description: first preparation
-  *              PreparationId: id
+  *              name: preguntas
+  *              description: ticket para preguntas
   *      Error:    
   *          type: object
   *          required:

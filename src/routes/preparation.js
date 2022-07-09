@@ -142,8 +142,11 @@ const router = Router();
   *                  type: string
   *              name:
   *                  type: string,
+  *              description:
+  *                  type: string,
   *          example:
-  *              name: unit prueba
+  *              name: preparation1
+  *              description: preparation 1
   *      Error:    
   *          type: object
   *          required:

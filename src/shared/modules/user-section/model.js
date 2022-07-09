@@ -1,35 +1,35 @@
 const { DataTypes, Model, UUIDV4} = require('sequelize');
 const db = require('../../../config/connection/connectBd');
-sequelize = db.sequelize;
 const User = require('../user/model');
+sequelize = db.sequelize;
 
-
-const Notification = sequelize.define('Notification', {
+const UserSection = sequelize.define('UserSection', {
   id: {
     type: DataTypes.STRING,
     defaultValue: UUIDV4,
     primaryKey: true,
     allowNull: false,
   },
-  message: {
+  ip: {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  isRead: {
-    type: DataTypes.BOOLEAN,
-    defaultValue: false,
-  },
-  type: {
-    type: DataTypes.ENUM('PERSONAL', 'BY_USER_POSITION', 'BY_TYPE', 'GROUP')
-  },
-  typeNotification: {
+  region: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: false,
   },
-  icon: {
+  country: {
     type: DataTypes.STRING,
+    allowNull: false,
   },
-  module: DataTypes.STRING,
+  city: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  token: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
   createdBy: {
     type: DataTypes.STRING,
   },
@@ -37,12 +37,12 @@ const Notification = sequelize.define('Notification', {
     type: DataTypes.STRING,
   }
 },{
-  tableName: "notifications",
+  tableName: 'userSections',
   timestamps: true
 })
 
-User.hasMany(Notification, {
+User.hasMany(UserSection, {
   foreignKey: 'UserId'
-});
+})
 
-module.exports = Notification;
+module.exports = UserSection;

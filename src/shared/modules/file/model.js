@@ -1,35 +1,39 @@
 const { DataTypes, Model, UUIDV4} = require('sequelize');
 const db = require('../../../config/connection/connectBd');
 sequelize = db.sequelize;
-const User = require('../user/model');
 
-
-const Notification = sequelize.define('Notification', {
+const File = sequelize.define('File', {
   id: {
     type: DataTypes.STRING,
     defaultValue: UUIDV4,
     primaryKey: true,
     allowNull: false,
   },
-  message: {
+  filename: {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  isRead: {
-    type: DataTypes.BOOLEAN,
-    defaultValue: false,
-  },
-  type: {
-    type: DataTypes.ENUM('PERSONAL', 'BY_USER_POSITION', 'BY_TYPE', 'GROUP')
-  },
-  typeNotification: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
-  icon: {
+  url: {
     type: DataTypes.STRING,
   },
-  module: DataTypes.STRING,
+  key: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  bytes: {
+    type: DataTypes.FLOAT
+  },
+  storage: {
+    type: DataTypes.ENUM('AWS', 'LOCAL', 'CLOUDINARY', 'OTHER'),
+    allowNull: false,
+  },
+  status: {
+    type: DataTypes.ENUM('UNUSED', 'PROCESSING', 'OK'),
+    allowNull: false,
+  },
+  description: {
+    type: DataTypes.STRING,
+  },
   createdBy: {
     type: DataTypes.STRING,
   },
@@ -37,12 +41,8 @@ const Notification = sequelize.define('Notification', {
     type: DataTypes.STRING,
   }
 },{
-  tableName: "notifications",
+  tableName: 'files',
   timestamps: true
 })
 
-User.hasMany(Notification, {
-  foreignKey: 'UserId'
-});
-
-module.exports = Notification;
+module.exports = File;

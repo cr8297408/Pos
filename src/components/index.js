@@ -14,8 +14,14 @@ const ProductCategoryComponent = require('./product/modules/product-category');
 const ProductGroupComponent = require('./product/modules/product-group');
 const UnitMeasurementComponent = require('./product/modules/unit-measurement');
 const PreparationComponent = require('./product/modules/preparation');
-const PreparationTypesComponent = require('./product/modules/preparation-type');
-
+const PreparationTypeComponent = require('./product/modules/preparation-type');
+const ChatComponent = require('../shared/modules/chat');
+const EventComponent = require('../shared/modules/event');
+const FileComponent = require('../shared/modules/file');
+const MessageComponent = require('../shared/modules/chat/message');
+const ReportTypeComponent = require('../shared/modules/report-type');
+const SupportTypeComponent = require('../shared/modules/support-ticket');
+const TicketThreadComponent = require('../shared/modules/ticket-thread');
 
 module.exports = { 
   BankComponent, 
@@ -34,5 +40,12 @@ module.exports = {
   ProductGroupComponent,
   UnitMeasurementComponent,
   PreparationComponent,
-  PreparationTypesComponent
+  PreparationTypeComponent,
+  ChatComponent,
+  EventComponent,
+  FileComponent,
+  MessageComponent,
+  ReportTypeComponent,
+  SupportTypeComponent,
+  TicketThreadComponent,
 }

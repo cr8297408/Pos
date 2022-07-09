@@ -45,6 +45,13 @@ module.exports = {
           key: 'id'
         }
       },
+      FileId: {
+        type: DataTypes.STRING,
+        references: {
+          model: 'files',
+          key: 'id'
+        }
+      },
       name: {
         type: DataTypes.STRING,
         allowNull: false,

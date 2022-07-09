@@ -1,44 +1,44 @@
 const { Router } = require('express');
-const { PreparationTypeComponent } = require('../components');
+const { FileComponent } = require('../components');
 
 const router = Router();
 
 /**
  * @swagger
- *  /v1/PreparationTypes:
+ *  /v1/Files:
  *      get:
- *          summary: det all the PreparationTypes;
- *          tags: ["PreparationTypes"]
+ *          summary: det all the Files;
+ *          tags: ["Files"]
  *          responses:
  *              200:
- *                  description: get PreparationTypes successfully 
+ *                  description: get Files successfully 
  *                  content:
  *                      application/json:
  *                          squema:
  *                              type: array
  *                              items:
- *                                  $ref: '#/components/schemas/PreparationTypes'
+ *                                  $ref: '#/components/schemas/Files'
  *              401:
- *                  description: error in get PreparationTypes
+ *                  description: error in get Files
  */
- router.get('/', PreparationTypeComponent.findAll)
+ router.get('/', FileComponent.findAll)
 
  /**
   * @swagger
-  *  /v1/PreparationTypes/{id}:
+  *  /v1/Files/{id}:
   *      get:
-  *          summary: get one PreparationTypes by id
-  *          tags: ["PreparationTypes"]
+  *          summary: get one File by id
+  *          tags: ["Files"]
   *          responses:
   *              200:
-  *                  description: get PreparationTypes succefully  
+  *                  description: get File succefully  
   *              401:
-  *                  description: user not authorized to get PreparationTypes
+  *                  description: user not authorized to get File
   *          parameters: [
   *           {
   *              name: id,
   *              in: path,
-  *              description: id of the PreparationTypes,
+  *              description: id of the File,
   *              required: true,
   *              schema: {
   *                  type: string
@@ -47,24 +47,24 @@ const router = Router();
   *          ]
   */
  
- router.get('/:id', PreparationTypeComponent.findOne);
+ router.get('/:id', FileComponent.findOne);
  
  /**
   * @swagger
-  *  /v1/PreparationTypes/{id}:
+  *  /v1/Files/{id}:
   *      delete:
-  *          summary: delete a PreparationTypes
-  *          tags: ["PreparationTypes"]
+  *          summary: delete a File
+  *          tags: ["Files"]
   *          responses:
   *              200:
-  *                  description: PreparationTypes deleted succesfully
+  *                  description: File deleted succesfully
   *              401:
-  *                  description: user not authorized to delete PreparationTypes
+  *                  description: user not authorized to delete Files
   *          parameters: [
   *           {
   *              name: id,
   *              in: path,
-  *              description: id of the PreparationTypes,
+  *              description: id of the File,
   *              required: true,
   *              schema: {
   *                  type: string,
@@ -72,30 +72,30 @@ const router = Router();
   *           },
   *          ]
   */
- router.delete('/:id', PreparationTypeComponent.deleteOne);
+ router.delete('/:id', FileComponent.deleteOne);
  
  /**
   * @swagger
-  *  /v1/PreparationTypes/{id}:
+  *  /v1/Files/{id}:
   *      put:
-  *          summary: put PreparationTypes in the DB
-  *          tags: ["PreparationTypes"]
+  *          summary: put File in the DB
+  *          tags: ["Files"]
   *          requestBody:
   *              required: true
   *              content:
   *                  application/json:
   *                      schema:
-  *                           $ref: '#/components/schemas/PreparationTypes'
+  *                           $ref: '#/components/schemas/Files'
   *          responses:
   *              200:
-  *                  description: update PreparationTypes successfully
+  *                  description: update File successfully
   *              401:
-  *                  description: user not authorized to update PreparationTypes
+  *                  description: user not authorized to update Files
   *          parameters: [
   *           {
   *              name: id,
   *              in: path,
-  *              description: id of the PreparationTypes,
+  *              description: id of the File,
   *              required: true,
   *              schema: {
   *                  type: string,
@@ -104,52 +104,64 @@ const router = Router();
   *          ]
   */
  
- router.put('/:id', PreparationTypeComponent.updateOne);
+ router.put('/:id', FileComponent.updateOne);
  
  /**
   * @swagger
-  *  /v1/PreparationTypes:
+  *  /v1/Files:
   *      post:
-  *          summary: added a PreparationTypes
-  *          tags: ["PreparationTypes"]
+  *          summary: added a File
+  *          tags: ["Files"]
   *          requestBody:
   *              required: true
   *              content:
   *                  application/json:
   *                      schema:
-  *                          $ref: '#/components/schemas/PreparationTypes'
+  *                          $ref: '#/components/schemas/Files'
   *          responses:
   *              200:
-  *                  description: PreparationTypes add successfully
+  *                  description: File add successfully
   *              401:
-  *                  description: user not authorized to add PreparationTypes
+  *                  description: user not authorized to add Files
   */
- router.post('/', PreparationTypeComponent.create)
+ router.post('/', FileComponent.create)
  
  /**
   * @swagger
   * tags:
-  *  name: PreparationTypes
-  *  description: endpoints for managing api PreparationTypes.
+  *  name: Files
+  *  description: endpoints for managing api Files.
   * components:
   *  schemas:
-  *      PreparationTypes:
+  *      Files:
   *          type: object
   *          required:
-  *              -name
+  *              -filename
+  *              -key
+  *              -storage
+  *              -status
   *          properties:
   *              id:
   *                  type: string
-  *              name:
+  *              filename:
+  *                  type: string,
+  *              key:
+  *                  type: string,
+  *              url:
+  *                  type: string,
+  *              storage:
+  *                  type: string,
+  *              status:
   *                  type: string,
   *              description:
   *                  type: string,
-  *              PreparationId:
-  *                  type: string,
   *          example:
-  *              name: preparation type 1,
-  *              description: first preparation
-  *              PreparationId: id
+  *              filename: archivo1
+  *              key: archivo1
+  *              url: ''
+  *              storage: 'AWS'
+  *              status: 'OK'
+  *              description: archivo 1 to bucket aws
   *      Error:    
   *          type: object
   *          required:

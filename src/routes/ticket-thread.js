@@ -1,44 +1,44 @@
 const { Router } = require('express');
-const { PreparationTypeComponent } = require('../components');
+const { TicketThreadComponent } = require('../components');
 
 const router = Router();
 
 /**
  * @swagger
- *  /v1/PreparationTypes:
+ *  /v1/TicketThreads:
  *      get:
- *          summary: det all the PreparationTypes;
- *          tags: ["PreparationTypes"]
+ *          summary: get all the TicketThreads;
+ *          tags: ["TicketThreads"]
  *          responses:
  *              200:
- *                  description: get PreparationTypes successfully 
+ *                  description: get TicketThreads successfully 
  *                  content:
  *                      application/json:
  *                          squema:
  *                              type: array
  *                              items:
- *                                  $ref: '#/components/schemas/PreparationTypes'
+ *                                  $ref: '#/components/schemas/TicketThreads'
  *              401:
- *                  description: error in get PreparationTypes
+ *                  description: error in get TicketThreads
  */
- router.get('/', PreparationTypeComponent.findAll)
+ router.get('/', TicketThreadComponent.findAll)
 
  /**
   * @swagger
-  *  /v1/PreparationTypes/{id}:
+  *  /v1/TicketThreads/{id}:
   *      get:
-  *          summary: get one PreparationTypes by id
-  *          tags: ["PreparationTypes"]
+  *          summary: get one TicketThread by id
+  *          tags: ["TicketThreads"]
   *          responses:
   *              200:
-  *                  description: get PreparationTypes succefully  
+  *                  description: get TicketThread succefully  
   *              401:
-  *                  description: user not authorized to get PreparationTypes
+  *                  description: user not authorized to get TicketThread
   *          parameters: [
   *           {
   *              name: id,
   *              in: path,
-  *              description: id of the PreparationTypes,
+  *              description: id of the TicketThread,
   *              required: true,
   *              schema: {
   *                  type: string
@@ -47,24 +47,24 @@ const router = Router();
   *          ]
   */
  
- router.get('/:id', PreparationTypeComponent.findOne);
+ router.get('/:id', TicketThreadComponent.findOne);
  
  /**
   * @swagger
-  *  /v1/PreparationTypes/{id}:
+  *  /v1/TicketThreads/{id}:
   *      delete:
-  *          summary: delete a PreparationTypes
-  *          tags: ["PreparationTypes"]
+  *          summary: delete a TicketThread
+  *          tags: ["TicketThreads"]
   *          responses:
   *              200:
-  *                  description: PreparationTypes deleted succesfully
+  *                  description: TicketThread deleted succesfully
   *              401:
-  *                  description: user not authorized to delete PreparationTypes
+  *                  description: user not authorized to delete TicketThreads
   *          parameters: [
   *           {
   *              name: id,
   *              in: path,
-  *              description: id of the PreparationTypes,
+  *              description: id of the TicketThread,
   *              required: true,
   *              schema: {
   *                  type: string,
@@ -72,30 +72,30 @@ const router = Router();
   *           },
   *          ]
   */
- router.delete('/:id', PreparationTypeComponent.deleteOne);
+ router.delete('/:id', TicketThreadComponent.deleteOne);
  
  /**
   * @swagger
-  *  /v1/PreparationTypes/{id}:
+  *  /v1/TicketThreads/{id}:
   *      put:
-  *          summary: put PreparationTypes in the DB
-  *          tags: ["PreparationTypes"]
+  *          summary: put TicketThread in the DB
+  *          tags: ["TicketThreads"]
   *          requestBody:
   *              required: true
   *              content:
   *                  application/json:
   *                      schema:
-  *                           $ref: '#/components/schemas/PreparationTypes'
+  *                           $ref: '#/components/schemas/TicketThreads'
   *          responses:
   *              200:
-  *                  description: update PreparationTypes successfully
+  *                  description: update TicketThread successfully
   *              401:
-  *                  description: user not authorized to update PreparationTypes
+  *                  description: user not authorized to update TicketThreads
   *          parameters: [
   *           {
   *              name: id,
   *              in: path,
-  *              description: id of the PreparationTypes,
+  *              description: id of the TicketThread,
   *              required: true,
   *              schema: {
   *                  type: string,
@@ -104,52 +104,56 @@ const router = Router();
   *          ]
   */
  
- router.put('/:id', PreparationTypeComponent.updateOne);
+ router.put('/:id', TicketThreadComponent.updateOne);
  
  /**
   * @swagger
-  *  /v1/PreparationTypes:
+  *  /v1/TicketThreads:
   *      post:
-  *          summary: added a PreparationTypes
-  *          tags: ["PreparationTypes"]
+  *          summary: added a TicketThread
+  *          tags: ["TicketThreads"]
   *          requestBody:
   *              required: true
   *              content:
   *                  application/json:
   *                      schema:
-  *                          $ref: '#/components/schemas/PreparationTypes'
+  *                          $ref: '#/components/schemas/TicketThreads'
   *          responses:
   *              200:
-  *                  description: PreparationTypes add successfully
+  *                  description: TicketThread add successfully
   *              401:
-  *                  description: user not authorized to add PreparationTypes
+  *                  description: user not authorized to add TicketThreads
   */
- router.post('/', PreparationTypeComponent.create)
+ router.post('/', TicketThreadComponent.create)
  
  /**
   * @swagger
   * tags:
-  *  name: PreparationTypes
-  *  description: endpoints for managing api PreparationTypes.
+  *  name: TicketThreads
+  *  description: endpoints for managing api TicketThreads.
   * components:
   *  schemas:
-  *      PreparationTypes:
+  *      TicketThreads:
   *          type: object
   *          required:
-  *              -name
+  *              -response
+  *              -SupportTicketId
   *          properties:
   *              id:
   *                  type: string
-  *              name:
+  *              response:
   *                  type: string,
-  *              description:
+  *              date:
+  *                  type: date,
+  *              estate:
   *                  type: string,
-  *              PreparationId:
+  *              SupportTicketId:
   *                  type: string,
   *          example:
-  *              name: preparation type 1,
-  *              description: first preparation
-  *              PreparationId: id
+  *              response: 'respuesta para el ticket generado '
+  *              date: '2022-06-23'
+  *              estate: OPEN
+  *              SupportTicketId: id
   *      Error:    
   *          type: object
   *          required:

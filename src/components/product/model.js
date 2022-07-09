@@ -6,6 +6,7 @@ const UnitMeasurement = require('../measure-unit/model');
 const ProductArea = require('./modules/product-area/model');
 const ProductGroup = require('./modules/product-group/model');
 const Composition = require('./modules/composition/model');
+const File = require('../../shared/modules/file/model');
 
 sequelize = db.sequelize;
 
@@ -82,6 +83,10 @@ ProductGroup.hasMany(Product, {
 
 Composition.hasMany(Product, {
   foreignKey: 'CompositionId'
+})
+
+File.hasMany(Product, {
+  foreignKey: 'FileId'
 })
 
 module.exports = Product;

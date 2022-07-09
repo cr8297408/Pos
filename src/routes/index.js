@@ -1,5 +1,6 @@
 const express = require('express')
 const path = require('path');
+
 const router = express.Router();
 const BankRouter = require('./bank')
 const BillingResolutionRouter = require('./billing-resolution')
@@ -18,6 +19,13 @@ const PreparationTypesRouter = require('./preparation-types');
 const PreparationRouter = require('./preparation');
 const ProductCategoryRouter = require('./product-category');
 const ProductGroupRouter = require('./product-group');
+const EventRouter = require('./event');
+const FileRouter = require('./file');
+const ReportTypeRouter = require('./report-type');
+const SupportTicketRouter = require('./support-ticket');
+const TicketThreadRouter = require('./ticket-thread');
+const ChatRouter = require('./chat');
+const MessagesRouter = require('./message');
 
 
 router.use('/v1/banks', BankRouter);
@@ -37,7 +45,13 @@ router.use('/v1/preparationTypes', PreparationTypesRouter);
 router.use('/v1/preparations', PreparationRouter);
 router.use('/v1/productCategorys',ProductCategoryRouter);
 router.use('/v1/productGroups', ProductGroupRouter);
-
+router.use('/v1/events', EventRouter);
+router.use('/v1/files', FileRouter);
+router.use('/v1/reportTypes', ReportTypeRouter);
+router.use('/v1/supportTickets', SupportTicketRouter);
+router.use('/v1/ticketThreads', TicketThreadRouter);
+router.use('/v1/chats', ChatRouter);
+router.use('/v1/messages', MessagesRouter)
 
 // prueba socket
 

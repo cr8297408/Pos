@@ -1,44 +1,44 @@
 const { Router } = require('express');
-const { PreparationTypeComponent } = require('../components');
+const { MessageComponent } = require('../components');
 
 const router = Router();
 
 /**
  * @swagger
- *  /v1/PreparationTypes:
+ *  /v1/Messages:
  *      get:
- *          summary: det all the PreparationTypes;
- *          tags: ["PreparationTypes"]
+ *          summary: det all the Messages;
+ *          tags: ["Messages"]
  *          responses:
  *              200:
- *                  description: get PreparationTypes successfully 
+ *                  description: get Messages successfully 
  *                  content:
  *                      application/json:
  *                          squema:
  *                              type: array
  *                              items:
- *                                  $ref: '#/components/schemas/PreparationTypes'
+ *                                  $ref: '#/components/schemas/Messages'
  *              401:
- *                  description: error in get PreparationTypes
+ *                  description: error in get Messages
  */
- router.get('/', PreparationTypeComponent.findAll)
+ router.get('/', MessageComponent.findAll)
 
  /**
   * @swagger
-  *  /v1/PreparationTypes/{id}:
+  *  /v1/Messages/{id}:
   *      get:
-  *          summary: get one PreparationTypes by id
-  *          tags: ["PreparationTypes"]
+  *          summary: get Message by chat id
+  *          tags: ["Messages"]
   *          responses:
   *              200:
-  *                  description: get PreparationTypes succefully  
+  *                  description: get Messages succefully  
   *              401:
-  *                  description: user not authorized to get PreparationTypes
+  *                  description: user not authorized to get Message
   *          parameters: [
   *           {
   *              name: id,
   *              in: path,
-  *              description: id of the PreparationTypes,
+  *              description: id of the Message,
   *              required: true,
   *              schema: {
   *                  type: string
@@ -47,24 +47,24 @@ const router = Router();
   *          ]
   */
  
- router.get('/:id', PreparationTypeComponent.findOne);
+ router.get('/:id', MessageComponent.findOne);
  
  /**
   * @swagger
-  *  /v1/PreparationTypes/{id}:
+  *  /v1/Messages/{id}:
   *      delete:
-  *          summary: delete a PreparationTypes
-  *          tags: ["PreparationTypes"]
+  *          summary: delete a Message
+  *          tags: ["Messages"]
   *          responses:
   *              200:
-  *                  description: PreparationTypes deleted succesfully
+  *                  description: Message deleted succesfully
   *              401:
-  *                  description: user not authorized to delete PreparationTypes
+  *                  description: user not authorized to delete Messages
   *          parameters: [
   *           {
   *              name: id,
   *              in: path,
-  *              description: id of the PreparationTypes,
+  *              description: id of the Message,
   *              required: true,
   *              schema: {
   *                  type: string,
@@ -72,30 +72,30 @@ const router = Router();
   *           },
   *          ]
   */
- router.delete('/:id', PreparationTypeComponent.deleteOne);
+ router.delete('/:id', MessageComponent.deleteOne);
  
  /**
   * @swagger
-  *  /v1/PreparationTypes/{id}:
+  *  /v1/Messages/{id}:
   *      put:
-  *          summary: put PreparationTypes in the DB
-  *          tags: ["PreparationTypes"]
+  *          summary: put Message in the DB
+  *          tags: ["Messages"]
   *          requestBody:
   *              required: true
   *              content:
   *                  application/json:
   *                      schema:
-  *                           $ref: '#/components/schemas/PreparationTypes'
+  *                           $ref: '#/components/schemas/Messages'
   *          responses:
   *              200:
-  *                  description: update PreparationTypes successfully
+  *                  description: update Message successfully
   *              401:
-  *                  description: user not authorized to update PreparationTypes
+  *                  description: user not authorized to update Messages
   *          parameters: [
   *           {
   *              name: id,
   *              in: path,
-  *              description: id of the PreparationTypes,
+  *              description: id of the Message,
   *              required: true,
   *              schema: {
   *                  type: string,
@@ -104,52 +104,58 @@ const router = Router();
   *          ]
   */
  
- router.put('/:id', PreparationTypeComponent.updateOne);
+ router.put('/:id', MessageComponent.updateOne);
  
  /**
   * @swagger
-  *  /v1/PreparationTypes:
+  *  /v1/Messages:
   *      post:
-  *          summary: added a PreparationTypes
-  *          tags: ["PreparationTypes"]
+  *          summary: added a Message
+  *          tags: ["Messages"]
   *          requestBody:
   *              required: true
   *              content:
   *                  application/json:
   *                      schema:
-  *                          $ref: '#/components/schemas/PreparationTypes'
+  *                          $ref: '#/components/schemas/Messages'
   *          responses:
   *              200:
-  *                  description: PreparationTypes add successfully
+  *                  description: Message add successfully
   *              401:
-  *                  description: user not authorized to add PreparationTypes
+  *                  description: user not authorized to add Messages
   */
- router.post('/', PreparationTypeComponent.create)
+ router.post('/', MessageComponent.create)
  
  /**
   * @swagger
   * tags:
-  *  name: PreparationTypes
-  *  description: endpoints for managing api PreparationTypes.
+  *  name: Messages
+  *  description: endpoints for managing api Messages.
   * components:
   *  schemas:
-  *      PreparationTypes:
+  *      Messages:
   *          type: object
   *          required:
-  *              -name
+  *              -ChatId
   *          properties:
   *              id:
   *                  type: string
-  *              name:
+  *              text:
   *                  type: string,
-  *              description:
+  *              emoticon:
   *                  type: string,
-  *              PreparationId:
+  *              file:
+  *                  type: string,
+  *              tipeFile:
+  *                  type: string,
+  *              estate:
   *                  type: string,
   *          example:
-  *              name: preparation type 1,
-  *              description: first preparation
-  *              PreparationId: id
+  *              ChatId: idChat
+  *              text: 'hola mundo'
+  *              emoticon: ''
+  *              tipeFile: 
+  *              estate: 
   *      Error:    
   *          type: object
   *          required:

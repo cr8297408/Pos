@@ -5,11 +5,13 @@
   "license": "MIT",
   "scripts": {
     "dev": "nodemon src/index.js",
-    "start": "node src/index.js",
     "generate": "node ./generator/generate.js",
     "migrate": "npx sequelize db:migrate",
     "desmigrate": "npx sequelize db:migrate:undo:all",
-    "migration": "npx sequelize migration:create --name"
+    "desmigrateOne": "npx sequelize db:migrate:undo --name",
+    "seeders": "npx sequelize db:seed:all",
+    "deseeds": "npx sequelize db:seed:undo:all",
+    "createMigration": "npx sequelize migration:create --name"
   },
   "dependencies": {
     "bcrypt": "^5.0.1",

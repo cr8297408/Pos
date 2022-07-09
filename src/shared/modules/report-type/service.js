@@ -1,28 +1,28 @@
 const db = require('../../../config/connection/connectBd');
-const NotificationValidation = require('./validation');
-const Notification = require('./model');
-const Pagination = require('../../../shared/middlewares/pagination');
-const permissions = require('../../../shared/middlewares/permissions');
+const ReportTypeValidation = require('./validation');
+const ReportType = require('./model');
+const Pagination = require('../../middlewares/pagination')
+const permissions = require('../../middlewares/permissions');
 const getUser = require('../../middlewares/getUser');
 
 sequelize = db.sequelize;
 
 /**
  * @exports
- * @implements {Notification} model
+ * @implements {ReportType} model
  */
-const NotificationService = {
+const ReportTypeService = {
   /**
    * @exports
-   * @implements {Notification} model
-   * @description get all Notifications 
+   * @implements {ReportType} model
+   * @description get all ReportTypes 
    */
   async findAll(bearerHeader){
     try {
       const validatePermission = await permissions(bearerHeader, 'FIND_ALL')
       if (validatePermission) {
-        const Notifications = await Notification.findAll()
-        return Notifications;
+        const ReportTypes = await ReportType.findAll()
+        return ReportTypes;
       } 
       return {
         message: 'no tienes permisos para esta acción',
@@ -37,24 +37,23 @@ const NotificationService = {
   /**
    * @exports
    * @param {*} body
-   * @implements {Notification} model 
+   * @implements {ReportType} model 
    */
   async create(bearerHeader, body) {
     try {
       const validatePermission = await permissions(bearerHeader, 'CREATE')
       if (validatePermission) {
-        const validate = NotificationValidation.createNotification(body);
+        const validate = ReportTypeValidation.createReportType(body);
         if (validate.error) {
           throw new Error(validate.error)
         }
         const user = await getUser(bearerHeader);
-        const createNotification = await Notification.create({
-          message: body.message,
-          type: body.type,
-          isRead: body.isRead,
+        const createReportType = await ReportType.create({
+          name: body.name,
+          description: body.description,
           createdBy: user.id
         });
-        return createNotification;
+        return createReportType;
       } 
       return {
         message: 'no tienes permisos para esta acción',
@@ -68,19 +67,19 @@ const NotificationService = {
 
   /**
    * @exports
-   * @implements {Notification} model
+   * @implements {ReportType} model
    */
 
   async findOne(bearerHeader, id){
     try {
       const validatePermission = await permissions(bearerHeader, 'FIND_ONE')
       if (validatePermission) {
-        const validate = NotificationValidation.getNotification(id);
+        const validate = ReportTypeValidation.getReportType(id);
         if (validate.error) {
           throw new Error(validate.error)
         }
-        const getNotification = await Notification.findByPk(id)
-        return getNotification;
+        const getReportType = await ReportType.findByPk(id)
+        return getReportType;
       } 
       return {
         message: 'no tienes permisos para esta acción',
@@ -93,23 +92,23 @@ const NotificationService = {
   /**
    * @exports
    * @param {*} id
-   * @implements {Notification} model
+   * @implements {ReportType} model
    */
   async delete(bearerHeader, id){
     try {
       const validatePermission = await permissions(bearerHeader, 'DELETE')
       if (validatePermission) {
-        const validate = await NotificationValidation.getNotification(id)
+        const validate = await ReportTypeValidation.getReportType(id)
 
         if (validate.error) {
           throw new Error(validate.error)
         }
 
-        const getNotification = await Notification.findByPk(id);
+        const getReportType = await ReportType.findByPk(id);
         
-        await getNotification.destroy()
+        await getReportType.destroy()
 
-        return getNotification;
+        return getReportType;
         
       } 
       return {
@@ -121,12 +120,55 @@ const NotificationService = {
     }
   },
 
+  /**
+   * @exports
+   * @param {*} id 
+   * @param {*} body 
+   * @description update a ReportType in the db
+   */
+  async update(bearerHeader, id, body){
+    try {
+      const validatePermission = await permissions(bearerHeader, 'UPDATE')
+      if (validatePermission) {
+        
+        const validateid = await ReportTypeValidation.getReportType(id);
+        
+        if (validateid.error) {
+          throw new Error(validate.error)
+        }
+  
+        const validateBody = await ReportTypeValidation.createReportType(body)
+        if (validateBody.error) {
+          throw new Error(validate.error)
+        }
+        const user = await getUser(bearerHeader);
+        const newReportType = await ReportType.update(
+          {
+            name: body.name,
+            description: body.description,
+            updatedBy: user.id
+          },
+          {where: {id}}
+        )
+  
+        return newReportType;
+        
+      } 
+      return {
+        message: 'no tienes permisos para esta acción',
+        status: 401
+      }
+    } catch (error) {
+      
+    }
+  },
+
   async findPagination(bearerHeader, sizeAsNumber, pageAsNumber, wherecond){
     try {
       const validatePermission = await permissions(bearerHeader, 'FIND_PAGINATION')
       if (validatePermission) {
-        const Notifications = await Pagination('Notifications',sequelize,sizeAsNumber, pageAsNumber, wherecond)
-        return Notifications
+        const ReportTypes = await Pagination('ReportTypes',sequelize,sizeAsNumber, pageAsNumber, wherecond)
+        return ReportTypes
       } 
       return {
         message: 'no tienes permisos para esta acción',
@@ -138,4 +180,4 @@ const NotificationService = {
   },
 }
 
-module.exports = NotificationService;
+module.exports = ReportTypeService;

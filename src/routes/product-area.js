@@ -138,14 +138,17 @@ const router = Router();
   *          type: object
   *          required:
   *              -name
-  *              -accountingAccount
   *          properties:
   *              id:
   *                  type: string
   *              name:
   *                  type: string,
-  *              accountingAccount:
+  *              attentionArea:
   *                    type: string
+  *              description:
+  *                  type: string,
+  *              isActive:
+  *                  type: boolean
   *          example:
   *              attentionArea: false
   *              name: area prueba
