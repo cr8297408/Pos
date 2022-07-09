@@ -2,28 +2,7 @@ const { Router } = require('express');
 const { AuthComponent } = require('../components');
 
 const router = Router();
- 
- /**
-  * @swagger
-  *  /v1/auth/signUp:
-  *      post:
-  *          summary: added a user
-  *          security: [] # No security
-  *          tags: ["Auths"]
-  *          requestBody:
-  *              required: true
-  *              content:
-  *                  application/json:
-  *                      schema:
-  *                          $ref: '#/components/schemas/Auths'
-  *          responses:
-  *              200:
-  *                  description: user add successfully
-  *              401:
-  *                  description: user not added
-  */
- router.post('/signUp', AuthComponent.signUp)
- 
+
  /**
   * @swagger
   *  /v1/auth/signIn:
@@ -45,6 +24,102 @@ const router = Router();
   */
   router.post('/signIn', AuthComponent.signIn)
 
+   /**
+  * @swagger
+  *  /v1/auth/signUp:
+  *      post:
+  *          summary: sign up users
+  *          security: [] # No security
+  *          tags: ["Auths"]
+  *          requestBody:
+  *              required: true
+  *              content:
+  *                  application/json:
+  *                      schema:
+  *                          $ref: '#/components/schemas/Auth'
+  *          responses:
+  *              200:
+  *                  description: login succesfully
+  *              401:
+  *                  description: user exists
+  */
+    router.post('/signUp', AuthComponent.signUp)
+
+ /**
+  * @swagger
+  *  /v1/auth/getUser:
+  *      get:
+  *          summary: get one user by header
+  *          tags: ["Auths"]
+  *          responses:
+  *              200:
+  *                  description: get user succefully  
+  *              401:
+  *                  description: invalid token
+  */
+ 
+  router.get('/getUser', AuthComponent.getUserAuth);
+
+ /**
+  * @swagger
+  *  /v1/auth/changePassword:
+  *      post:
+  *          summary: change password users
+  *          tags: ["Auths"]
+  *          requestBody:
+  *              required: true
+  *              content:
+  *                  application/json:
+  *                      schema:
+  *                          $ref: '#/components/schemas/changePass'
+  *          responses:
+  *              200:
+  *                  description: change password succesfully
+  *              401:
+  *                  description: user exists
+  */
+  router.post('/changePassword', AuthComponent.changePassword)
+
+ /**
+  * @swagger
+  *  /v1/auth/forgotPassword:
+  *      post:
+  *          summary: forgot password users
+  *          tags: ["Auths"]
+  *          requestBody:
+  *              required: true
+  *              content:
+  *                  application/json:
+  *                      schema:
+  *                          $ref: '#/components/schemas/forgotPass'
+  *          responses:
+  *              200:
+  *                  description: forgot password succesfully
+  *              401:
+  *                  description: user exists
+  */
+  router.post('/forgotPassword', AuthComponent.forgotPassword)
+
+   /**
+  * @swagger
+  *  /v1/auth/newPassword:
+  *      post:
+  *          summary: new password users
+  *          tags: ["Auths"]
+  *          requestBody:
+  *              required: true
+  *              content:
+  *                  application/json:
+  *                      schema:
+  *                          $ref: '#/components/schemas/newPass'
+  *          responses:
+  *              200:
+  *                  description: new password succesfully
+  *              401:
+  *                  description: user exists
+  */
+  router.post('/newPassword', AuthComponent.newPassword)
+
 
  /**
   * @swagger
@@ -53,7 +128,7 @@ const router = Router();
   *  description: endpoints for managing api Auths.
   * components:
   *  schemas:
-  *      Auths:
+  *      Auth:
   *          type: object
   *          required:
   *              -name
@@ -71,10 +146,10 @@ const router = Router();
   *              email:
   *                  type: string
   *          example:
-  *              email: emailtestAuth@mail.com
+  *              email: admin1@mail.com
   *              username: testAuth
   *              firstName: test
-  *              password: tester1234
+  *              password: Admin1
   *              lastName: auth
   *      login:
   *          type: object
@@ -87,8 +162,42 @@ const router = Router();
   *              email:
   *                  type: string
   *          example:
-  *              email: emailtestAuth2@mail.com
-  *              password: tester1234
+  *              email: admin1@mail.com
+  *              password: Admin1
+  *      changePass:
+  *          type: object
+  *          required:
+  *              -email
+  *              -oldPassword
+  *              -newPassword
+  *          properties:
+  *              oldPassword:
+  *                  type: string
+  *              newPassword:
+  *                  type: string
+  *              email:
+  *                  type: string
+  *          example:
+  *              email: admin1@mail.com
+  *              password: Admin1
+  *      forgotPass:
+  *          type: object
+  *          required:
+  *              -email
+  *          properties:
+  *              email:
+  *                  type: string
+  *          example:
+  *              email: admin1@mail.com
+  *      newPass:
+  *          type: object
+  *          required:
+  *              -newPassword
+  *          properties:
+  *              newPassword:
+  *                  type: string
+  *          example:
+  *              newPassword: pass1234
   *      Error:    
   *          type: object
   *          required:

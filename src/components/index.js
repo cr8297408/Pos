@@ -20,7 +20,7 @@ const EventComponent = require('../shared/modules/event');
 const FileComponent = require('../shared/modules/file');
 const MessageComponent = require('../shared/modules/chat/message');
 const ReportTypeComponent = require('../shared/modules/report-type');
-const SupportTypeComponent = require('../shared/modules/support-ticket');
+const SupportTicketComponent = require('../shared/modules/support-ticket');
 const TicketThreadComponent = require('../shared/modules/ticket-thread');
 
 module.exports = { 
@@ -46,6 +46,6 @@ module.exports = {
   FileComponent,
   MessageComponent,
   ReportTypeComponent,
-  SupportTypeComponent,
+  SupportTicketComponent,
   TicketThreadComponent,
 }

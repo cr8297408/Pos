@@ -9,11 +9,286 @@ const {
   TaxComponent,
   WarehouseComponent,
   NotificationComponent,
-  ProductStructureComponent
+  ProductStructureComponent,
+  ChatComponent,
+  EventComponent,
+  FileComponent,
+  MessageComponent,
+  ReportTypeComponent,
+  SupportTicketComponent,
+  TicketThreadComponent,
 } = require('../components');
 
 
 const router = Router();
+
+/**
+  * @swagger
+  *  /v1/page/reportTypes?:
+  *      post:
+  *          summary: get reportTypes paginated
+  *          tags: ["pagination"]
+  *          requestBody:
+  *              required: true
+  *              content:
+  *                  application/json:
+  *                      schema:
+  *                          $ref: '#/components/schemas/reportType'
+  *          responses:
+  *              200:
+  *                  description: get reportType succefully  
+  *              401:
+  *                  description: user not authorized to get reportType
+  *          parameters: [
+  *           {
+  *              name: size,
+  *              in: query,
+  *              description: size to pagination,
+  *              schema: {
+  *                  type: string
+  *              }
+  *           },
+  *           {
+  *              name: page,
+  *              in: query,
+  *              description: number of page paginate,
+  *              schema: {
+  *                  type: string
+  *              }
+  *           },
+  *          ]
+  */
+ router.post('/reportTypes/?', ReportTypeComponent.findpagination);
+
+/**
+  * @swagger
+  *  /v1/page/supportTickets?:
+  *      post:
+  *          summary: get supportTickets paginated
+  *          tags: ["pagination"]
+  *          requestBody:
+  *              required: true
+  *              content:
+  *                  application/json:
+  *                      schema:
+  *                          $ref: '#/components/schemas/supportTicket'
+  *          responses:
+  *              200:
+  *                  description: get supportTicket succefully  
+  *              401:
+  *                  description: user not authorized to get supportTicket
+  *          parameters: [
+  *           {
+  *              name: size,
+  *              in: query,
+  *              description: size to pagination,
+  *              schema: {
+  *                  type: string
+  *              }
+  *           },
+  *           {
+  *              name: page,
+  *              in: query,
+  *              description: number of page paginate,
+  *              schema: {
+  *                  type: string
+  *              }
+  *           },
+  *          ]
+  */
+ router.post('/supportTickets/?', SupportTicketComponent.findpagination);
+
+ /**
+  * @swagger
+  *  /v1/page/ticketThreads?:
+  *      post:
+  *          summary: get ticketThreads paginated
+  *          tags: ["pagination"]
+  *          requestBody:
+  *              required: true
+  *              content:
+  *                  application/json:
+  *                      schema:
+  *                          $ref: '#/components/schemas/ticketThread'
+  *          responses:
+  *              200:
+  *                  description: get ticketThread succefully  
+  *              401:
+  *                  description: user not authorized to get ticketThread
+  *          parameters: [
+  *           {
+  *              name: size,
+  *              in: query,
+  *              description: size to pagination,
+  *              schema: {
+  *                  type: string
+  *              }
+  *           },
+  *           {
+  *              name: page,
+  *              in: query,
+  *              description: number of page paginate,
+  *              schema: {
+  *                  type: string
+  *              }
+  *           },
+  *          ]
+  */
+  router.post('/ticketThreads/?', TicketThreadComponent.findpagination);
+
+/**
+  * @swagger
+  *  /v1/page/messages?:
+  *      post:
+  *          summary: get messages paginated
+  *          tags: ["pagination"]
+  *          requestBody:
+  *              required: true
+  *              content:
+  *                  application/json:
+  *                      schema:
+  *                          $ref: '#/components/schemas/message'
+  *          responses:
+  *              200:
+  *                  description: get message succefully  
+  *              401:
+  *                  description: user not authorized to get message
+  *          parameters: [
+  *           {
+  *              name: size,
+  *              in: query,
+  *              description: size to pagination,
+  *              schema: {
+  *                  type: string
+  *              }
+  *           },
+  *           {
+  *              name: page,
+  *              in: query,
+  *              description: number of page paginate,
+  *              schema: {
+  *                  type: string
+  *              }
+  *           },
+  *          ]
+  */
+ router.post('/messages/?', MessageComponent.findpagination);
+
+
+/**
+  * @swagger
+  *  /v1/page/files?:
+  *      post:
+  *          summary: get files paginated
+  *          tags: ["pagination"]
+  *          requestBody:
+  *              required: true
+  *              content:
+  *                  application/json:
+  *                      schema:
+  *                          $ref: '#/components/schemas/file'
+  *          responses:
+  *              200:
+  *                  description: get file succefully  
+  *              401:
+  *                  description: user not authorized to get file
+  *          parameters: [
+  *           {
+  *              name: size,
+  *              in: query,
+  *              description: size to pagination,
+  *              schema: {
+  *                  type: string
+  *              }
+  *           },
+  *           {
+  *              name: page,
+  *              in: query,
+  *              description: number of page paginate,
+  *              schema: {
+  *                  type: string
+  *              }
+  *           },
+  *          ]
+  */
+ router.post('/files/?', FileComponent.findpagination);
+
+/**
+  * @swagger
+  *  /v1/page/events?:
+  *      post:
+  *          summary: get events paginated
+  *          tags: ["pagination"]
+  *          requestBody:
+  *              required: true
+  *              content:
+  *                  application/json:
+  *                      schema:
+  *                          $ref: '#/components/schemas/event'
+  *          responses:
+  *              200:
+  *                  description: get event succefully  
+  *              401:
+  *                  description: user not authorized to get event
+  *          parameters: [
+  *           {
+  *              name: size,
+  *              in: query,
+  *              description: size to pagination,
+  *              schema: {
+  *                  type: string
+  *              }
+  *           },
+  *           {
+  *              name: page,
+  *              in: query,
+  *              description: number of page paginate,
+  *              schema: {
+  *                  type: string
+  *              }
+  *           },
+  *          ]
+  */
+ router.post('/events/?', EventComponent.findpagination);
+
+
+/**
+  * @swagger
+  *  /v1/page/chats?:
+  *      post:
+  *          summary: get chats paginated
+  *          tags: ["pagination"]
+  *          requestBody:
+  *              required: true
+  *              content:
+  *                  application/json:
+  *                      schema:
+  *                          $ref: '#/components/schemas/chat'
+  *          responses:
+  *              200:
+  *                  description: get chat succefully  
+  *              401:
+  *                  description: user not authorized to get chat
+  *          parameters: [
+  *           {
+  *              name: size,
+  *              in: query,
+  *              description: size to pagination,
+  *              schema: {
+  *                  type: string
+  *              }
+  *           },
+  *           {
+  *              name: page,
+  *              in: query,
+  *              description: number of page paginate,
+  *              schema: {
+  *                  type: string
+  *              }
+  *           },
+  *          ]
+  */
+ router.post('/chats/?', ChatComponent.findpagination);
 
 /**
   * @swagger
