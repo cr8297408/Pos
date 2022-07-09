@@ -17,7 +17,7 @@ const __name__ = sequelize.define('__name__', {
     type: DataTypes.STRING,
   },
 },{
-  tableName: __name__s,
+  tableName: '__name__s',
   timestamps: true
 })
 

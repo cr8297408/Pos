@@ -2,7 +2,9 @@ const BillingResolution = require('./model');
 const db = require('../../config/connection/connectBD');
 const BillingResolutionValidation = require('./validation');
 const Pagination = require('../../shared/middlewares/pagination');
-const permissions = require('../../shared/middlewares/permissions')
+const permissions = require('../../shared/middlewares/permissions');
+const getUser = require('../../shared/middlewares/getUser')
+
 
 sequelize = db.sequelize;
 
@@ -50,8 +52,21 @@ const BillingResolutionService = {
         if (exists_resolutionNumber) {
           throw new Error('el numero de resolucion ya está en uso...')
         }
+
+        const user = await getUser(bearerHeader);
   
-        const createBillingResolution = await BillingResolution.create(body);
+        const createBillingResolution = await BillingResolution.create({
+          resolutionClass: body.resolutionClass,
+          resolutionType: body.resolutionType,
+          resolutionNumber: body.resolutionNumber,
+          from: body.from,
+          to: body.to,
+          prefix: body.prefix,
+          initialNumber: body.initialNumber,
+          finalNumber: body.finalNumber,
+          localBilling: body.localBilling,
+          createdBy: user.id
+        });
         return createBillingResolution;
       } 
       return {
@@ -153,7 +168,7 @@ const BillingResolutionService = {
         if (exists_resolutionNumber) {
           throw new Error('el numero de resolucion ya está en uso...')
         }
-  
+        const user = await getUser(bearerHeader);
         const newBillingResolution = await BillingResolution.update(
           {
             resolutionClass: body.resolutionClass,
@@ -164,7 +179,8 @@ const BillingResolutionService = {
             prefix: body.prefix,
             initialNumber: body.initialNumber,
             finalNumber: body.finalNumber,
-            localBilling: body.localBilling
+            localBilling: body.localBilling,
+            updatedBy: user.id
           },
           {where: {id}}
         )

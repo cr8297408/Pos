@@ -1,8 +1,9 @@
 const db = require('../../../../config/connection/connectBd');
 const EconomicActivitiesValidation = require('./validation');
 const EconomicActivities = require('./model');
-const Pagination = require('../../../../shared/middlewares/pagination')
-const permissions = require('../../../../shared/middlewares/permissions')
+const Pagination = require('../../../../shared/middlewares/pagination');
+const permissions = require('../../../../shared/middlewares/permissions');
+const getUser = require('../../../../shared/middlewares/getUser');
 
 sequelize = db.sequelize;
 
@@ -46,8 +47,14 @@ const EconomicActivitiesService = {
         if (validate.error) {
           throw new Error(validate.error)
         }
-  
-        const createEconomicActivities = await EconomicActivities.create(body);
+        const user = await getUser(bearerHeader);
+        const createEconomicActivities = await EconomicActivities.create({
+          nameActivity: body.nameActivity,
+          codeCiu: body.codeCiu,
+          codeActivity: body.codeActivity,
+          rate: body.rate,
+          createdBy: user.id
+        });
         return createEconomicActivities;
       } 
       return {
@@ -136,10 +143,14 @@ const EconomicActivitiesService = {
         if (validateBody.error) {
           throw new Error(validate.error)
         }
+        const user = await getUser(bearerHeader);
         const newEconomicActivities = await EconomicActivities.update(
           {
-            name: body.name,
-            description: body.description 
+            nameActivity: body.nameActivity,
+            codeCiu: body.codeCiu,
+            codeActivity: body.codeActivity,
+            rate: body.rate,
+            updatedBy: user.id 
           },
           {where: {id}}
         )

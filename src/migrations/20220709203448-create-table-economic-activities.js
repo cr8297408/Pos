@@ -15,15 +15,15 @@ module.exports = {
         allowNull: false,
       },
       codeCiu: {
-        type: DataTypes.NUMBER,
+        type: DataTypes.FLOAT,
         allowNull: false
       },
       codeActivity: {
-        type: DataTypes.NUMBER,
+        type: DataTypes.FLOAT,
         allowNull: false
       },
       rate: {
-        type: DataTypes.NUMBER,
+        type: DataTypes.FLOAT,
         allowNull: false
       },
       createdAt: {

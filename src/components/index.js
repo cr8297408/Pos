@@ -22,6 +22,7 @@ const MessageComponent = require('../shared/modules/chat/message');
 const ReportTypeComponent = require('../shared/modules/report-type');
 const SupportTicketComponent = require('../shared/modules/support-ticket');
 const TicketThreadComponent = require('../shared/modules/ticket-thread');
+const EconomicActivitieComponent = require('./third-parties/modules/economic-activities');
 
 module.exports = { 
   BankComponent, 
@@ -48,4 +49,5 @@ module.exports = {
   ReportTypeComponent,
   SupportTicketComponent,
   TicketThreadComponent,
+  EconomicActivitieComponent
 }

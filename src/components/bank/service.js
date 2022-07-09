@@ -3,6 +3,7 @@ const BankValidation = require('./validation');
 const Bank = require('./model');
 const Pagination = require('../../shared/middlewares/pagination')
 const permissions = require('../../shared/middlewares/permissions')
+const getUser = require('../../shared/middlewares/getUser')
 
 sequelize = db.sequelize;
 
@@ -46,8 +47,14 @@ const BankService = {
         if (validate.error) {
           throw new Error(validate.error)
         }
+
+        const user = await getUser(bearerHeader);
   
-        const createBank = await Bank.create(body);
+        const createBank = await Bank.create({
+          name: body.name,
+          accountingAccount: body.accountingAccount,
+          createdBy: user.id 
+        });
         return createBank;
       } 
       return {
@@ -136,10 +143,14 @@ const BankService = {
         if (validateBody.error) {
           throw new Error(validate.error)
         }
+
+        const user = await getUser(bearerHeader);
+
         const newBank = await Bank.update(
           {
             name: body.name,
-            accountingAccount: body.accountingAccount 
+            accountingAccount: body.accountingAccount,
+            updatedBy: user.id 
           },
           {where: {id}}
         )

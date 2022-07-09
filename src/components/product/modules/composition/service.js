@@ -4,6 +4,8 @@ const Composition = require('./model');
 const Pagination = require('../../../../shared/middlewares/pagination')
 const permissions = require('../../../../shared/middlewares/permissions');
 const Product = require('../../model');
+const getUser = require('../../../../shared/middlewares/getUser')
+
 
 sequelize = db.sequelize;
 
@@ -58,13 +60,14 @@ const CompositionService = {
             throw new Error('los supplies deben de ser productos validos...')
           }
         }
-  
+        const user = await getUser(bearerHeader);
         const createComposition = await Composition.create({
           name: body.name,
           description: body.description,
           ProductId: body.ProductId,
           supplies: body.supplies,
-          portion: body.portion
+          portion: body.portion,
+          createdBy: user.id
         });
         return createComposition;
       } 
@@ -154,13 +157,15 @@ const CompositionService = {
         if (validateBody.error) {
           throw new Error(validate.error)
         }
+        const user = await getUser(bearerHeader);
         const newComposition = await Composition.update(
           {
             name: body.name,
             description: body.description,
             ProductId: body.ProductId,
             supplies: body.supplies,
-            portion: body.portion
+            portion: body.portion,
+            updatedBy: user.id
           },
           {where: {id}}
         )

@@ -1,8 +1,9 @@
 const db = require('../../../../config/connection/connectBd');
 const ProductGroupValidation = require('./validation');
 const ProductGroup = require('./model');
-const Pagination = require('../../../../shared/middlewares/pagination')
-const permissions = require('../../../../shared/middlewares/permissions')
+const Pagination = require('../../../../shared/middlewares/pagination');
+const permissions = require('../../../../shared/middlewares/permissions');
+const getUser = require('../../../../shared/middlewares/getUser');
 
 sequelize = db.sequelize;
 
@@ -46,8 +47,12 @@ const ProductGroupService = {
         if (validate.error) {
           throw new Error(validate.error)
         }
-  
-        const createProductGroup = await ProductGroup.create(body);
+        const user = await getUser(bearerHeader);
+        const createProductGroup = await ProductGroup.create({
+          name: body.name,
+          description: body.description,
+          createdBy: user.id
+        });
         return createProductGroup;
       } 
       return {
@@ -136,10 +141,12 @@ const ProductGroupService = {
         if (validateBody.error) {
           throw new Error(validate.error)
         }
+        const user = await getUser(bearerHeader);
         const newProductGroup = await ProductGroup.update(
           {
             name: body.name,
-            description: body.description 
+            description: body.description,
+            updatedBy: user.id  
           },
           {where: {id}}
         )

@@ -15,7 +15,7 @@ sequelize = db.sequelize;
  */
 const EventService = {
   /**
-   * @exports
+   * @exports 
    * @implements {Event} model
    * @description get all Events 
    */

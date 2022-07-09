@@ -1,7 +1,9 @@
 const MeasureUnit = require('./model');
 const db = require('../../config/connection/connectBD');
 const MeasureUnitValidation = require('./validation');
-const permissions = require('../../shared/middlewares/permissions')
+const permissions = require('../../shared/middlewares/permissions');
+const getUser = require('../../shared/middlewares/getUser')
+
 
 sequelize = db.sequelize;
 
@@ -40,7 +42,12 @@ const MeasureUnitService = {
           throw new Error(validate.error)
         }
   
-        const createMeasureUnit = await MeasureUnit.create(body);
+        const user = await getUser(bearerHeader);
+
+        const createMeasureUnit = await MeasureUnit.create({
+          name: body.name,
+          createdBy: user.id
+        });
         return createMeasureUnit;
       } 
       return {
@@ -132,9 +139,11 @@ const MeasureUnitService = {
         if (validateBody.error) {
           throw new Error(validate.error)
         }
+        const user = await getUser(bearerHeader);
         const newMeasureUnit = await MeasureUnit.update(
           {
             name: body.name,
+            updatedBy: user.id
           },
           {where: {id}}
         )

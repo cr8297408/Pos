@@ -16,8 +16,10 @@ class EconomicActivitiesValidation {
 
     createEconomicActivities(body){
       const schema = Joi.object().keys({
-        name: Joi.string().required(),
-        description: Joi.string().required(),
+        nameActivity: Joi.string().required(),
+        codeCiu: Joi.number().required(),
+        codeActivity: Joi.number().required(),
+        rate: Joi.number().required()
       })
 
       return schema.validate(body)

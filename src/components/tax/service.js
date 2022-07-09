@@ -2,7 +2,8 @@ const Tax = require('./model');
 const db = require('../../config/connection/connectBD');
 const TaxValidation = require('./validation');
 const permissions = require('../../shared/middlewares/permissions');
-const Pagination = require('../../shared/middlewares/pagination')
+const Pagination = require('../../shared/middlewares/pagination');
+const getUser = require('../../shared/middlewares/getUser');
 
 sequelize = db.sequelize;
 
@@ -40,8 +41,15 @@ const TaxService = {
         if (validate.error) {
           throw new Error(validate.error)
         }
-  
-        const createTax = await Tax.create(body);
+        const user = await getUser(bearerHeader);
+        const createTax = await Tax.create({
+          name: body.name,
+          description:body.description,
+          tax: body.tax,
+          taxType: body.taxType,
+          isActive: body.isActive,
+          createdBy: user.id
+        });
         return createTax;
       } 
       return {
@@ -132,6 +140,7 @@ const TaxService = {
         if (validateBody.error) {
           throw new Error(validate.error)
         }
+        const user = await getUser(bearerHeader);
         const newTax = await Tax.update(
           {
             name: body.name,
@@ -139,6 +148,7 @@ const TaxService = {
             tax: body.tax,
             taxType: body.taxType,
             isActive: body.isActive, 
+            updatedBy: user.id
           },
           {where: {id}}
         )

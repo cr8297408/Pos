@@ -2,8 +2,10 @@ const { Op } = require('sequelize');
 const db = require('../../../../config/connection/connectBd');
 const ProductStructureValidation = require('./validation');
 const ProductStructure = require('./model');
-const Pagination = require('../../../../shared/middlewares/pagination')
+const Pagination = require('../../../../shared/middlewares/pagination');
 const permissions = require('../../../../shared/middlewares/permissions');
+const getUser = require('../../../../shared/middlewares/getUser')
+
 
 sequelize = db.sequelize;
 
@@ -58,7 +60,12 @@ const ProductStructureService = {
         })
 
         if (!existsStruct) {
-          const createProductStructure = await ProductStructure.create(body);
+          const user = await getUser(bearerHeader);
+          const createProductStructure = await ProductStructure.create({
+            name: body.name,
+            code: body.code,
+            createdBy: user.id
+          });
           return createProductStructure;
         }
         return {
@@ -153,10 +160,12 @@ const ProductStructureService = {
         if (validateBody.error) {
           throw new Error(validate.error)
         }
+        const user = await getUser(bearerHeader);
         const newProductStructure = await ProductStructure.update(
           {
             name: body.name,
-            code: body.code 
+            code: body.code,
+            updatedBy: user.id 
           },
           {where: {id}}
         )

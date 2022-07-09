@@ -1,8 +1,10 @@
 const db = require('../../../../config/connection/connectBd');
 const PreparationValidation = require('./validation');
 const Preparation = require('./model');
-const Pagination = require('../../../../shared/middlewares/pagination')
-const permissions = require('../../../../shared/middlewares/permissions')
+const Pagination = require('../../../../shared/middlewares/pagination');
+const permissions = require('../../../../shared/middlewares/permissions');
+const getUser = require('../../../../shared/middlewares/getUser');
+
 
 sequelize = db.sequelize;
 
@@ -46,8 +48,12 @@ const PreparationService = {
         if (validate.error) {
           throw new Error(validate.error)
         }
-  
-        const createPreparation = await Preparation.create(body);
+        const user = await getUser(bearerHeader);
+        const createPreparation = await Preparation.create({
+          name: body.name,
+          description: body.description,
+          createdBy: user.id
+        });
         return createPreparation;
       } 
       return {
@@ -136,10 +142,12 @@ const PreparationService = {
         if (validateBody.error) {
           throw new Error(validate.error)
         }
+        const user = await getUser(bearerHeader);
         const newPreparation = await Preparation.update(
           {
             name: body.name,
-            accountingAccount: body.accountingAccount 
+            description: body.description,
+            updatedBy: user.id 
           },
           {where: {id}}
         )

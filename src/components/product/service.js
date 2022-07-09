@@ -3,6 +3,7 @@ const ProductValidation = require('./validation');
 const Product = require('./model');
 const Pagination = require('../../shared/middlewares/pagination')
 const permissions = require('../../shared/middlewares/permissions')
+const getUser = require('../../shared/middlewares/getUser')
 
 sequelize = db.sequelize;
 
@@ -47,7 +48,12 @@ const ProductService = {
           throw new Error(validate.error)
         }
   
-        const createProduct = await Product.create(body);
+        const user = await getUser(bearerHeader);
+        const createProduct = await Product.create({
+          name: body.name,
+          description: body.description,
+          createdBy: user.id
+        });
         return createProduct;
       } 
       return {
@@ -136,10 +142,12 @@ const ProductService = {
         if (validateBody.error) {
           throw new Error(validate.error)
         }
+        const user = await getUser(bearerHeader);
         const newProduct = await Product.update(
           {
             name: body.name,
-            accountingAccount: body.accountingAccount 
+            description: body.description,
+            updatedBy: user.id 
           },
           {where: {id}}
         )

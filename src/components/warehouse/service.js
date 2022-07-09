@@ -51,8 +51,17 @@ const WarehouseService = {
         if (!validateBillingResource) {
           throw new Error('no existe una resolucion de facturacion con id: ' + idRel)
         }
-  
-        const createWarehouse = await Warehouse.create(body);
+        const user = await getUser(bearerHeader);
+        const createWarehouse = await Warehouse.create({
+          name: body.name,
+          code: body.code,
+          location: body.location, 
+          description: body.description,
+          warehouseTypes: body.warehouseTypes,
+          isActive: body.isActive,
+          BillingResolutionId: body.BillingResolutionId,
+          createdBy: user.id
+        });
         return createWarehouse;
       } 
       return {
@@ -153,7 +162,7 @@ const WarehouseService = {
         if (!validateBillingResource) {
           throw new Error('no existe una resolucion de facturacion con id: ' + idRel)
         }
-  
+        const user = await getUser(bearerHeader);
         const newWarehouse = await Warehouse.update(
           {
             name: body.name,
@@ -161,7 +170,8 @@ const WarehouseService = {
             location: body.location, 
             description: body.description,
             warehouseTypes: body.warehouseTypes,
-            isActive: body.isActive
+            isActive: body.isActive,
+            updatedBy: user.id
           },
           {where: {id}}
         )

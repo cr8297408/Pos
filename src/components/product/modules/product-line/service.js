@@ -4,6 +4,7 @@ const ProductLine = require('./model');
 const Pagination = require('../../../../shared/middlewares/pagination')
 const permissions = require('../../../../shared/middlewares/permissions');
 const ProductStructure = require('../product-structure/model');
+const getUser = require('../../../../shared/middlewares/getUser');
 
 sequelize = db.sequelize;
 
@@ -69,7 +70,13 @@ const ProductLineService = {
           }
         })
         if (searchStructure) {
-          const createProductLine = await ProductLine.create(body);
+          const user = await getUser(bearerHeader);
+          const createProductLine = await ProductLine.create({
+            name: body.name,
+            code: body.code,
+            ProductStructureId: body.ProductStructureId,
+            createdBy: user.id
+          });
           return createProductLine;
         }
         return {
@@ -163,11 +170,13 @@ const ProductLineService = {
         if (validateBody.error) {
           throw new Error(validate.error)
         }
+        const user = await getUser(bearerHeader);
         const newProductLine = await ProductLine.update(
           {
             name: body.name,
             code: body.code,
-            ProductStructureId: body.ProductStructureId 
+            ProductStructureId: body.ProductStructureId,
+            updatedBy: user.id 
           },
           {where: {id}}
         )

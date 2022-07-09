@@ -1,8 +1,9 @@
 const db = require('../../../../config/connection/connectBd');
 const UnitMeasurementValidation = require('./validation');
 const UnitMeasurement = require('./model');
-const Pagination = require('../../../../shared/middlewares/pagination')
-const permissions = require('../../../../shared/middlewares/permissions')
+const Pagination = require('../../../../shared/middlewares/pagination');
+const permissions = require('../../../../shared/middlewares/permissions');
+const getUser = require('../../../../shared/middlewares/getUser')
 
 sequelize = db.sequelize;
 
@@ -46,8 +47,12 @@ const UnitMeasurementService = {
         if (validate.error) {
           throw new Error(validate.error)
         }
-  
-        const createUnitMeasurement = await UnitMeasurement.create(body);
+        const user = await getUser(bearerHeader);
+        const createUnitMeasurement = await UnitMeasurement.create({
+          name: body.name,
+          description: body.description,
+          createdBy: user.id
+        });
         return createUnitMeasurement;
       } 
       return {
@@ -136,10 +141,12 @@ const UnitMeasurementService = {
         if (validateBody.error) {
           throw new Error(validate.error)
         }
+        const user = await getUser(bearerHeader);
         const newUnitMeasurement = await UnitMeasurement.update(
           {
             name: body.name,
-            description: body.description 
+            description: body.description,
+            updatedBy: user.id
           },
           {where: {id}}
         )

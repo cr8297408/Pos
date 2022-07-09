@@ -1,8 +1,9 @@
 const ProductArea = require('./model');
 const db = require('../../../../config/connection/connectBD');
 const ProductAreaValidation = require('./validation');
-const Pagination = require('../../../../shared/middlewares/pagination')
-const permissions = require('../../../../shared/middlewares/permissions')
+const Pagination = require('../../../../shared/middlewares/pagination');
+const permissions = require('../../../../shared/middlewares/permissions');
+const getUser = require('../../../../shared/middlewares/getUser');
 sequelize = db.sequelize;
 
 /**
@@ -48,8 +49,14 @@ const ProductAreaService = {
         if (validateName) {
           throw new Error('el nombre está en uso')
         }
-  
-        const createProductArea = await ProductArea.create(body);
+        const user = await getUser(bearerHeader);
+        const createProductArea = await ProductArea.create({
+          name: body.name,
+          attentionArea: body.attentionArea,
+          description: body.description,
+          isActive: body.isActive,
+          createdBy: user.id
+        });
         return createProductArea;
       } 
       return {
@@ -148,12 +155,14 @@ const ProductAreaService = {
         if (validateName) {
           throw new Error('el nombre está en uso')
         }
+        const user = await getUser(bearerHeader);
         const newProductArea = await ProductArea.update(
           {
             name: body.name,
             attentionArea: body.attentionArea,
             description: body.description,
-            isActive: body.isActive 
+            isActive: body.isActive,
+            updatedBy: user.id
           },
           {where: {id}}
         )

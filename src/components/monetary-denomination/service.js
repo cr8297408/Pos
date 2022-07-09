@@ -3,6 +3,8 @@ const db = require('../../config/connection/connectBD');
 const MonetaryDenominationValidation = require('./validation');
 const Pagination = require('../../shared/middlewares/pagination')
 const permissions = require('../../shared/middlewares/permissions');
+const getUser = require('../../shared/middlewares/getUser')
+
 sequelize = db.sequelize;
 
 /**
@@ -39,8 +41,15 @@ const MonetaryDenominationService = {
         if (validate.error) {
           throw new Error(validate.error)
         }
-  
-        const createMonetaryDenomination = await MonetaryDenomination.create(body);
+        
+        const user = await getUser(bearerHeader);
+
+        const createMonetaryDenomination = await MonetaryDenomination.create({
+          photoFile: body.photoFile,
+          monetaryDenominationTypes: body.monetaryDenominationTypes,
+          value: body.value,
+          createdBy: user.id
+        });
         return createMonetaryDenomination;
           
       } 
@@ -133,11 +142,13 @@ const MonetaryDenominationService = {
         if (validateBody.error) {
           throw new Error(validate.error)
         }
+        const user = await getUser(bearerHeader);
         const newMonetaryDenomination = await MonetaryDenomination.update(
           {
             photoFile: body.photoFile,
             value: body.value,
-            monetaryDenominationTypes: body.monetaryDenominationTypes 
+            monetaryDenominationTypes: body.monetaryDenominationTypes,
+            updatedBy: user.id 
           },
           {where: {id}}
         )
