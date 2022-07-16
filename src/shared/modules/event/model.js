@@ -34,6 +34,10 @@ const Event = sequelize.define('Event', {
   estate: {
     type: DataTypes.ENUM('ACTIVE', 'INACTIVE') 
   },
+  isActive: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: true
+  },
   createdBy: {
     type: DataTypes.STRING,
   },

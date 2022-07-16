@@ -5,7 +5,7 @@ const Pagination = require('../../middlewares/pagination');
 const permissions = require('../../middlewares/permissions');
 const EventUser = require('./eventsUser.model');
 const User = require('../user/model');
-const getUser = require('../../middlewares/getUser');
+const HttpResponse = require('../../response');
 
 sequelize = db.sequelize;
 
@@ -15,23 +15,21 @@ sequelize = db.sequelize;
  */
 const EventService = {
   /**
-   * @exports 
+   * @exports
    * @implements {Event} model
    * @description get all Events 
    */
   async findAll(bearerHeader){
     try {
-      const validatePermission = await permissions(bearerHeader, 'FIND_ALL')
+      const validatePermission = await permissions(bearerHeader, ['FIND_ALL', 'FIND_ALL_EVENT']);
       if (validatePermission) {
         const Events = await Event.findAll()
-        return Events;
+        return new HttpResponse(200, Events);
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      const err = new HttpResponse(401, 'no tienes permisos para esta acción');
+      return err;
     } catch(error) {
-      throw new Error(error.message)
+      return new HttpResponse(400, error.message);
     }
   },
 
@@ -43,12 +41,13 @@ const EventService = {
    */
   async create(bearerHeader, body) {
     try {
-      const validatePermission = await permissions(bearerHeader, 'CREATE')
+      const validatePermission = await permissions(bearerHeader, ['CREATE', 'CREATE_EVENT'])
       if (validatePermission) {
         const validate = EventValidation.createEvent(body);
         if (validate.error) {
-          throw new Error(validate.error)
+          return new HttpResponse(400, validate.error);
         }
+  
         const user = await getUser(bearerHeader);
         const createEvent = await Event.create({
           icon: body.icon,
@@ -60,15 +59,14 @@ const EventService = {
           estate: body.estate,
           createdBy: user.id
         });
-        return createEvent;
+
+        return new HttpResponse(201, 'evento creado');
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      const err = new HttpResponse(401, 'no tienes permisos para esta acción');
+      return err;
       
     } catch (error) {
-      throw new Error(error.message)
+      return new HttpResponse(400, error.message);
     }
   },
 
@@ -79,21 +77,19 @@ const EventService = {
 
   async findOne(bearerHeader, id){
     try {
-      const validatePermission = await permissions(bearerHeader, 'FIND_ONE')
+      const validatePermission = await permissions(bearerHeader, ['FIND_ONE', 'FIND_ONE_EVENT'])
       if (validatePermission) {
         const validate = EventValidation.getEvent(id);
         if (validate.error) {
-          throw new Error(validate.error)
+          return new HttpResponse(400, validate.error);
         }
         const getEvent = await Event.findByPk(id)
-        return getEvent;
+        return new HttpResponse(200, getEvent);
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      const err = new HttpResponse(401, 'no tienes permisos para esta acción');
+      return err;
     } catch (error) {
-      throw new Error(error.message)
+      return new HttpResponse(400, error.message);
     }
   },
   /**
@@ -103,27 +99,25 @@ const EventService = {
    */
   async delete(bearerHeader, id){
     try {
-      const validatePermission = await permissions(bearerHeader, 'DELETE')
+      const validatePermission = await permissions(bearerHeader, ['DELETE', 'DELETE_EVENT'])
       if (validatePermission) {
         const validate = await EventValidation.getEvent(id)
 
         if (validate.error) {
-          throw new Error(validate.error)
+          return new HttpResponse(400, validate.error);
         }
 
         const getEvent = await Event.findByPk(id);
         
         await getEvent.destroy()
 
-        return getEvent;
+        return new HttpResponse(200, 'evento eliminado');
         
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      const err = new HttpResponse(401, 'no tienes permisos para esta acción');
+      return err;
     } catch (error) {
-      throw new Error(error)
+      return new HttpResponse(400, error.message);
     }
   },
 
@@ -135,20 +129,17 @@ const EventService = {
    */
   async update(bearerHeader, id, body){
     try {
-      const validatePermission = await permissions(bearerHeader, 'UPDATE')
+      const validatePermission = await permissions(bearerHeader, ['UPDATE', 'UPDATE_EVENT'])
       if (validatePermission) {
         
         const validateid = await EventValidation.getEvent(id);
         
         if (validateid.error) {
-          throw new Error(validate.error)
+          return new HttpResponse(400, validate.error);
         }
-  
-        const validateBody = await EventValidation.createEvent(body)
-        if (validateBody.error) {
-          throw new Error(validate.error)
-        }
+        
         const user = await getUser(bearerHeader);
+        
         const newEvent = await Event.update(
           {
             icon: body.icon,
@@ -158,36 +149,37 @@ const EventService = {
             initDate: body.initDate,
             description: body.description,
             estate: body.estate,
-            updatedBy: user.id
+            updatedBy: user.id,
+            isActive: body.isActive
           },
           {where: {id}}
         )
   
-        return newEvent;
+        return new HttpResponse(200, 'evento actualizado');
         
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      const err = new HttpResponse(401, 'no tienes permisos para esta acción');
+      return err;
     } catch (error) {
-      
+      return new HttpResponse(400, error.message);
     }
   },
 
-  async findPagination(bearerHeader, sizeAsNumber, pageAsNumber, wherecond){
+  async findPagination(bearerHeader, sizeAsNumber, pageAsNumber, wherecond, isActive){
     try {
-      const validatePermission = await permissions(bearerHeader, 'FIND_PAGINATION')
-      if (validatePermission) {
-        const Events = await Pagination('Events',sequelize,sizeAsNumber, pageAsNumber, wherecond)
-        return Events
-      } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
+      if(isActive == undefined || typeof(isActive) !== 'boolean'){
+        isActive = true
       }
+      const validatePermission = await permissions(bearerHeader, ['FIND_PAGINATION', 'FIND_PAGINATION_EVENT'])
+      if (validatePermission) {
+        let query = `SELECT * FROM events WHERE title LIKE '%${wherecond}%' AND isActive = ${isActive} OR subtitle LIKE '%${wherecond}%' AND isActive = ${isActive} OR description LIKE '%${wherecond}%' AND isActive = ${isActive}`
+        const Events = await Pagination(sequelize,sizeAsNumber, pageAsNumber, query)
+        return new HttpResponse(200, Events);
+      } 
+      const err = new HttpResponse(401, 'no tienes permisos para esta acción');
+      return err;
     } catch (error) {
-        throw new Error(error.message);
+      return new HttpResponse(400, error.message);
     }
   },
 
@@ -197,7 +189,7 @@ const EventService = {
       if (validateBody.error) {
         throw new Error(validateBody.error)
       }
-      const validatePermission = await permissions(bearerHeader, 'CREATE')
+      const validatePermission = await permissions(bearerHeader, ['CREATE', 'CREATE_EVENT'])
       if (validatePermission) {
         try {
           console.log(events.length, users.length);
@@ -209,27 +201,21 @@ const EventService = {
               })
             }  
           }
-          return {
-            message: 'eventos otorgados correctamente',
-            status: 200 
-          }
+          return new HttpResponse(200, 'eventos otorgados correctamente');
         } catch (error) {
-          throw new Error(error.message)
+          return new HttpResponse(400, error.message);
         }
       }
 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      return new HttpResponse(401, 'no tienes permisos para esta acción');
     } catch (error) {
-      throw new Error(error.message)
+      return new HttpResponse(400, error.message);
     }
   },
 
   async showParticipants(bearerHeader, EventId){
     try {
-      const validatePermissions = await permissions(bearerHeader, 'FIND_ALL');
+      const validatePermissions = await permissions(bearerHeader, ['FIND_ALL', 'FIND_ALL_EVENT']);
       if(validatePermissions){
          
         const usersR = await EventUser.findAll({
@@ -244,17 +230,14 @@ const EventService = {
           participants.push(user);
         }
 
-        return participants;
+        return new HttpResponse(200, participants);
 
       }
 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      return new HttpResponse(401, 'no tienes permisos para esta acción');
 
     } catch (error) {
-      throw new Error(error.message)
+      return new HttpResponse(200, error.message);
     }
   }
 

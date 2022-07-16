@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 const { DataTypes, Model, UUIDV4} = require('sequelize');
+=======
+const { DataTypes, UUIDV4} = require('sequelize');
+>>>>>>> development
 const db = require('../../config/connection/connectBd');
 sequelize = db.sequelize;
 
@@ -15,9 +19,10 @@ const __name__ = sequelize.define('__name__', {
   },
   description: {
     type: DataTypes.STRING,
+    allowNull: false,
   },
 },{
-  tableName: '__name__s',
+  tableName: __name__s,
   timestamps: true
 })
 

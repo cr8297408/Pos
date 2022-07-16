@@ -3,7 +3,8 @@ const BankValidation = require('./validation');
 const Bank = require('./model');
 const Pagination = require('../../shared/middlewares/pagination')
 const permissions = require('../../shared/middlewares/permissions')
-const getUser = require('../../shared/middlewares/getUser')
+const getUser = require('../../shared/middlewares/getUser');
+
 
 sequelize = db.sequelize;
 
@@ -49,7 +50,26 @@ const BankService = {
         }
 
         const user = await getUser(bearerHeader);
-  
+
+        const existsBank = await Bank.findOne({
+          where: {
+            name: body.name
+          }
+        })
+        
+        const existsAccount = await Bank.findOne({
+          where: {
+            accountingAccount: body.accountingAccount
+          }
+        })
+        
+        if(existsBank || existsAccount){
+          throw new Error('el nombre del banco y el numero de cuenta deben ser unicos, revisa si ya está registrado este banco')
+        }
+        if(existsBank){
+          throw new Error('el nombre está en uso.')
+        }
+        
         const createBank = await Bank.create({
           name: body.name,
           accountingAccount: body.accountingAccount,
@@ -63,7 +83,7 @@ const BankService = {
       }
       
     } catch (error) {
-      throw new Error(error.message)
+      throw new Error(error)
     }
   },
 

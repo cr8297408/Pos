@@ -22,6 +22,10 @@ const TicketThread = sequelize.define('TicketThread', {
     type: DataTypes.ENUM('OPEN', 'CLOSED'),
     defaultValue: 'OPEN'
   },
+  isActive: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: true
+  },
   createdBy: {
     type: DataTypes.STRING,
   },

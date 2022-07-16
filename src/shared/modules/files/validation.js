@@ -1,23 +1,28 @@
 const Joi = require('joi');
-const __name__ = require('./model');
+const File = require('./model');
 
 /**
  * @export
- * @class __name__Validation
+ * @class FileValidation
  * 
  */
-class __name__Validation {
+class FileValidation {
     /**
-     * create an instance of __name__Validation
-     * @memberof __name__Validation
-     * @param {__name__}
+     * create an instance of FileValidation
+     * @memberof FileValidation
+     * @param {File}
      * @returns {Joi.validationResult}
      */
 
-    create__name__(body){
+    createFile(body){
       const schema = Joi.object().keys({
-        name: Joi.string().required(),
         description: Joi.string().required(),
+        filename: Joi.string().required(),
+        url: Joi.string(),
+        key: Joi.string().required(),
+        bytes: Joi.number(),
+        storage: Joi.string(),
+        status: Joi.string(),
       })
 
       return schema.validate(body)
@@ -28,10 +33,10 @@ class __name__Validation {
      * @returns {Joi.ValidationResult<{ id: string }>}
      * @memberof UserValidation
      */
-     get__name__(id) {
+     getFile(id) {
       const schema = Joi.string().required();
 
       return schema.validate(id);
   }
 }
-module.exports = new __name__Validation();
+module.exports = new FileValidation();

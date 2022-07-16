@@ -31,6 +31,10 @@ const SupportTicket = sequelize.define('SupportTicket', {
     type: DataTypes.ENUM('HIGH', 'MEDIUM', 'LOW'),
     defaultValue: 'LOW'
   },
+  isActive: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: true
+  },
   createdBy: {
     type: DataTypes.STRING,
   },

@@ -2,8 +2,9 @@ const db = require('../../config/connection/connectBd');
 const __name__Validation = require('./validation');
 const __name__ = require('./model');
 const Pagination = require('../../shared/middlewares/pagination')
-const permissions = require('../../shared/middlewares/permissions')
-const getUser = require('../../shared/middlewares/getUser')
+const permissions = require('../../shared/middlewares/permissions');
+const HttpResponse = require('../../shared/response');
+const getUser = require('../../shared/middlewares/getUser');
 
 sequelize = db.sequelize;
 
@@ -19,17 +20,15 @@ const __name__Service = {
    */
   async findAll(bearerHeader){
     try {
-      const validatePermission = await permissions(bearerHeader, 'FIND_ALL')
+      const validatePermission = await permissions(bearerHeader, ['FIND_ALL', 'FIND_ALL___name__'])
       if (validatePermission) {
         const __name__s = await __name__.findAll()
-        return __name__s;
+        return new HttpResponse(200, __name__s);
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      const err = new HttpResponse(401, 'no tienes permisos para esta acción');
+      return err;
     } catch(error) {
-      throw new Error(error.message)
+      return new HttpResponse(400, error.message);
     }
   },
 
@@ -41,29 +40,36 @@ const __name__Service = {
    */
   async create(bearerHeader, body) {
     try {
-      const validatePermission = await permissions(bearerHeader, 'CREATE')
+      const validatePermission = await permissions(bearerHeader, ['CREATE', 'CREATE___name__'])
       if (validatePermission) {
         const validate = __name__Validation.create__name__(body);
         if (validate.error) {
-          throw new Error(validate.error)
+          console.log(new HttpResponse(400, validate.error));
+          return new HttpResponse(400, validate.error);
         }
+        const user = await getUser(bearerHeader);
 
-        const user = getUser(bearerHeader);
-  
+        const exists__name__ = await __name__.findOne({
+          where: {
+            name: body.name
+          }
+        })
+        if(exists__name__){
+          return new HttpResponse(400, 'el nombre de __name__ ya está en uso')
+        }
+        
         const create__name__ = await __name__.create({
           name: body.name,
           description: body.description,
           createdBy: user.id
         });
-        return create__name__;
+        return new HttpResponse(201, 'usuario creado');
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      const err = new HttpResponse(401, 'no tienes permisos para esta acción');
+      return err;
       
     } catch (error) {
-      throw new Error(error.message)
+      return new HttpResponse(400, error.errors[0].message);
     }
   },
 
@@ -74,21 +80,19 @@ const __name__Service = {
 
   async findOne(bearerHeader, id){
     try {
-      const validatePermission = await permissions(bearerHeader, 'FIND_ONE')
+      const validatePermission = await permissions(bearerHeader, ['FIND_ONE', 'FIND_ONE___name__'])
       if (validatePermission) {
         const validate = __name__Validation.get__name__(id);
         if (validate.error) {
-          throw new Error(validate.error)
+          return new HttpResponse(400, validate.error);
         }
-        const get__name__ = await __name__.findByPk(id)
-        return get__name__;
+        const get__name__ = await __name__.findByPk(id);
+        return new HttpResponse(200, get__name__);
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      const err = new HttpResponse(401, 'no tienes permisos para esta acción');
+      return err;
     } catch (error) {
-      throw new Error(error.message)
+      return new HttpResponse(400, error.message);
     }
   },
   /**
@@ -98,27 +102,28 @@ const __name__Service = {
    */
   async delete(bearerHeader, id){
     try {
-      const validatePermission = await permissions(bearerHeader, 'DELETE')
+      const validatePermission = await permissions(bearerHeader, ['DELETE', 'DELETE___name__'])
       if (validatePermission) {
         const validate = await __name__Validation.get__name__(id)
 
         if (validate.error) {
-          throw new Error(validate.error)
+          return new HttpResponse(400, validate.error);
         }
 
-        const get__name__ = await __name__.findByPk(id);
-        
-        await get__name__.destroy()
-
-        return get__name__;
+        const newUser = await __name__.update(
+          {
+            isActive: false
+          },
+          {where: {id}}
+        )
+  
+        return new HttpResponse(200, 'usuario eliminado');
         
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      const err = new HttpResponse(401, 'no tienes permisos para esta acción');
+      return err;
     } catch (error) {
-      throw new Error(error)
+      return new HttpResponse(400, error.message);
     }
   },
 
@@ -130,55 +135,54 @@ const __name__Service = {
    */
   async update(bearerHeader, id, body){
     try {
-      const validatePermission = await permissions(bearerHeader, 'UPDATE')
+      const validatePermission = await permissions(bearerHeader, ['UPDATE', 'UPDATE___name__'])
       if (validatePermission) {
         
         const validateid = await __name__Validation.get__name__(id);
         
         if (validateid.error) {
-          throw new Error(validate.error)
+          return new HttpResponse(400, validateid.error)
         }
-  
-        const validateBody = await __name__Validation.create__name__(body)
-        if (validateBody.error) {
-          throw new Error(validate.error)
+        
+        const exists__name__ = await __name__.findOne({
+          where: {
+            name: body.name
+          }
+        })
+        if(exists__name__){
+          return new HttpResponse(400, 'el nombre de __name__ ya está en uso')
         }
-        const user = await getUser(bearerHeader);
 
         const new__name__ = await __name__.update(
           {
             name: body.name,
             description: body.description,
-            updatedBy: user.id 
+            updatedBy: user.id
           },
           {where: {id}}
         )
   
-        return new__name__;
+        return new HttpResponse(200, 'usuario modificado');
         
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      const err = new HttpResponse(401, 'no tienes permisos para esta acción');
+      return err;
     } catch (error) {
-      
+      return new HttpResponse(400, error.message);
     }
   },
 
   async findPagination(bearerHeader, sizeAsNumber, pageAsNumber, wherecond){
     try {
-      const validatePermission = await permissions(bearerHeader, 'FIND_PAGINATION')
+      const validatePermission = await permissions(bearerHeader, ['FIND_PAGINATION', 'FIND_PAGINATION___name__'])
       if (validatePermission) {
         const __name__s = await Pagination('__name__s',sequelize,sizeAsNumber, pageAsNumber, wherecond)
-        return __name__s
+        return new HttpResponse(200, __name__s);
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      const err = new HttpResponse(401, 'no tienes permisos para esta acción');
+      return err;
     } catch (error) {
-        throw new Error(error.message);
+      return new HttpResponse(400, error.message);
     }
   },
 }

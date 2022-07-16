@@ -1,10 +1,15 @@
+const bcrypt = require('bcrypt');
 const User = require('./model');
-const db = require('../../../config/connection/connectBD');
+const db = require('../../../config/connection/connectBd');
 const UserValidation = require('./validation');
-const Pagination = require('../../middlewares/pagination')
-const { Op } = require("sequelize");
-const permissions = require('../../middlewares/permissions')
-const bcrypt = require('bcrypt')
+const FileService = require('../files/aws-cloud-service');
+const Pagination = require('../../middlewares/pagination');
+const {TemplateSign} = require('../../resources/getTemplate');
+const config = require('../../../config/env');
+const permissions = require('../../middlewares/permissions');
+const sendMail = require('../../resources/send-mail');
+const getUser = require('../../middlewares/getUser');
+const HttpResponse = require('../../response');
 
 sequelize = db.sequelize;
 
@@ -15,17 +20,15 @@ sequelize = db.sequelize;
 const UserService = {
   async findAll(bearerHeader){
     try {
-      const validatePermission = await permissions(bearerHeader, 'FIND_ALL')
+      const validatePermission = await permissions(bearerHeader, ['FIND_ALL', 'FIND_ALL_USER'])
       if (validatePermission) {
         const Users = await User.findAll()
-        return Users;  
+        return new HttpResponse(200, Users);  
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      const err = new HttpResponse(401, 'no tienes permisos para esta acción');
+      return err;
     } catch(error) {
-      throw new Error(error.message)
+      return new HttpResponse(400, error.message);
     }
   },
 
@@ -34,14 +37,13 @@ const UserService = {
    * @param {*} body
    * @implements {User} model 
    */
-  async create(bearerHeader,body) {
+   async create(bearerHeader,body) {
     try {
-      const validatePermission = await permissions(bearerHeader, 'CREATE')
-      console.log(validatePermission);
+      const validatePermission = await permissions(bearerHeader, ['ALTER_USER', 'CREATE_USER'])
       if (validatePermission) {
         const validate = UserValidation.createUser(body);
         if (validate.error) {
-          throw new Error(validate.error)
+          return new HttpResponse(400, validate.error);
         }
         const existsMail = await User.findOne({
           where: {
@@ -55,17 +57,12 @@ const UserService = {
         })
   
         if (existsMail) {
-          return {
-            status: 400,
-            message: 'el email ya está en uso '
-          }
+          return new HttpResponse(400, 'email en uso');
         }
         if (existsUser) {
-          return {
-            status: 400,
-            message: 'el usuario ya está en uso '
-          }
+          return new HttpResponse(400, 'usuario en uso');
         }
+        const user = await getUser(bearerHeader);
   
         const createdUser = await User.create({
           email: body.email,
@@ -76,17 +73,26 @@ const UserService = {
           roles: body.roles,
           profile: body.profile,
           avatarFile: body.avatarFile,
-          typeUser: body.typeUser
+          typeUser: body.typeUser,
+          createdBy: user.id,
+          isActive: body.isActive
         });
-        return createdUser;
+
+        let contactLink = config.CONTACT_LINK;
+        let verificateUser = 'https://google.com'
+        const emailFrom = config.MAIL_USER;
+        const emailTo = body.email;
+        const subject = 'Registro en Pos API'
+        const textPrincipal = `te has registrado correctamete a conexion Pos, porfavor verifica tu cuenta en el siguiente link...`
+        const html = TemplateSign(textPrincipal, body.username, verificateUser, contactLink)
+        await sendMail('syscomp', emailFrom, emailTo, subject,html)
+        return new HttpResponse(200, 'usuario creado');
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      const err = new HttpResponse(401, 'no tienes permisos para esta acción');
+      return err;
 
     } catch (error) {
-      throw new Error(error.message)
+      return new HttpResponse(400, error.message);
     }
   },
 
@@ -97,21 +103,19 @@ const UserService = {
 
    async findOne(bearerHeader,id){
     try {
-      const validatePermission = await permissions(bearerHeader, 'FIND_ONE')
+      const validatePermission = await permissions(bearerHeader, ['FIND_ONE', 'FIND_ONE_USER'])
       if (validatePermission) {
         const validate = UserValidation.getUser(id);
         if (validate.error) {
-          throw new Error(validate.error)
+          return new HttpResponse(400, validate.error);
         }
         const getsUser = await User.findByPk(id)
-        return getsUser;
+        return new HttpResponse(200, getUser);
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      const err = new HttpResponse(401, 'no tienes permisos para esta acción');
+      return err;
     } catch (error) {
-      throw new Error(error.message)
+      return new HttpResponse(400, error.message);
     }
   },
   /**
@@ -121,12 +125,12 @@ const UserService = {
    */
   async delete(bearerHeader,id){
     try {
-      const validatePermission = await permissions(bearerHeader, 'DELETE')
+      const validatePermission = await permissions(bearerHeader, ['ALTER_USER', 'DELETE_USER'])
       if (validatePermission) {
         const validate = await UserValidation.getUser(id)
   
         if (validate.error) {
-          throw new Error(validate.error)
+          return new HttpResponse(400, validate.error);
         }
         const newUser = await User.update(
           {
@@ -136,12 +140,10 @@ const UserService = {
           {where: {id}}
         )
   
-        return newUser;
+        return new HttpResponse(200, 'usuario desactivado');
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      const err = new HttpResponse(401, 'no tienes permisos para esta acción');
+      return err;
     } catch (error) {
       throw new Error(error)
     }
@@ -156,29 +158,26 @@ const UserService = {
 
   async activateUser(bearerHeader,id, body){
     try {
-      const validatePermission = await permissions(bearerHeader, 'UPDATE')
+      const validatePermission = await permissions(bearerHeader, ['ALTER_USER', 'ACTIVATE_USER']);
       if (validatePermission) {
         const validate = await UserValidation.getUser(id)
   
         if (validate.error) {
-          throw new Error(validate.error)
+          return new HttpResponse(400, validate.error);
         }
         const newUser = await User.update(
           {
             isActive: true,
-            verified: true,
           },
           {where: {id}}
         )
   
-        return newUser;
+        return new HttpResponse(200, 'usuario activado');
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      const err = new HttpResponse(401, 'no tienes permisos para esta acción');
+      return err;
     } catch (error) {
-      throw new Error(error)
+      return new HttpResponse(400, error.message);
     }
   },
 
@@ -188,20 +187,18 @@ const UserService = {
    * @param {*} body 
    * @description update a User in the db
    */
-  async update(bearerHeader,id, body){
+   async update(bearerHeader,id, body){
     try {
       
-      const validatePermission = await permissions(bearerHeader, 'UPDATE')
+      const validatePermission = await permissions(bearerHeader, ['ALTER_USER', 'UPDATE_USER'])
       if (validatePermission) {
         const validateid = await UserValidation.getUser(id);
         
         if (validateid.error) {
-          throw new Error(validate.error)
+          return new HttpResponse(400, validateid.error);
         }
-        const validateBody = await UserValidation.createUser(body)
-        if (validateBody.error) {
-          throw new Error(validate.error)
-        }
+
+        const user = await getUser(bearerHeader);
         const newUser = await User.update(
           {
             username: body.username,
@@ -213,39 +210,59 @@ const UserService = {
             isActive: body.isActive,
             isAdmin: body.isAdmin,
             avatarFile: body.avatarFile,
+            updatedBy: user.id
           },
           {where: {id}}
         )
   
-        return newUser;
+        return new HttpResponse(200, 'usuario actualizado');
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      const err = new HttpResponse(401, 'no tienes permisos para esta acción');
+      return err;
 
     } catch (error) {
-      
+      return new HttpResponse(400, error.message);
     }
   },
 
-  async findPagination(bearerHeader,sizeAsNumber, pageAsNumber, wherecond){
+  async findPagination(bearerHeader,sizeAsNumber, pageAsNumber, wherecond, isActive){
     try {
-      const validatePermission = await permissions(bearerHeader, 'FIND_PAGINATION')
-      if (validatePermission) {
-        const Users = await Pagination('users',sequelize,sizeAsNumber, pageAsNumber, wherecond)
-        return Users
-      } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
+      if(isActive == undefined || typeof(isActive) !== 'boolean'){
+        isActive = true
       }
+      const validatePermission = await permissions(bearerHeader, ['FIND_PAGINATION', 'FIND_PAGINATION_USER'])
+      if (validatePermission) {
+        let query = `SELECT * FROM users WHERE username LIKE '%${wherecond}%' AND isActive = ${isActive} OR firstName LIKE '%${wherecond}%' AND isActive = ${isActive} OR lastName LIKE '%${wherecond}%' AND isActive = ${isActive} OR email LIKE '%${wherecond}%' AND isActive = ${isActive}`
+        const Users = await Pagination(sequelize,sizeAsNumber, pageAsNumber, query)
+        return new HttpResponse(200, Users);
+      } 
+      const err = new HttpResponse(401, 'no tienes permisos para esta acción');
+      return err;
 
     } catch (error) {
-        throw new Error(error.message);
+      return new HttpResponse(400, error.message);
     }
   },
 
+  async putAvatar(bearerHeader, originalname, path){
+    try {
+      const user = await getUser(bearerHeader);
+      if (!user) {
+        return new HttpResponse(400, 'token invalido');
+      }
+      const avatar = await FileService.uploadFile(path, originalname); 
+      const userModif = await User.update({
+        avatarFile: avatar
+      }, {
+        where: {id:user.id}
+      })
+
+      return userModif
+      
+    } catch (error) {
+      return new HttpResponse(400, error.message);
+    }
+  }
 }
 
 module.exports = UserService;

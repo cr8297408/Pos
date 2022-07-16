@@ -1,26 +1,11 @@
 const AuthService = require('./service');
 
-async function signUp(req, res, next) {
-  try {
-    const {
-      email, 
-      username,
-      firstname,
-      password,
-      lastname
-    } = req.body;
-    const Auths = await AuthService.signUp(req.body)
-    res.status(200).json(Auths)
-  } catch (error) {
-    res.json(error.message)
-  }
-}
 
 async function signIn(req, res, next){
   try {
     const {email, password} = req.body;
     const getAuth = await AuthService.signIn({email, password});
-    res.status(201).json(getAuth)
+    res.status(getAuth.status).json(getAuth.message)
   
   } catch (error) {
     res.json(error.message)
@@ -36,7 +21,7 @@ async function changePassword(req, res){
       newPassword
     }, req.headers['authorization'])
 
-    res.json(getPassAuth)
+    res.status(getPassAuth.status).json(getPassAuth.message)
   } catch (error) {
     res.json(error.message)
   }
@@ -46,7 +31,7 @@ async function forgotPassword(req, res) {
   try {
     const {email} = req.body;
     const forgotPass = await AuthService.forgotPassword(email);
-    res.json(forgotPass)
+    res.status(forgotPass.status).json(forgotPass.message)
   } catch (error) {
     res.json(error.message)
   }
@@ -56,7 +41,7 @@ async function newPassword(req, res) {
   try {
     const { newPassword } = req.body;
     const newPass = await AuthService.newPassword(newPassword, req.headers['authorization'])
-    res.json(newPass)
+    res.status(newPass.status).json(newPass.message)
   } catch (error) {
     res.json(error.message)
   }
@@ -66,7 +51,7 @@ async function getUserAuth(req, res){
   try {
     const userLog = await AuthService.getUserLog(req.headers['authorization']) 
 
-    res.json(userLog)
+    res.status(userLog.status).json(userLog.message);
   } catch(error) {
     throw new Error(error.message)
   }
@@ -77,6 +62,5 @@ module.exports = {
   changePassword,
   forgotPassword,
   newPassword,
-  getUserAuth,
-  signUp
+  getUserAuth
 }

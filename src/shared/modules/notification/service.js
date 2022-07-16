@@ -3,6 +3,7 @@ const NotificationValidation = require('./validation');
 const Notification = require('./model');
 const Pagination = require('../../../shared/middlewares/pagination');
 const permissions = require('../../../shared/middlewares/permissions');
+const HttpResponse = require('../../response');
 const getUser = require('../../middlewares/getUser');
 
 sequelize = db.sequelize;
@@ -19,17 +20,15 @@ const NotificationService = {
    */
   async findAll(bearerHeader){
     try {
-      const validatePermission = await permissions(bearerHeader, 'FIND_ALL')
+      const validatePermission = await permissions(bearerHeader, ['FIND_ALL', 'FIND_ALL_NOTIFICATION'])
       if (validatePermission) {
         const Notifications = await Notification.findAll()
-        return Notifications;
+        return new HttpResponse(200, Notifications);
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      const err = new HttpError(401, 'no tienes permisos para esta acción');
+      return err;
     } catch(error) {
-      throw new Error(error.message)
+      return new HttpError(400, error.message);
     }
   },
 
@@ -41,12 +40,13 @@ const NotificationService = {
    */
   async create(bearerHeader, body) {
     try {
-      const validatePermission = await permissions(bearerHeader, 'CREATE')
+      const validatePermission = await permissions(bearerHeader, ['CREATE', 'CREATE_NOTIFICATION'])
       if (validatePermission) {
         const validate = NotificationValidation.createNotification(body);
         if (validate.error) {
-          throw new Error(validate.error)
+          return new HttpError(400, validate.error);
         }
+  
         const user = await getUser(bearerHeader);
         const createNotification = await Notification.create({
           message: body.message,
@@ -54,15 +54,13 @@ const NotificationService = {
           isRead: body.isRead,
           createdBy: user.id
         });
-        return createNotification;
+        return new HttpResponse(200, 'notificacion creada');
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      const err = new HttpError(401, 'no tienes permisos para esta acción');
+      return err;
       
     } catch (error) {
-      throw new Error(error.message)
+      return new HttpError(400, error.message);
     }
   },
 
@@ -73,21 +71,19 @@ const NotificationService = {
 
   async findOne(bearerHeader, id){
     try {
-      const validatePermission = await permissions(bearerHeader, 'FIND_ONE')
+      const validatePermission = await permissions(bearerHeader, ['FIND_ONE', 'FIND_ONE_NOTIFICATION'])
       if (validatePermission) {
         const validate = NotificationValidation.getNotification(id);
         if (validate.error) {
-          throw new Error(validate.error)
+          return new HttpError(400, validate.error);
         }
         const getNotification = await Notification.findByPk(id)
-        return getNotification;
+        return new HttpResponse(200, getNotification);
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      const err = new HttpError(401, 'no tienes permisos para esta acción');
+      return err;
     } catch (error) {
-      throw new Error(error.message)
+      return new HttpError(400, error.message);
     }
   },
   /**
@@ -97,43 +93,43 @@ const NotificationService = {
    */
   async delete(bearerHeader, id){
     try {
-      const validatePermission = await permissions(bearerHeader, 'DELETE')
+      const validatePermission = await permissions(bearerHeader, ['DELETE', 'DELETE_NOTIFICATION'])
       if (validatePermission) {
         const validate = await NotificationValidation.getNotification(id)
 
         if (validate.error) {
-          throw new Error(validate.error)
+          return new HttpError(400, validate.error);
         }
 
         const getNotification = await Notification.findByPk(id);
         
         await getNotification.destroy()
 
-        return getNotification;
+        return new HttpResponse(200, 'notificacion eliminada');
         
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      const err = new HttpError(401, 'no tienes permisos para esta acción');
+      return err;
     } catch (error) {
-      throw new Error(error)
+      return new HttpError(400, error.message);
     }
   },
 
-  async findPagination(bearerHeader, sizeAsNumber, pageAsNumber, wherecond){
+  async findPagination(bearerHeader, sizeAsNumber, pageAsNumber, wherecond, isActive){
     try {
-      const validatePermission = await permissions(bearerHeader, 'FIND_PAGINATION')
-      if (validatePermission) {
-        const Notifications = await Pagination('Notifications',sequelize,sizeAsNumber, pageAsNumber, wherecond)
-        return Notifications
-      } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
+      if(isActive == undefined || typeof(isActive) !== 'boolean'){
+        isActive = true
       }
+      const validatePermission = await permissions(bearerHeader, ['FIND_PAGINATION', 'FIND_PAGINATION_NOTIFICATION'])
+      if (validatePermission) {
+        let query = `SELECT * FROM notifications WHERE message LIKE '%${wherecond}%' AND isActive = ${isActive} OR typeNotification LIKE '%${wherecond}%' AND isActive = ${isActive} OR module LIKE '%${wherecond}%' AND isActive = ${isActive}`
+        const Notifications = await Pagination(sequelize,sizeAsNumber, pageAsNumber, query)
+        return new HttpResponse(200, Notifications);
+      } 
+      const err = new HttpError(401, 'no tienes permisos para esta acción');
+      return err;
     } catch (error) {
-        throw new Error(error.message);
+      return new HttpError(400, error.message);
     }
   },
 }

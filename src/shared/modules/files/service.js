@@ -1,29 +1,30 @@
 const db = require('../../../config/connection/connectBd');
-const ReportTypeValidation = require('./validation');
-const ReportType = require('./model');
-const Pagination = require('../../middlewares/pagination')
+const FileValidation = require('./validation');
+const File = require('./model');
+const Pagination = require('../../middlewares/pagination');
 const permissions = require('../../middlewares/permissions');
-const HttpResponse = require('../../response');
+const FileAwsService = require('./aws-cloud-service');
 const getUser = require('../../middlewares/getUser');
+const HttpResponse = require('../../response');
 
 sequelize = db.sequelize;
 
 /**
  * @exports
- * @implements {ReportType} model
+ * @implements {File} model
  */
-const ReportTypeService = {
+const FileService = {
   /**
    * @exports
-   * @implements {ReportType} model
-   * @description get all ReportTypes 
+   * @implements {File} model
+   * @description get all Files 
    */
   async findAll(bearerHeader){
     try {
-      const validatePermission = await permissions(bearerHeader, ['FIND_ALL', 'FIND_ALL_REPORT_TYPE'])
+      const validatePermission = await permissions(bearerHeader, ['FIND_ALL', 'FIND_ALL_FILE'])
       if (validatePermission) {
-        const ReportTypes = await ReportType.findAll()
-        return new HttpResponse(200, ReportTypes);
+        const Files = await File.findAll()
+        return new HttpResponse(200, Files);
       } 
       const err = new HttpResponse(401, 'no tienes permisos para esta acción');
       return err;
@@ -36,24 +37,33 @@ const ReportTypeService = {
   /**
    * @exports
    * @param {*} body
-   * @implements {ReportType} model 
+   * @implements {File} model 
    */
-  async create(bearerHeader, body) {
+  async create(bearerHeader, body, path, originalname) {
     try {
-      const validatePermission = await permissions(bearerHeader, ['CREATE', 'CREATE_REPORT_TYPE'])
+      const validatePermission = await permissions(bearerHeader, ['CREATE', 'CREATE_FILE'])
       if (validatePermission) {
-        const validate = ReportTypeValidation.createReportType(body);
+        const validate = FileValidation.createFile(body);
         if (validate.error) {
           return new HttpResponse(400, validate.error);
         }
-  
         const user = await getUser(bearerHeader);
-        const createReportType = await ReportType.create({
-          name: body.name,
+        const createFile = await File.create({
           description: body.description,
+          filename: body.filename,
+          url: body.url,
+          key: body.key,
+          bytes: body.bytes,
+          storage: body.storage,
+          status: body.status,
           createdBy: user.id
         });
-        return new HttpResponse(200, 'tipo de reporte agregado');
+
+        if(body.storage == 'AWS'){
+          const uploadAws = FileAwsService.uploadFile(path, originalname)
+        }
+  
+        return new HttpResponse(200, 'archivo subido');
       } 
       const err = new HttpResponse(401, 'no tienes permisos para esta acción');
       return err;
@@ -65,19 +75,19 @@ const ReportTypeService = {
 
   /**
    * @exports
-   * @implements {ReportType} model
+   * @implements {File} model
    */
 
   async findOne(bearerHeader, id){
     try {
-      const validatePermission = await permissions(bearerHeader, ['FIND_ONE', 'FIND_ONE_REPORT_TYPE'])
+      const validatePermission = await permissions(bearerHeader, ['FIND_ONE', 'FIND_ONE_FILE'])
       if (validatePermission) {
-        const validate = ReportTypeValidation.getReportType(id);
+        const validate = FileValidation.getFile(id);
         if (validate.error) {
           return new HttpResponse(400, validate.error);
         }
-        const getReportType = await ReportType.findByPk(id)
-        return new HttpResponse(200, getReportType);
+        const getFile = await File.findByPk(id)
+        return new HttpResponse(200, getFile);
       } 
       const err = new HttpResponse(401, 'no tienes permisos para esta acción');
       return err;
@@ -88,23 +98,23 @@ const ReportTypeService = {
   /**
    * @exports
    * @param {*} id
-   * @implements {ReportType} model
+   * @implements {File} model
    */
   async delete(bearerHeader, id){
     try {
-      const validatePermission = await permissions(bearerHeader, ['DELETE', 'DELETE_REPORT_TYPE'])
+      const validatePermission = await permissions(bearerHeader, ['DELETE', 'DELETE_FILE'])
       if (validatePermission) {
-        const validate = await ReportTypeValidation.getReportType(id)
+        const validate = await FileValidation.getFile(id)
 
         if (validate.error) {
           return new HttpResponse(400, validate.error);
         }
 
-        const getReportType = await ReportType.findByPk(id);
+        const getFile = await File.findByPk(id);
         
-        await getReportType.destroy()
+        await getFile.destroy()
 
-        return new HttpResponse(200, 'tipo de reporte eliminado');
+        return new HttpResponse(200, 'archivo eliminado');
         
       } 
       const err = new HttpResponse(401, 'no tienes permisos para esta acción');
@@ -118,31 +128,35 @@ const ReportTypeService = {
    * @exports
    * @param {*} id 
    * @param {*} body 
-   * @description update a ReportType in the db
+   * @description update a File in the db
    */
   async update(bearerHeader, id, body){
     try {
-      const validatePermission = await permissions(bearerHeader, ['UPDATE', 'UPDATE_REPORT_TYPE'])
+      const validatePermission = await permissions(bearerHeader, ['UPDATE', 'UPDATE_FILE'])
       if (validatePermission) {
         
-        const validateid = await ReportTypeValidation.getReportType(id);
+        const validateid = await FileValidation.getFile(id);
         
         if (validateid.error) {
           return new HttpResponse(400, validateid.error);
         }
   
-        const user = await getUser(bearerHeader);
-        const newReportType = await ReportType.update(
+        const newFile = await File.update(
           {
-            name: body.name,
             description: body.description,
+            filename: body.filename,
+            url: body.url,
+            key: body.key,
+            bytes: body.bytes,
+            storage: body.storage,
+            status: body.status,
             updatedBy: user.id,
             isActive: body.isActive
           },
           {where: {id}}
         )
   
-        return new HttpResponse(200, 'tipo de reporte actualizado');
+        return new HttpResponse(200, 'informacion de archivo actualizada');
         
       } 
       const err = new HttpResponse(401, 'no tienes permisos para esta acción');
@@ -157,11 +171,11 @@ const ReportTypeService = {
       if(isActive == undefined || typeof(isActive) !== 'boolean'){
         isActive = true
       }
-      const validatePermission = await permissions(bearerHeader, ['FIND_PAGINATION', 'FIND_PAGINATION_REPORT_TYPE'])
+      const validatePermission = await permissions(bearerHeader, ['FIND_PAGINATION', 'FIND_PAGINATION_FILE'])
       if (validatePermission) {
-        let query = `SELECT * FROM reportTypes WHERE name LIKE '%${wherecond}%' AND isActive = ${isActive} OR description LIKE '%${wherecond}%' AND isActive = ${isActive}`
-        const ReportTypes = await Pagination(sequelize,sizeAsNumber, pageAsNumber, query)
-        return new HttpResponse(200, ReportTypes);
+        let query = `SELECT * FROM files WHERE filename LIKE '%${wherecond}%' AND isActive = ${isActive}`
+        const Files = await Pagination(sequelize,sizeAsNumber, pageAsNumber, query)
+        return new HttpResponse(200, Files);
       } 
       const err = new HttpResponse(401, 'no tienes permisos para esta acción');
       return err;
@@ -171,4 +185,4 @@ const ReportTypeService = {
   },
 }
 
-module.exports = ReportTypeService;
+module.exports = FileService;
