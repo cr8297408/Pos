@@ -143,7 +143,7 @@ const router = Router();
   *          properties:
   *              id:
   *                  type: string
-  *              nameActivitie:
+  *              nameActivity:
   *                  type: string
   *              codeCiu:
   *                  type: number
@@ -152,7 +152,7 @@ const router = Router();
   *              rate:
   *                  type: number
   *          example:
-  *              nameActivitie: actividad 1
+  *              nameActivity: actividad 1
   *              codeCiu: 1
   *              codeActivity: 123
   *              rate: 23

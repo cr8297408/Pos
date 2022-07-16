@@ -12,6 +12,7 @@ const EconomicActivitie = sequelize.define('EconomicActivitie', {
   nameActivity: {
     type: DataTypes.STRING,
     allowNull: false,
+    unique: true
   },
   codeCiu: {
     type: DataTypes.FLOAT,
@@ -19,7 +20,8 @@ const EconomicActivitie = sequelize.define('EconomicActivitie', {
   },
   codeActivity: {
     type: DataTypes.FLOAT,
-    allowNull: false
+    allowNull: false,
+    unique: true
   },
   rate: {
     type: DataTypes.FLOAT,

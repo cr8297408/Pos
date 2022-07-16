@@ -13,6 +13,7 @@ const ProductLine = sequelize.define('ProductLine', {
   name: {
     type: DataTypes.STRING,
     allowNull: false,
+    unique: true
   },
   code: {
     type: DataTypes.STRING,

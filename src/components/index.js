@@ -23,6 +23,7 @@ const ReportTypeComponent = require('../shared/modules/report-type');
 const SupportTicketComponent = require('../shared/modules/support-ticket');
 const TicketThreadComponent = require('../shared/modules/ticket-thread');
 const EconomicActivitieComponent = require('./third-parties/modules/economic-activities');
+const FiscalResponsibilityComponent = require('./third-parties/modules/fiscal-responsibility');
 
 module.exports = { 
   BankComponent, 
@@ -49,5 +50,6 @@ module.exports = {
   ReportTypeComponent,
   SupportTicketComponent,
   TicketThreadComponent,
-  EconomicActivitieComponent
+  EconomicActivitieComponent,
+  FiscalResponsibilityComponent
 }

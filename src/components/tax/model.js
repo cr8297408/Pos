@@ -12,6 +12,7 @@ const Tax = sequelize.define('Tax', {
   name: {
     type: DataTypes.STRING,
     allowNull: false,
+    unique: true
   },
   description: {
     type: DataTypes.STRING,

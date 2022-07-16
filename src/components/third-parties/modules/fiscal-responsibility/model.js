@@ -2,30 +2,24 @@ const { DataTypes, Model, UUIDV4} = require('sequelize');
 const db = require('../../../../config/connection/connectBd');
 sequelize = db.sequelize;
 
-const UnitMeasurement = sequelize.define('UnitMeasurement', {
+const FiscalResponsibility = sequelize.define('FiscalResponsibility', {
   id: {
     type: DataTypes.STRING,
     defaultValue: UUIDV4,
     primaryKey: true,
     allowNull: false,
   },
-  name: {
+  codeDian: {
     type: DataTypes.STRING,
     allowNull: false,
     unique: true
   },
-  description: {
+  taxDescription: {
     type: DataTypes.STRING,
   },
-  createdBy: {
-    type: DataTypes.STRING,
-  },
-  updatedBy: {
-    type: DataTypes.STRING,
-  }
 },{
-  tableName: 'unitMeasurements',
+  tableName: 'fiscalResponsibilitys',
   timestamps: true
 })
 
-module.exports = UnitMeasurement;
+module.exports = FiscalResponsibility;

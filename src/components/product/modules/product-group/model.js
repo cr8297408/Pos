@@ -12,6 +12,7 @@ const ProductGroup = sequelize.define('ProductGroup', {
   name: {
     type: DataTypes.STRING,
     allowNull: false,
+    unique: true
   },
   description: {
     type: DataTypes.STRING,

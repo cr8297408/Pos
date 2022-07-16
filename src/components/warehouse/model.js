@@ -14,10 +14,12 @@ const Warehouse = sequelize.define('Warehouse', {
   name: {
     type: DataTypes.STRING,
     allowNull: false,
+    unique: true
   },
   code: {
     type: DataTypes.INTEGER,
     allowNull: false,
+    unique: true
   },
   location: {
     type: DataTypes.STRING,
