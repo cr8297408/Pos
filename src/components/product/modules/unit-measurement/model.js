@@ -17,6 +17,10 @@ const UnitMeasurement = sequelize.define('UnitMeasurement', {
   description: {
     type: DataTypes.STRING,
   },
+  isActive: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: true
+  },
   createdBy: {
     type: DataTypes.STRING,
   },

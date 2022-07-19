@@ -46,6 +46,10 @@ module.exports = {
         type: DataTypes.STRING,
         defaultValue: new Date(),
       },
+      isActive: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: true
+      },
       createdBy: {
         type: DataTypes.STRING,
       },

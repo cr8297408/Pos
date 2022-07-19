@@ -19,6 +19,10 @@ const ProductStructure = sequelize.define('ProductStructure', {
     allowNull: false,
     unique: true
   },
+  isActive: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: true
+  },
   createdBy: {
     type: DataTypes.STRING,
   },

@@ -16,6 +16,10 @@ const Preparation = sequelize.define('Preparation', {
   description: {
     type: DataTypes.STRING,
   },
+  isActive: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: true
+  },
   createdBy: {
     type: DataTypes.STRING,
   },

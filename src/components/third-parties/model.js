@@ -19,6 +19,10 @@ const ThirdParties = sequelize.define('ThirdParties', {
   createdBy: {
     type: DataTypes.STRING,
   },
+  isActive: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: true
+  },
   updatedBy: {
     type: DataTypes.STRING,
   }

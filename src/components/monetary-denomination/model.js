@@ -20,6 +20,10 @@ const MonetaryDenomination = sequelize.define('MonetaryDenomination', {
     type: DataTypes.ENUM('BILL', 'COIN'),
     allowNull: false,
   },
+  isActive: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: true
+  },
   createdBy: {
     type: DataTypes.STRING,
   },

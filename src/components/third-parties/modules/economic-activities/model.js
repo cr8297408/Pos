@@ -27,6 +27,10 @@ const EconomicActivitie = sequelize.define('EconomicActivitie', {
     type: DataTypes.FLOAT,
     allowNull: false
   },
+  isActive: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: true
+  },
   createdBy: {
     type: DataTypes.STRING,
   },
@@ -34,7 +38,7 @@ const EconomicActivitie = sequelize.define('EconomicActivitie', {
     type: DataTypes.STRING,
   }
 },{
-  tableName: 'EconomicActivities',
+  tableName: 'economicActivities',
   timestamps: true
 })
 

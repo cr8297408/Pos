@@ -12,6 +12,22 @@ async function signIn(req, res, next){
   }
 }
 
+async function signUp(req, res, next) {
+  try {
+    const {
+      email, 
+      username,
+      firstname,
+      password,
+      lastname
+    } = req.body;
+    const Auths = await AuthService.signUp(req.body)
+    res.status(200).json(Auths)
+  } catch (error) {
+    res.json(error.message)
+  }
+}
+
 async function changePassword(req, res){
   try {
     const {email, oldPassword, newPassword} = req.body;
@@ -59,6 +75,7 @@ async function getUserAuth(req, res){
 
 module.exports = {
   signIn,
+  signUp,
   changePassword,
   forgotPassword,
   newPassword,

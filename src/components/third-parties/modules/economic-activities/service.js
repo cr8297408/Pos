@@ -4,6 +4,7 @@ const EconomicActivities = require('./model');
 const Pagination = require('../../../../shared/middlewares/pagination');
 const permissions = require('../../../../shared/middlewares/permissions');
 const getUser = require('../../../../shared/middlewares/getUser');
+const HttpResponse = require('../../../../shared/response');
 
 sequelize = db.sequelize;
 
@@ -19,17 +20,15 @@ const EconomicActivitiesService = {
    */
   async findAll(bearerHeader){
     try {
-      const validatePermission = await permissions(bearerHeader, 'FIND_ALL')
+      const validatePermission = await permissions(bearerHeader, ['FIND_ALL', 'FIND_ALL_ECONOMIC_ACTIVITIE']);
       if (validatePermission) {
         const EconomicActivitiess = await EconomicActivities.findAll()
-        return EconomicActivitiess;
+        return new HttpResponse(200, EconomicActivitiess);
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      return new HttpResponse(401, 'no tienes permisos para esta acción')
+
     } catch(error) {
-      throw new Error(error.message)
+      throw new HttpResponse(400, error.message)
     }
   },
 
@@ -41,29 +40,45 @@ const EconomicActivitiesService = {
    */
   async create(bearerHeader, body) {
     try {
-      const validatePermission = await permissions(bearerHeader, 'CREATE')
+      const validatePermission = await permissions(bearerHeader, ['CREATE', 'CREATE_ECONOMIC_ACTIVITIE']);
       if (validatePermission) {
         const validate = EconomicActivitiesValidation.createEconomicActivities(body);
         if (validate.error) {
-          throw new Error(validate.error)
+          throw new HttpResponse(200, validate.error)
         }
         const user = await getUser(bearerHeader);
+        
+        /** unique validations */
+        // const validateName = await ThirdParties.findOne({
+        //   where: {
+        //     [Op.or]: [{nameActivity: body.nameActivity}, {codeCiu: body.codeCiu}, {codeActivity: body.nameActivity}]
+        //   }
+        // })
+        // if (validateName) {
+        //   return new HttpResponse(400, 'el nombre ya está en uso');
+        // }
+        const validateName = await EconomicActivities.findOne({
+          where: {
+            name: body.name
+          }
+        })
+        if (validateName) {
+          return new HttpResponse(400, 'el nombre ya está en uso');
+        }
         const createEconomicActivities = await EconomicActivities.create({
           nameActivity: body.nameActivity,
           codeCiu: body.codeCiu,
           codeActivity: body.codeActivity,
           rate: body.rate,
+          isActive: body.isActive,
           createdBy: user.id
         });
         return createEconomicActivities;
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      return new HttpResponse(401, 'no tienes permisos para esta acción')
       
     } catch (error) {
-      throw new Error(error.message)
+      throw new HttpResponse(400, error.message);
     }
   },
 
@@ -74,21 +89,19 @@ const EconomicActivitiesService = {
 
   async findOne(bearerHeader, id){
     try {
-      const validatePermission = await permissions(bearerHeader, 'FIND_ONE')
+      const validatePermission = await permissions(bearerHeader, ['FIND_ONE', 'FIND_ONE_ECONOMIC_ACTIVITIE']);
       if (validatePermission) {
         const validate = EconomicActivitiesValidation.getEconomicActivities(id);
         if (validate.error) {
-          throw new Error(validate.error)
+          throw new HttpResponse(400, validate.error);
         }
         const getEconomicActivities = await EconomicActivities.findByPk(id)
-        return getEconomicActivities;
+        return new HttpResponse(200, getEconomicActivities);
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      return new HttpResponse(401, 'no tienes permisos para esta acción')
+
     } catch (error) {
-      throw new Error(error.message)
+      throw new HttpResponse(400, error.message)
     }
   },
   /**
@@ -98,27 +111,26 @@ const EconomicActivitiesService = {
    */
   async delete(bearerHeader, id){
     try {
-      const validatePermission = await permissions(bearerHeader, 'DELETE')
+      const validatePermission = await permissions(bearerHeader, ['DELETE', 'DELETE_ECONOMIC_ACTIVITIE']);
       if (validatePermission) {
         const validate = await EconomicActivitiesValidation.getEconomicActivities(id)
 
         if (validate.error) {
-          throw new Error(validate.error)
+          throw new HttpResponse(validate.error)
         }
 
         const getEconomicActivities = await EconomicActivities.findByPk(id);
         
         await getEconomicActivities.destroy()
 
-        return getEconomicActivities;
+        return new HttpResponse(200, 'actividad eliminada');
         
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      
+      return new HttpResponse(401, 'no tienes permisos para esta acción')
+
     } catch (error) {
-      throw new Error(error)
+      throw new HttpResponse(400, error.message);
     }
   },
 
@@ -130,56 +142,63 @@ const EconomicActivitiesService = {
    */
   async update(bearerHeader, id, body){
     try {
-      const validatePermission = await permissions(bearerHeader, 'UPDATE')
+      const validatePermission = await permissions(bearerHeader, ['UPDATE', 'UPDATE_ECONOMIC_ACTIVITIE'])
       if (validatePermission) {
         
         const validateid = await EconomicActivitiesValidation.getEconomicActivities(id);
         
         if (validateid.error) {
-          throw new Error(validate.error)
+          throw new HttpResponse(validateid.error)
         }
   
-        const validateBody = await EconomicActivitiesValidation.createEconomicActivities(body)
-        if (validateBody.error) {
-          throw new Error(validate.error)
-        }
         const user = await getUser(bearerHeader);
+
+        const validateName = await ThirdParties.findOne({
+          where: {
+            name: body.name
+          }
+        })
+        if (validateName) {
+          return new HttpResponse(400, 'el nombre ya está en uso');
+        }
+
         const newEconomicActivities = await EconomicActivities.update(
           {
             nameActivity: body.nameActivity,
             codeCiu: body.codeCiu,
             codeActivity: body.codeActivity,
             rate: body.rate,
+            isActive: body.isActive,
             updatedBy: user.id 
           },
           {where: {id}}
         )
   
-        return newEconomicActivities;
+        return new HttpResponse(200, 'actividad actualizada');
         
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      return new HttpResponse(401, 'no tienes permisos para esta acción')
+
     } catch (error) {
-      
+      throw new HttpResponse(400, error.message);      
     }
   },
 
   async findPagination(bearerHeader, sizeAsNumber, pageAsNumber, wherecond){
     try {
-      const validatePermission = await permissions(bearerHeader, 'FIND_PAGINATION')
+      const validatePermission = await permissions(bearerHeader, ['FIND_PAGINATION', 'FIND_PAGINATION_ECONOMIC_ACTIVITES']);
       if (validatePermission) {
-        const EconomicActivitiess = await Pagination('EconomicActivitiess',sequelize,sizeAsNumber, pageAsNumber, wherecond)
-        return EconomicActivitiess
+        if(isActive == undefined || typeof(isActive) !== 'boolean'){
+          isActive = true
+        }
+
+        let query = `SELECT * FROM economicActivities WHERE name LIKE '%${wherecond}%' AND isActive = ${isActive} OR codeCiu LIKE '%${wherecond}%' AND isActive = ${isActive} OR codeActivity LIKE '%${wherecond}%' AND isActive = ${isActive} OR rate LIKE '%${wherecond}%' AND isActive = ${isActive}`
+        const economicActivities = Pagination(sequelize,sizeAsNumber, pageAsNumber, query);
+        return new HttpResponse(200, economicActivities);
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      return new HttpResponse(401, 'no tienes permisos para esta acción');
     } catch (error) {
-        throw new Error(error.message);
+        throw new HttpResponse(400, error.message);
     }
   },
 }

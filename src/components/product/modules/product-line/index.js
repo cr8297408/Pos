@@ -1,40 +1,39 @@
 const ProductLineService = require('./service');
 
 
-async function findAll(req, res, next) {
+async function findAll(req, res) {
   try {
     const ProductLines = await ProductLineService.findAll(req.headers['authorization'])
-    res.status(200).json(ProductLines)
+    res.status(ProductLines.status).json(ProductLines.message);
   } catch (error) {
     res.json(error.message)
   }
 }
 
-async function create(req, res, next){
+async function create(req, res){
   try {
     const getProductLine = await ProductLineService.create(req.headers['authorization'],req.body);
-    res.status(201).json(getProductLine)
+    res.status(getProductLine.status).json(getProductLine.message)
   
   } catch (error) {
     res.json(error.message)
   }
 }
 
-async function findOne(req, res, next){
+async function findOne(req, res){
   try {
-    console.log(req.params.id)
     const getProductLine = await ProductLineService.findOne(req.headers['authorization'],req.params.id)
-    res.status(200).json(getProductLine)
+    res.status(getProductLine.status).json(getProductLine.message)
   } catch (error) {
-    res.status(404).json(error.message)
+    res.json(error.message)
   }
 }
 
-async function deleteOne(req, res, next){
+async function deleteOne(req, res){
   try {
     const ProductLine = await ProductLineService.delete(req.headers['authorization'],req.params.id)
 
-    res.json(ProductLine)
+    res.status(ProductLine.status).json(ProductLine.message)
   } catch (error) {
     res.json(error.message)
   }
@@ -43,7 +42,7 @@ async function deleteOne(req, res, next){
 async function updateOne(req, res){
   try {
     const ProductLine = await ProductLineService.update(req.headers['authorization'],req.params.id, req.body)
-    res.json(ProductLine)
+    res.status(ProductLine.status).json(ProductLine.message)
   } catch (error) {
     res.json(error.message)
   }
@@ -51,13 +50,13 @@ async function updateOne(req, res){
 
 async function findpagination(req, res){
   try {
-    const sizeAsNumber = Number(req.query.size);
-    const pageAsNumber = Number(req.query.page);
-    const where = req.body.where;
-    const ProductLines = await ProductLineService.findPagination(req.headers['authorization'],sizeAsNumber, pageAsNumber, where);
-    res.json(ProductLines)    
+    const sizeAsNumber = Number(req.body.size);
+    const pageAsNumber = Number(req.body.page);
+    const {where, isAdmin} = req.body;
+    const ProductLines = await ProductLineService.findPagination(req.headers['authorization'],sizeAsNumber, pageAsNumber, where, isAdmin);
+    res.status(ProductLines.status).json(ProductLines.message)    
   } catch (error) {
-      throw new Error(error.message)
+    res.json(error.message)
   }
 }
 

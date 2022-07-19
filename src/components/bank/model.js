@@ -19,6 +19,10 @@ const Bank = sequelize.define('Bank', {
     allowNull: false,
     unique: true
   },
+  isActive: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: true
+  },
   createdBy: {
     type: DataTypes.STRING,
   },

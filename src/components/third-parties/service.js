@@ -1,8 +1,10 @@
 const db = require('../../config/connection/connectBd');
 const ThirdPartiesValidation = require('./validation');
 const ThirdParties = require('./model');
-const Pagination = require('../../shared/middlewares/pagination')
-const permissions = require('../../shared/middlewares/permissions')
+const Pagination = require('../../shared/middlewares/pagination');
+const permissions = require('../../shared/middlewares/permissions');
+const getUser = require('../../shared/middlewares/getUser');
+const HttpResponse = require('../../shared/response');
 
 sequelize = db.sequelize;
 
@@ -18,17 +20,15 @@ const ThirdPartiesService = {
    */
   async findAll(bearerHeader){
     try {
-      const validatePermission = await permissions(bearerHeader, 'FIND_ALL')
+      const validatePermission = await permissions(bearerHeader, ['FIND_ALL', 'FIND_ALL_THIRD_PARTIE']);
       if (validatePermission) {
         const ThirdPartiess = await ThirdParties.findAll()
-        return ThirdPartiess;
+        return new HttpResponse(200, ThirdPartiess);
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      return new HttpResponse(401, 'no tienes permisos para esta acción')
+
     } catch(error) {
-      throw new Error(error.message)
+      throw new HttpResponse(400, error.message);
     }
   },
 
@@ -40,23 +40,36 @@ const ThirdPartiesService = {
    */
   async create(bearerHeader, body) {
     try {
-      const validatePermission = await permissions(bearerHeader, 'CREATE')
+      const validatePermission = await permissions(bearerHeader, ['CREATE', 'CREATE_THIRD_PARTIE']);
       if (validatePermission) {
         const validate = ThirdPartiesValidation.createThirdParties(body);
         if (validate.error) {
-          throw new Error(validate.error)
+          throw new HttpResponse(validate.error);
         }
-  
-        const createThirdParties = await ThirdParties.create(body);
-        return createThirdParties;
+        
+        const validateName = await ThirdParties.findOne({
+          where: {
+            name: body.name
+          }
+        })
+        if (validateName) {
+          return new HttpResponse(400, 'el nombre ya está en uso');
+        }
+        
+        const user = await getUser(bearerHeader);
+
+        const createThirdParties = await ThirdParties.create({
+          name: body.name,
+          description: body.description,
+          isActive: body.isActive,
+          createdBy: user.id
+        });
+        return new HttpResponse(201, createThirdParties);
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      return new HttpResponse(401, 'no tienes permisos para esta acción')
       
     } catch (error) {
-      throw new Error(error.message)
+      throw new HttpResponse(400, error.message)
     }
   },
 
@@ -67,21 +80,19 @@ const ThirdPartiesService = {
 
   async findOne(bearerHeader, id){
     try {
-      const validatePermission = await permissions(bearerHeader, 'FIND_ONE')
+      const validatePermission = await permissions(bearerHeader, ['FIND_ONE', 'FIND_ONE_THIRD_PARTIE']);
       if (validatePermission) {
         const validate = ThirdPartiesValidation.getThirdParties(id);
         if (validate.error) {
           throw new Error(validate.error)
         }
         const getThirdParties = await ThirdParties.findByPk(id)
-        return getThirdParties;
+        return new HttpResponse(200, getThirdParties);
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      return new HttpResponse(401, 'no tienes permisos para esta acción')
+
     } catch (error) {
-      throw new Error(error.message)
+      throw new HttpResponse(400, error.message)
     }
   },
   /**
@@ -91,27 +102,25 @@ const ThirdPartiesService = {
    */
   async delete(bearerHeader, id){
     try {
-      const validatePermission = await permissions(bearerHeader, 'DELETE')
+      const validatePermission = await permissions(bearerHeader, ['DELETE', 'DELETE_THIRD_PARTIE']);
       if (validatePermission) {
         const validate = await ThirdPartiesValidation.getThirdParties(id)
 
         if (validate.error) {
-          throw new Error(validate.error)
+          throw new HttpResponse(400, validate.error)
         }
 
         const getThirdParties = await ThirdParties.findByPk(id);
         
         await getThirdParties.destroy()
 
-        return getThirdParties;
+        return new HttpResponse(200, 'tercero eliminado');
         
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      return new HttpResponse(401, 'no tienes permisos para esta acción')
+
     } catch (error) {
-      throw new Error(error)
+      throw new HttpResponse(400, error.message);
     }
   },
 
@@ -123,23 +132,37 @@ const ThirdPartiesService = {
    */
   async update(bearerHeader, id, body){
     try {
-      const validatePermission = await permissions(bearerHeader, 'UPDATE')
+      const validatePermission = await permissions(bearerHeader, ['UPDATE', 'UPDATE_THIRD_PARTIE']);
       if (validatePermission) {
         
         const validateid = await ThirdPartiesValidation.getThirdParties(id);
         
         if (validateid.error) {
-          throw new Error(validate.error)
+          throw new HttpResponse(400, validate.error);
         }
   
         const validateBody = await ThirdPartiesValidation.createThirdParties(body)
         if (validateBody.error) {
-          throw new Error(validate.error)
+          throw new HttpResponse(400, validate.error)
         }
+
+        const validateName = await ThirdParties.findOne({
+          where: {
+            name: body.name
+          }
+        })
+        if (validateName) {
+          return new HttpResponse(400, 'el nombre ya está en uso');
+        }
+
+        const user = await getUser(bearerHeader);
+
         const newThirdParties = await ThirdParties.update(
           {
             name: body.name,
-            description: body.description 
+            description: body.description,
+            isActive: body.isActive,
+            updatedBy: user.id
           },
           {where: {id}}
         )
@@ -147,28 +170,29 @@ const ThirdPartiesService = {
         return newThirdParties;
         
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      return new HttpResponse(401, 'no tienes permisos para esta acción')
+
     } catch (error) {
-      
+      throw new HttpResponse(400, error.message);      
     }
   },
 
-  async findPagination(bearerHeader, sizeAsNumber, pageAsNumber, wherecond){
+  async findPagination(bearerHeader, sizeAsNumber, pageAsNumber, wherecond, isActive){
     try {
-      const validatePermission = await permissions(bearerHeader, 'FIND_PAGINATION')
+      const validatePermission = await permissions(bearerHeader, ['FIND_PAGINATION', 'FIND_PAGINATION_THIRD_PARTIE']);
       if (validatePermission) {
-        const ThirdPartiess = await Pagination('ThirdPartiess',sequelize,sizeAsNumber, pageAsNumber, wherecond)
-        return ThirdPartiess
+        if(isActive == undefined || typeof(isActive) !== 'boolean'){
+          isActive = true
+        }
+
+        let query = `SELECT * FROM thirdParties WHERE name LIKE '%${wherecond}%' AND isActive = ${isActive} OR description LIKE '%${wherecond}%' AND isActive = ${isActive}`
+        const thirdParties = Pagination(sequelize,sizeAsNumber, pageAsNumber, query)
+        return new HttpResponse(200, thirdParties);
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      return new HttpResponse(401, 'no tienes permisos para esta acción')
+
     } catch (error) {
-        throw new Error(error.message);
+      throw new HttpResponse(400, error.message);
     }
   },
 }

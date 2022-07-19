@@ -25,6 +25,10 @@ const Composition = sequelize.define('Composition', {
   portion: {
     type: DataTypes.NUMBER,
   },
+  isActive: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: true
+  },
   createdBy: {
     type: DataTypes.STRING,
   },

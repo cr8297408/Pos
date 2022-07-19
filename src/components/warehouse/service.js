@@ -2,8 +2,9 @@ const Warehouse = require('./model');
 const db = require('../../config/connection/connectBD');
 const WarehouseValidation = require('./validation');
 const BillingResolution = require('../billing-resolution/model');
-const permissions = require('../../shared/middlewares/permissions')
+const permissions = require('../../shared/middlewares/permissions');
 const Pagination = require('../../shared/middlewares/pagination');
+const HttpResponse = require('../../shared/response');
 
 sequelize = db.sequelize;
 
@@ -14,17 +15,14 @@ sequelize = db.sequelize;
 const WarehouseService = {
   async findAll(bearerHeader){
     try {
-      const validatePermission = await permissions(bearerHeader, 'FIND_ALL')
+      const validatePermission = await permissions(bearerHeader, ['FIND_ALL', 'FIND_ALL_WAREHOUSE']);
       if (validatePermission) { 
         const Warehouses = await Warehouse.findAll()
-        return Warehouses;
+        return new HttpResponse(200, Warehouses);
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      return new HttpResponse(401, 'no tienes permisos para esta acción');
     } catch(error) {
-      throw new Error(error.message)
+      throw new HttpResponse(400, error.message);
     }
   },
 
@@ -35,11 +33,11 @@ const WarehouseService = {
    */
   async create(bearerHeader, body) {
     try {
-      const validatePermission = await permissions(bearerHeader, 'CREATE')
+      const validatePermission = await permissions(bearerHeader, ['CREATE', 'CREATE_WAREHOUSE'])
       if (validatePermission) { 
         const validate = WarehouseValidation.createWarehouse(body);
         if (validate.error) {
-          throw new Error(validate.error)
+          throw new HttpResponse(400, validate.error)
         }
   
         const idRel = body.BillingResolutionId;
@@ -52,6 +50,15 @@ const WarehouseService = {
           throw new Error('no existe una resolucion de facturacion con id: ' + idRel)
         }
         const user = await getUser(bearerHeader);
+
+        const validateName = await ThirdParties.findOne({
+          where: {
+            [Op.or]: [{name: body.name}, {code: body.code}]
+          }
+        })
+        if (validateName) {
+          return new HttpResponse(400, 'el nombre o el codigo ya están en uso');
+        }
         const createWarehouse = await Warehouse.create({
           name: body.name,
           code: body.code,
@@ -62,15 +69,12 @@ const WarehouseService = {
           BillingResolutionId: body.BillingResolutionId,
           createdBy: user.id
         });
-        return createWarehouse;
+        return new HttpResponse(201, createWarehouse);
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      return new HttpResponse(401, 'no tienes permisos para esta acción');
 
     } catch (error) {
-      throw new Error(error.message)
+      throw new HttpResponse(400, error.message)
     }
   },
 
@@ -81,23 +85,19 @@ const WarehouseService = {
 
    async findOne(bearerHeader, id){
     try {
-      const validatePermission = await permissions(bearerHeader, 'FIND_ONE')
+      const validatePermission = await permissions(bearerHeader, ['FIND_ONE', 'FIND_ONE_WAREHOUSE']);
       if (validatePermission) { 
         const validate = WarehouseValidation.getWarehouse(id);
         if (validate.error) {
-          throw new Error(validate.error)
+          throw new HttpResponse(validate.error);
         }
         const getWarehouse = await Warehouse.findByPk(id)
-        return getWarehouse;
+        return new HttpResponse(200, getWarehouse);
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
-
+      return new HttpResponse(401, 'no tienes permisos para esta acción');
 
     } catch (error) {
-      throw new Error(error.message)
+      throw new HttpResponse(400, error.message);
     }
   },
   /**
@@ -107,28 +107,24 @@ const WarehouseService = {
    */
   async delete(bearerHeader, id){
     try {
-      const validatePermission = await permissions(bearerHeader, 'DELETE')
+      const validatePermission = await permissions(bearerHeader, ['DELETE', 'DELETE_WAREHOUSE']);
       if (validatePermission) { 
         const validate = await WarehouseValidation.getWarehouse(id)
   
         if (validate.error) {
-          throw new Error(validate.error)
+          throw new HttpResponse(400, validate.error)
         }
   
         const getWarehouse = await Warehouse.findByPk(id);
         
         await getWarehouse.destroy()
   
-        return getWarehouse;
+        return new HttpResponse(200, 'deposito eliminado');
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
-      
+      return new HttpResponse(401, 'no tienes permisos para esta acción');
 
     } catch (error) {
-      throw new Error(error)
+      throw new HttpResponse(400, error.message);
     }
   },
 
@@ -140,17 +136,12 @@ const WarehouseService = {
    */
   async update(bearerHeader,id, body){
     try {
-      const validatePermission = await permissions(bearerHeader, 'UPDATE')
+      const validatePermission = await permissions(bearerHeader, ['UPDATE', 'UPDATE_WAREHOUSE']);
       if (validatePermission) { 
         const validateid = await WarehouseValidation.getWarehouse(id);
         
         if (validateid.error) {
-          throw new Error(validate.error)
-        }
-  
-        const validateBody = await WarehouseValidation.createWarehouse(body)
-        if (validateBody.error) {
-          throw new Error(validate.error)
+          throw new HttpResponse(400, validateid.error)
         }
   
         const idRel = body.BillingResolutionId;
@@ -163,6 +154,16 @@ const WarehouseService = {
           throw new Error('no existe una resolucion de facturacion con id: ' + idRel)
         }
         const user = await getUser(bearerHeader);
+        
+        const validateName = await ThirdParties.findOne({
+          where: {
+            [Op.or]: [{name: body.name}, {code: body.code}]
+          }
+        })
+        if (validateName) {
+          return new HttpResponse(400, 'el nombre o el codigo ya están en uso');
+        }
+
         const newWarehouse = await Warehouse.update(
           {
             name: body.name,
@@ -178,12 +179,9 @@ const WarehouseService = {
   
         return newWarehouse;
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      return new HttpResponse(401, 'no tienes permisos para esta acción');
     } catch (error) {
-      
+      throw new HttpResponse(400, error.message);
     }
   },
 
@@ -192,19 +190,22 @@ const WarehouseService = {
    * @params  bearerHeader, sizeAsNumber, pageAsNumber,where
    * @description paginate a warehouse by size, condition and page
    */
-  async findPagination(bearerHeader, sizeAsNumber, pageAsNumber,where){
+  async findPagination(bearerHeader, sizeAsNumber, pageAsNumber,where, isActive){
     try {
-      const validatePermission = await permissions(bearerHeader, 'FIND_PAGINATION')
+      const validatePermission = await permissions(bearerHeader, ['FIND_PAGINATION', 'FIND_PAGINATION_WAREHOUSE']);
       if (validatePermission) {
-        const warehouses = await Pagination('warehouses',sequelize,sizeAsNumber, pageAsNumber,where)
-        return warehouses
+        if(isActive == undefined || typeof(isActive) !== 'boolean'){
+          isActive = true
+        }
+
+        let query = `SELECT * FROM warehouses WHERE name LIKE '%${wherecond}%' AND isActive = ${isActive} OR code LIKE '%${wherecond}%' AND isActive = ${isActive} OR location LIKE '%${wherecond}%' AND isActive = ${isActive} OR description LIKE '%${wherecond}%' AND isActive = ${isActive}`
+        const warehouses = Pagination(sequelize,sizeAsNumber, pageAsNumber, query)
+        return new HttpResponse(200, warehouses)        
+
       }
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      return new HttpResponse(401, 'no tienes permisos para esta acción');
     } catch (error) {
-        throw new Error(error.message);
+      throw new HttpResponse(400, error.message);
     }
   },
 

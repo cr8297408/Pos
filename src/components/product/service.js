@@ -1,9 +1,10 @@
 const db = require('../../config/connection/connectBd');
 const ProductValidation = require('./validation');
 const Product = require('./model');
-const Pagination = require('../../shared/middlewares/pagination')
-const permissions = require('../../shared/middlewares/permissions')
-const getUser = require('../../shared/middlewares/getUser')
+const Pagination = require('../../shared/middlewares/pagination');
+const permissions = require('../../shared/middlewares/permissions');
+const getUser = require('../../shared/middlewares/getUser');
+const HttpResponse = require('../../shared/response');
 
 sequelize = db.sequelize;
 
@@ -19,17 +20,14 @@ const ProductService = {
    */
   async findAll(bearerHeader){
     try {
-      const validatePermission = await permissions(bearerHeader, 'FIND_ALL')
+      const validatePermission = await permissions(bearerHeader, ['FIND_ALL', 'FIND_ALL_PRODUCT'])
       if (validatePermission) {
         const Products = await Product.findAll()
-        return Products;
+        return new HttpResponse(200, Products);
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      return new HttpResponse(401, 'no tienes permisos para esta acción');
     } catch(error) {
-      throw new Error(error.message)
+      throw new HttpResponse(400, error.message)
     }
   },
 
@@ -41,28 +39,42 @@ const ProductService = {
    */
   async create(bearerHeader, body) {
     try {
-      const validatePermission = await permissions(bearerHeader, 'CREATE')
+      const validatePermission = await permissions(bearerHeader, ['CREATE', 'CREATE_PRODUCT'])
       if (validatePermission) {
         const validate = ProductValidation.createProduct(body);
         if (validate.error) {
-          throw new Error(validate.error)
+          throw new HttpResponse(400, validate.error)
         }
   
         const user = await getUser(bearerHeader);
+        const validateName = await Product.findOne({
+          where: {
+            name: body.name
+          }
+        })
+        if (validateName) {
+          return new HttpResponse(400, 'el nombre ya está en uso');
+        }
         const createProduct = await Product.create({
           name: body.name,
           description: body.description,
+          code: body.code,
+          ref: body.ref,
+          subGroups: body.subGroups,
+          barCode: body.barCode,
+          barCodeGroup: body.barCodeGroup,
+          shoppingAssistant: body.shoppingAssistant,
+          isActive: body.isActive,
+          isProductCurve: body.isProductCurve,
+          compound: body.compound,
           createdBy: user.id
         });
-        return createProduct;
+        return new HttpResponse(201, createProduct);
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      return new HttpResponse(401, 'no tienes permisos para esta acción');
       
     } catch (error) {
-      throw new Error(error.message)
+      throw new HttpResponse(400, error.message)
     }
   },
 
@@ -73,21 +85,18 @@ const ProductService = {
 
   async findOne(bearerHeader, id){
     try {
-      const validatePermission = await permissions(bearerHeader, 'FIND_ONE')
+      const validatePermission = await permissions(bearerHeader, ['FIND_ONE', 'FIND_ONE_PRODUCT'])
       if (validatePermission) {
         const validate = ProductValidation.getProduct(id);
         if (validate.error) {
-          throw new Error(validate.error)
+          throw new HttpResponse(400, validate.error)
         }
         const getProduct = await Product.findByPk(id)
-        return getProduct;
+        return new HttpResponse(200, getProduct);
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      return new HttpResponse(401, 'no tienes permisos para esta acción');
     } catch (error) {
-      throw new Error(error.message)
+      throw new HttpResponse(400, error.message)
     }
   },
   /**
@@ -97,27 +106,24 @@ const ProductService = {
    */
   async delete(bearerHeader, id){
     try {
-      const validatePermission = await permissions(bearerHeader, 'DELETE')
+      const validatePermission = await permissions(bearerHeader, ['DELETE', 'DELETE_PRODUCT']);
       if (validatePermission) {
         const validate = await ProductValidation.getProduct(id)
 
         if (validate.error) {
-          throw new Error(validate.error)
+          throw new HttpResponse(400, validate.error)
         }
 
         const getProduct = await Product.findByPk(id);
         
         await getProduct.destroy()
 
-        return getProduct;
+        return new HttpResponse(200, 'producto eliminado');
         
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      return new HttpResponse(401, 'no tienes permisos para esta acción');
     } catch (error) {
-      throw new Error(error)
+      throw new HttpResponse(400, error)
     }
   },
 
@@ -129,54 +135,70 @@ const ProductService = {
    */
   async update(bearerHeader, id, body){
     try {
-      const validatePermission = await permissions(bearerHeader, 'UPDATE')
+      const validatePermission = await permissions(bearerHeader, ['UPDATE', 'UPDATE_PRODUCT'])
       if (validatePermission) {
         
         const validateid = await ProductValidation.getProduct(id);
         
         if (validateid.error) {
-          throw new Error(validate.error)
+          throw new HttpResponse(400, validate.error)
         }
   
         const validateBody = await ProductValidation.createProduct(body)
         if (validateBody.error) {
-          throw new Error(validate.error)
+          throw new HttpResponse(400, validate.error)
         }
         const user = await getUser(bearerHeader);
+        const validateName = await Product.findOne({
+          where: {
+            name: body.name
+          }
+        })
+        if (validateName) {
+          return new HttpResponse(400, 'el nombre ya está en uso');
+        }
         const newProduct = await Product.update(
           {
             name: body.name,
             description: body.description,
+            code: body.code,
+            ref: body.ref,
+            subGroups: body.subGroups,
+            barCode: body.barCode,
+            barCodeGroup: body.barCodeGroup,
+            shoppingAssistant: body.shoppingAssistant,
+            isActive: body.isActive,
+            isProductCurve: body.isProductCurve,
+            compound: body.compound,
             updatedBy: user.id 
           },
           {where: {id}}
         )
   
-        return newProduct;
+        return new HttpResponse(200, 'producto actualizado');
         
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      return new HttpResponse(401, 'no tienes permisos para esta acción');
     } catch (error) {
-      
+      throw new HttpResponse(400, error.message)
     }
   },
 
-  async findPagination(bearerHeader, sizeAsNumber, pageAsNumber, wherecond){
+  async findPagination(bearerHeader, sizeAsNumber, pageAsNumber, wherecond, isActive){
     try {
-      const validatePermission = await permissions(bearerHeader, 'FIND_PAGINATION')
+      const validatePermission = await permissions(bearerHeader, ['FIND_PAGINATION', 'FIND_PAGINATION_PRODUCT'])
       if (validatePermission) {
-        const Products = await Pagination('Products',sequelize,sizeAsNumber, pageAsNumber, wherecond)
-        return Products
+        if(isActive == undefined || typeof(isActive) !== 'boolean'){
+          isActive = true
+        }
+
+        let query = `SELECT * FROM products WHERE name LIKE '%${wherecond}%' AND isActive = ${isActive} OR description LIKE '%${wherecond}%' AND isActive = ${isActive}`
+        const products = Pagination(sequelize,sizeAsNumber, pageAsNumber, query)
+        return new HttpResponse(200, products)
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      return new HttpResponse(401, 'no tienes permisos para esta acción');
     } catch (error) {
-        throw new Error(error.message);
+      throw new HttpResponse(error.message);
     }
   },
 }

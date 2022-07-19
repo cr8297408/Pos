@@ -2,8 +2,8 @@ const MeasureUnit = require('./model');
 const db = require('../../config/connection/connectBD');
 const MeasureUnitValidation = require('./validation');
 const permissions = require('../../shared/middlewares/permissions');
-const getUser = require('../../shared/middlewares/getUser')
-
+const getUser = require('../../shared/middlewares/getUser');
+const HttpResponse = require('../../shared/response');
 
 sequelize = db.sequelize;
 
@@ -14,17 +14,14 @@ sequelize = db.sequelize;
 const MeasureUnitService = {
   async findAll(bearerHeader){
     try {
-      const validatePermission = await permissions(bearerHeader, 'FIND_ALL')
+      const validatePermission = await permissions(bearerHeader, ['FIND_ALL', 'FIND_ALL_MEASURE_UNIT'])
       if (validatePermission) {
         const MeasureUnits = await MeasureUnit.findAll()
-        return MeasureUnits;
+        return new HttpResponse(200, MeasureUnits);
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      return new HttpResponse(401, 'no tienes permisos para esta acción');
     } catch(error) {
-      throw new Error(error.message)
+      throw new HttpResponse(400, error.message)
     }
   },
 
@@ -35,28 +32,37 @@ const MeasureUnitService = {
    */
   async create(bearerHeader,body) {
     try {
-      const validatePermission = await permissions(bearerHeader, 'CREATE')
+      const validatePermission = await permissions(bearerHeader, ['CREATE', 'CREATE_MEASURE_UNIT'])
       if (validatePermission) {
         const validate = MeasureUnitValidation.createMeasureUnit(body);
         if (validate.error) {
-          throw new Error(validate.error)
+          throw new HttpResponse(400, validate.error)
         }
   
         const user = await getUser(bearerHeader);
 
+        const validateName = await MeasureUnit.findOne({
+          where: {
+            name: body.name
+          }
+        });
+
+        if(validateName){
+          return new HttpResponse(400, 'el nombre ya está en uso');
+        }
+
         const createMeasureUnit = await MeasureUnit.create({
           name: body.name,
+          description: body.description,
+          isActive: body.isActive,
           createdBy: user.id
         });
-        return createMeasureUnit;
+        return new HttpResponse(201, createMeasureUnit);
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      return new HttpResponse(401, 'no tienes permisos para esta acción');
 
     } catch (error) {
-      throw new Error(error.message)
+      throw new HttpResponse(400, error.message)
     }
   },
 
@@ -67,23 +73,19 @@ const MeasureUnitService = {
 
    async findOne(bearerHeader, id){
     try {
-      const validatePermission = await permissions(bearerHeader, 'FIND_ONE')
+      const validatePermission = await permissions(bearerHeader, ['FIND_ONE', 'FIND_ONE_MEASURE_UNIT'])
       if (validatePermission) {
         const validate = MeasureUnitValidation.getMeasureUnit(id);
         if (validate.error) {
-          throw new Error(validate.error)
+          throw new HttpResponse(400, validate.error)
         }
         const getMeasureUnit = await MeasureUnit.findByPk(id)
-        return getMeasureUnit;
+        return new HttpResponse(200, getMeasureUnit);
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
-
+      return new HttpResponse(401, 'no tienes permisos para esta acción');
 
     } catch (error) {
-      throw new Error(error.message)
+      throw new HttpResponse(400, error.message)
     }
   },
   /**
@@ -93,28 +95,24 @@ const MeasureUnitService = {
    */
   async delete(bearerHeader, id){
     try {
-      const validatePermission = await permissions(bearerHeader, 'DELETE')
+      const validatePermission = await permissions(bearerHeader, ['DELETE', 'DELETE_MEASURE_UNIT'])
       if (validatePermission) {
         const validate = await MeasureUnitValidation.getMeasureUnit(id)
   
         if (validate.error) {
-          throw new Error(validate.error)
+          throw new HttpResponse(400, validate.error)
         }
   
         const getMeasureUnit = await MeasureUnit.findByPk(id);
         
         await getMeasureUnit.destroy()
   
-        return getMeasureUnit;
+        return new HttpResponse(200, 'unidad de medida eliminada');;
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
-      
+      return new HttpResponse(401, 'no tienes permisos para esta acción');
 
     } catch (error) {
-      throw new Error(error)
+      throw new HttpResponse(400, error.message)
     }
   },
 
@@ -126,66 +124,61 @@ const MeasureUnitService = {
    */
   async update(bearerHeader,id, body){
     try {
-      const validatePermission = await permissions(bearerHeader, 'UPDATE')
+      const validatePermission = await permissions(bearerHeader, ['UPDATE', 'UPDATE_MEASURE_UNIT'])
       if (validatePermission) {
         
         const validateid = await MeasureUnitValidation.getMeasureUnit(id);
         
         if (validateid.error) {
-          throw new Error(validate.error)
+          throw new HttpResponse(400, validate.error)
         }
   
-        const validateBody = await MeasureUnitValidation.createMeasureUnit(body)
-        if (validateBody.error) {
-          throw new Error(validate.error)
-        }
         const user = await getUser(bearerHeader);
+        const validateName = await MeasureUnit.findOne({
+          where: {
+            name: body.name
+          }
+        });
+
+        if(validateName){
+          return new HttpResponse(400, 'el nombre ya está en uso');
+        }
+
         const newMeasureUnit = await MeasureUnit.update(
           {
             name: body.name,
+            description: body.description,
+            isActive: body.isActive,
             updatedBy: user.id
           },
           {where: {id}}
         )
   
-        return newMeasureUnit;
+        return new HttpResponse(200, 'unidad de medida actualizada');;
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      return new HttpResponse(401, 'no tienes permisos para esta acción');
     } catch (error) {
-      
+      throw new HttpResponse(400,error.message);
     }
   },
-  async findPagination(bearerHeader, sizeAsNumber, pageAsNumber, wherecond){
+  async findPagination(bearerHeader, sizeAsNumber, pageAsNumber, wherecond, isActive){
     try {
-      const validatePermission = await permissions(bearerHeader, 'FIND_PAGINATION')
+      const validatePermission = await permissions(bearerHeader, ['FIND_PAGINATION', 'FIND_PAGINATION_MEASURE_UNIT'])
       if (validatePermission) {
         
-        let page = 0;
-        if (!Number.isNaN(pageAsNumber) && pageAsNumber > 0 ) {
-            page = pageAsNumber - 1;
+        if(isActive == undefined || typeof(isActive) !== 'boolean'){
+          isActive = true
         }
-  
-        let size = 0;
-        if (!Number.isNaN(sizeAsNumber) && sizeAsNumber > 0 && sizeAsNumber < 10) {
-            size = sizeAsNumber;
-        }
-        const offset = page*size;
-        const measureUnits = await MeasureUnit.findAll({
-          limit: size,
-          offset: offset,
-        })
-        return measureUnits
+
+        let query = `SELECT * FROM unitMeasurements WHERE name LIKE '%${wherecond}%' AND isActive = ${isActive}`
+
+        const getUnitMeasurements = Pagination(sequelize,sizeAsNumber, pageAsNumber, query)
+        return new HttpResponse(200, getUnitMeasurements)
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      return new HttpResponse(401, 'no tienes permisos para esta acción');
 
     } catch (error) {
-        throw new Error(error.message);
+        throw new HttpResponse(400, error.message);
     }
   },
 

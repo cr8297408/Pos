@@ -4,6 +4,8 @@ const ProductAreaValidation = require('./validation');
 const Pagination = require('../../../../shared/middlewares/pagination');
 const permissions = require('../../../../shared/middlewares/permissions');
 const getUser = require('../../../../shared/middlewares/getUser');
+const HttpResponse = require('../../../../shared/response');
+
 sequelize = db.sequelize;
 
 /**
@@ -13,17 +15,14 @@ sequelize = db.sequelize;
 const ProductAreaService = {
   async findAll(bearerHeader){
     try {
-      const validatePermission = await permissions(bearerHeader, 'FIND_ALL')
+      const validatePermission = await permissions(bearerHeader, ['FIND_ALL', 'FIND_ALL_PRODUCT_AREA'])
       if (validatePermission) {
         const ProductAreas = await ProductArea.findAll()
-        return ProductAreas;
+        return new HttpResponse(200, ProductAreas);
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      return new HttpResponse(401, 'no tienes permisos para esta acción')
     } catch(error) {
-      throw new Error(error.message)
+      throw new HttpResponse(400, error.message);
     }
   },
 
@@ -34,11 +33,11 @@ const ProductAreaService = {
    */
   async create(bearerHeader ,body) {
     try {
-      const validatePermission = await permissions(bearerHeader, 'CREATE')
+      const validatePermission = await permissions(bearerHeader, ['CREATE', 'CREATE_PRODUCT_AREA'])
       if (validatePermission) {
         const validate = ProductAreaValidation.createProductArea(body);
         if (validate.error) {
-          throw new Error(validate.error)
+          throw new HttpResponse(400, validate.error)
         }
   
         const validateName = await ProductArea.findOne({
@@ -47,7 +46,7 @@ const ProductAreaService = {
           }
         })
         if (validateName) {
-          throw new Error('el nombre está en uso')
+          throw new HttpResponse(400, 'el nombre está en uso')
         }
         const user = await getUser(bearerHeader);
         const createProductArea = await ProductArea.create({
@@ -57,15 +56,12 @@ const ProductAreaService = {
           isActive: body.isActive,
           createdBy: user.id
         });
-        return createProductArea;
+        return new HttpResponse(201, createProductArea);
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      return new HttpResponse(401, 'no tienes permisos para esta acción')
 
     } catch (error) {
-      throw new Error(error.message)
+      throw new HttpResponse(400, error.message)
     }
   },
 
@@ -80,19 +76,15 @@ const ProductAreaService = {
       if (validatePermission) { 
         const validate = ProductAreaValidation.getProductArea(id);
         if (validate.error) {
-          throw new Error(validate.error)
+          throw new HttpResponse(400, validate.error)
         }
         const getProductArea = await ProductArea.findByPk(id)
-        return getProductArea;
+        return new HttpResponse(200, getProductArea);
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
-
+      return new HttpResponse(401, 'no tienes permisos para esta acción')
 
     } catch (error) {
-      throw new Error(error.message)
+      throw new HttpResponse(400, error.message)
     }
   },
   /**
@@ -102,28 +94,24 @@ const ProductAreaService = {
    */
   async delete(bearerHeader ,id){
     try {
-      const validatePermission = await permissions(bearerHeader, 'DELETE')
+      const validatePermission = await permissions(bearerHeader, ['DELETE', 'DELETE_PRODUCT_AREA']);
       if (validatePermission) { 
         const validate = await ProductAreaValidation.getProductArea(id)
   
         if (validate.error) {
-          throw new Error(validate.error)
+          throw new HttpResponse(400, validate.error)
         }
   
         const getProductArea = await ProductArea.findByPk(id);
         
         await getProductArea.destroy()
   
-        return getProductArea;
+        return new HttpResponse(200, 'area del producto eliminada');
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
-      
+      return new HttpResponse(401, 'no tienes permisos para esta acción')
 
     } catch (error) {
-      throw new Error(error)
+      throw new HttpResponse(400, error.message)
     }
   },
 
@@ -135,25 +123,21 @@ const ProductAreaService = {
    */
   async update(bearerHeader ,id, body){
     try {
-      const validatePermission = await permissions(bearerHeader, 'UPDATE')
+      const validatePermission = await permissions(bearerHeader, ['UPDATE', 'UPDATE_PRODUCT_AREA'])
       if (validatePermission) { 
         const validateid = await ProductAreaValidation.getProductArea(id);
         
         if (validateid.error) {
-          throw new Error(validate.error)
+          throw new HttpResponse(400, validateid.error)
         }
   
-        const validateBody = await ProductAreaValidation.createProductArea(body)
-        if (validateBody.error) {
-          throw new Error(validate.error)
-        }
         const validateName = await ProductArea.findOne({
           where: {
             name: body.name
           }
         })
         if (validateName) {
-          throw new Error('el nombre está en uso')
+          throw new HttpResponse(400, 'el nombre está en uso')
         }
         const user = await getUser(bearerHeader);
         const newProductArea = await ProductArea.update(
@@ -167,23 +151,27 @@ const ProductAreaService = {
           {where: {id}}
         )
   
-        return newProductArea;
+        return new HttpResponse(200, 'area del producto actualizada');
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      return new HttpResponse(401, 'no tienes permisos para esta acción')
+
     } catch (error) {
-      
+      throw new HttpResponse(400, error.message);      
     }
   },
 
-  async findPagination(bearerHeader, sizeAsNumber, pageAsNumber,where){
+  async findPagination(bearerHeader, sizeAsNumber, pageAsNumber,wherecond, isActive){
     try {
-      const validatePermission = await permissions(bearerHeader, 'FIND_PAGINATION')
+      const validatePermission = await permissions(bearerHeader,['FIND_PAGINATION', 'FIND_PAGINATION_PRODUCT_AREA'])
       if (validatePermission) {
-        const productAreas = await Pagination('productAreas',sequelize,sizeAsNumber, pageAsNumber,where)
-        return productAreas
+        
+        if(isActive == undefined || typeof(isActive) !== 'boolean'){
+          isActive = true
+        }
+
+        let query = `SELECT * FROM productAreas WHERE name LIKE '%${wherecond}%' AND isActive = ${isActive} OR description LIKE '%${wherecond}%' AND isActive = ${isActive} OR attentionArea LIKE '%${wherecond}%' AND isActive = ${isActive}`
+        const productAreas = Pagination(sequelize,sizeAsNumber, pageAsNumber, query)
+        return new HttpResponse(200, productAreas)
       } 
       return {
         message: 'no tienes permisos para esta acción',

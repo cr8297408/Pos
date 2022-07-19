@@ -4,7 +4,7 @@ const MeasureUnitService = require('./service');
 async function findAll(req, res, next) {
   try {
     const MeasureUnits = await MeasureUnitService.findAll(req.headers['authorization'])
-    res.status(200).json(MeasureUnits)
+    res.status(MeasureUnits.status).json(MeasureUnits.message)
   } catch (error) {
     res.json(error.message)
   }
@@ -13,8 +13,7 @@ async function findAll(req, res, next) {
 async function create(req, res, next){
   try {
     const getMeasureUnit = await MeasureUnitService.create(req.headers['authorization'], req.body);
-    res.status(201).json(getMeasureUnit)
-  
+    res.status(getMeasureUnit.status).json(getMeasureUnit.message);
   } catch (error) {
     res.json(error.message)
   }
@@ -24,9 +23,9 @@ async function findOne(req, res, next){
   try {
     console.log(req.params.id)
     const getMeasureUnit = await MeasureUnitService.findOne(req.headers['authorization'], req.params.id)
-    res.status(200).json(getMeasureUnit)
+    res.status(getMeasureUnit.status).json(getMeasureUnit.message)
   } catch (error) {
-    res.status(404).json(error.message)
+    res.json(error.message)
   }
 }
 
@@ -34,7 +33,7 @@ async function deleteOne(req, res, next){
   try {
     const getMeasureUnit = await MeasureUnitService.delete(req.headers['authorization'], req.params.id)
 
-    res.json(getMeasureUnit)
+    res.status(getMeasureUnit.status).json(getMeasureUnit.message)
   } catch (error) {
     res.json(error.message)
   }
@@ -43,7 +42,7 @@ async function deleteOne(req, res, next){
 async function updateOne(req, res){
   try {
     const getMeasureUnit = await MeasureUnitService.update(req.headers['authorization'], req.params.id, req.body)
-    res.json(getMeasureUnit)
+    res.status(getMeasureUnit.status).json(getMeasureUnit.message)
   } catch (error) {
     res.json(error.message)
   }
@@ -51,10 +50,11 @@ async function updateOne(req, res){
 
 async function findpagination(req, res){
   try {
-    const sizeAsNumber = Number(req.query.size);
-    const pageAsNumber = Number(req.query.page);
-    const MeasureUnits = await MeasureUnitService.findPagination(req.headers['authorization'], sizeAsNumber, pageAsNumber);
-    res.json(MeasureUnits)    
+    const sizeAsNumber = Number(req.body.size);
+    const pageAsNumber = Number(req.body.page);
+    const {where, isActive} = req.body;
+    const MeasureUnits = await MeasureUnitService.findPagination(req.headers['authorization'], sizeAsNumber, pageAsNumber, where, isActive);
+    res.status(MeasureUnits.status).json(MeasureUnits.message)    
   } catch (error) {
       throw new Error(error.message)
   }

@@ -17,6 +17,10 @@ const ProductGroup = sequelize.define('ProductGroup', {
   description: {
     type: DataTypes.STRING,
   },
+  isActive: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: true
+  },
   createdBy: {
     type: DataTypes.STRING,
   },

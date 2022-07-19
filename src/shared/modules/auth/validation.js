@@ -6,6 +6,27 @@ const Joi = require('joi');
  * 
  */
 class AuthValidation {
+
+  /**
+   * create an instance of UserValidation
+   * @memberof UserValidation
+   * @param {User}
+   * @returns {Joi.validationResult}
+   */
+   createAuth(body){
+    const schema = Joi.object().keys({
+      username: Joi.string().required(),
+      email: Joi.string().email({ 
+        minDomainSegments: 2,
+      }).required(),
+      password: Joi.string().required(),
+      firstName: Joi.string().required(),
+      lastName: Joi.string(),
+    })
+
+    return schema.validate(body)
+  }
+
     /**
      * @param {{ id: string }} body
      * @returns {Joi.ValidationResult<{ id: string }>}

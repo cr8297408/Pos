@@ -4,7 +4,8 @@ const Composition = require('./model');
 const Pagination = require('../../../../shared/middlewares/pagination')
 const permissions = require('../../../../shared/middlewares/permissions');
 const Product = require('../../model');
-const getUser = require('../../../../shared/middlewares/getUser')
+const getUser = require('../../../../shared/middlewares/getUser');
+const HttpResponse = require('../../../../shared/response');
 
 
 sequelize = db.sequelize;
@@ -21,17 +22,14 @@ const CompositionService = {
    */
   async findAll(bearerHeader){
     try {
-      const validatePermission = await permissions(bearerHeader, 'FIND_ALL')
+      const validatePermission = await permissions(bearerHeader, ['FIND_ALL', 'FIND_ALL_COMPOSITION'])
       if (validatePermission) {
         const Compositions = await Composition.findAll()
-        return Compositions;
+        return new HttpResponse(200, Compositions);
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      return new HttpResponse(401, 'no tienes permisos para esta acción');
     } catch(error) {
-      throw new Error(error.message)
+      throw new HttpResponse(error.message)
     }
   },
 
@@ -43,7 +41,7 @@ const CompositionService = {
    */
   async create(bearerHeader, body) {
     try {
-      const validatePermission = await permissions(bearerHeader, 'CREATE')
+      const validatePermission = await permissions(bearerHeader, ['CREATE', 'CREATE_COMPOSITION']);
       if (validatePermission) {
         const validate = CompositionValidation.createComposition(body);
         if (validate.error) {
@@ -56,28 +54,34 @@ const CompositionService = {
          */
         for (let i = 0; i < jsonP.length; i++) {
           let productoVal = await Product.findByPk(jsonP[i])
-          if (!productVal) {
-            throw new Error('los supplies deben de ser productos validos...')
+          if (!productoVal) {
+            throw new HttpResponse(400, 'los supplies deben de ser productos validos...')
           }
         }
         const user = await getUser(bearerHeader);
+        const validateName = await Composition.findOne({
+          where: {
+            name: body.name
+          }
+        })
+        if (validateName) {
+          return new HttpResponse(400, 'el nombre ya está en uso');
+        }
         const createComposition = await Composition.create({
           name: body.name,
           description: body.description,
           ProductId: body.ProductId,
           supplies: body.supplies,
           portion: body.portion,
+          isActive: body.isActive,
           createdBy: user.id
         });
-        return createComposition;
+        return new HttpResponse(201, createComposition);
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      return new HttpResponse(401, 'no tienes permisos para esta acción');
       
     } catch (error) {
-      throw new Error(error.message)
+      throw new HttpResponse(400, error.message)
     }
   },
 
@@ -88,21 +92,18 @@ const CompositionService = {
 
   async findOne(bearerHeader, id){
     try {
-      const validatePermission = await permissions(bearerHeader, 'FIND_ONE')
+      const validatePermission = await permissions(bearerHeader, ['FIND_ONE', 'FIND_ONE_COMPOSITION'])
       if (validatePermission) {
         const validate = CompositionValidation.getComposition(id);
         if (validate.error) {
-          throw new Error(validate.error)
+          throw new HttpResponse(400, validate.error)
         }
         const getComposition = await Composition.findByPk(id)
-        return getComposition;
+        return new HttpResponse(200, getComposition);
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      return new HttpResponse(401, 'no tienes permisos para esta acción');
     } catch (error) {
-      throw new Error(error.message)
+      throw new HttpResponse(400, error.message);
     }
   },
   /**
@@ -112,27 +113,24 @@ const CompositionService = {
    */
   async delete(bearerHeader, id){
     try {
-      const validatePermission = await permissions(bearerHeader, 'DELETE')
+      const validatePermission = await permissions(bearerHeader, ['DELETE', 'DELETE_COMPOSITION'])
       if (validatePermission) {
         const validate = await CompositionValidation.getComposition(id)
 
         if (validate.error) {
-          throw new Error(validate.error)
+          throw new HttpResponse(400, validate.error)
         }
 
         const getComposition = await Composition.findByPk(id);
         
         await getComposition.destroy()
 
-        return getComposition;
+        return new HttpResponse(200, 'composicion eliminada');
         
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      return new HttpResponse(401, 'no tienes permisos para esta acción');
     } catch (error) {
-      throw new Error(error)
+      throw new HttpResponse(400, error.message);
     }
   },
 
@@ -144,20 +142,26 @@ const CompositionService = {
    */
   async update(bearerHeader, id, body){
     try {
-      const validatePermission = await permissions(bearerHeader, 'UPDATE')
+      const validatePermission = await permissions(bearerHeader, ['UPDATE', 'UPDATE_COMPOSITION'])
       if (validatePermission) {
         
         const validateid = await CompositionValidation.getComposition(id);
         
         if (validateid.error) {
-          throw new Error(validate.error)
+          throw new HttpResponse(400, validateid.error)
         }
   
-        const validateBody = await CompositionValidation.createComposition(body)
-        if (validateBody.error) {
-          throw new Error(validate.error)
-        }
         const user = await getUser(bearerHeader);
+
+        const validateName = await Composition.findOne({
+          where: {
+            name: body.name
+          }
+        })
+        if (validateName) {
+          return new HttpResponse(400, 'el nombre ya está en uso');
+        }
+
         const newComposition = await Composition.update(
           {
             name: body.name,
@@ -165,6 +169,7 @@ const CompositionService = {
             ProductId: body.ProductId,
             supplies: body.supplies,
             portion: body.portion,
+            isActive: body.isActive,
             updatedBy: user.id
           },
           {where: {id}}
@@ -173,28 +178,27 @@ const CompositionService = {
         return newComposition;
         
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      return new HttpResponse(401, 'no tienes permisos para esta acción');
     } catch (error) {
-      
+      throw new HttpResponse(400, error.message);
     }
   },
 
-  async findPagination(bearerHeader, sizeAsNumber, pageAsNumber, wherecond){
+  async findPagination(bearerHeader, sizeAsNumber, pageAsNumber, wherecond, isActive){
     try {
-      const validatePermission = await permissions(bearerHeader, 'FIND_PAGINATION')
+      const validatePermission = await permissions(bearerHeader, ['FIND_PAGINATION', 'FIND_PAGINATION_COMPOSITION'])
       if (validatePermission) {
-        const Compositions = await Pagination('Compositions',sequelize,sizeAsNumber, pageAsNumber, wherecond)
-        return Compositions
+        if(isActive == undefined || typeof(isActive) !== 'boolean'){
+          isActive = true
+        }
+
+        let query = `SELECT * FROM compositions WHERE name LIKE '%${wherecond}%' AND isActive = ${isActive} OR description LIKE '%${wherecond}%' AND isActive = ${isActive} OR supplies LIKE '%${wherecond}%' AND isActive = ${isActive}`
+        const compositions = Pagination(sequelize,sizeAsNumber, pageAsNumber, query)
+        return new HttpResponse(200, compositions)
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      return new HttpResponse(401, 'no tienes permisos para esta acción');
     } catch (error) {
-        throw new Error(error.message);
+        throw new HttpResponse(400, error.message);
     }
   },
 }

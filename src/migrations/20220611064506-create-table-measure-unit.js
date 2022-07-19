@@ -15,6 +15,9 @@ module.exports = {
         allowNull: false,
         unique: true
       },
+      description: {
+        type: Sequelize.DataTypes.TEXT,
+      },
       createdAt: {
         type: Sequelize.DataTypes.STRING,
         defaultValue: new Date(),
@@ -22,6 +25,10 @@ module.exports = {
       updatedAt: {
         type: Sequelize.DataTypes.STRING,
         defaultValue: new Date(),
+      },
+      isActive: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: true
       },
       createdBy: {
         type: DataTypes.STRING,

@@ -1,40 +1,39 @@
 const PreparationService = require('./service');
 
 
-async function findAll(req, res, next) {
+async function findAll(req, res) {
   try {
     const Preparations = await PreparationService.findAll(req.headers['authorization'])
-    res.status(200).json(Preparations)
+    res.status(Preparations.status).json(Preparations.message)
   } catch (error) {
     res.json(error.message)
   }
 }
 
-async function create(req, res, next){
+async function create(req, res){
   try {
     const getPreparation = await PreparationService.create(req.headers['authorization'],req.body);
-    res.status(201).json(getPreparation)
+    res.status(getPreparation.status).json(getPreparation.message)
   
   } catch (error) {
     res.json(error.message)
   }
 }
 
-async function findOne(req, res, next){
+async function findOne(req, res){
   try {
-    console.log(req.params.id)
     const getPreparation = await PreparationService.findOne(req.headers['authorization'],req.params.id)
-    res.status(200).json(getPreparation)
+    res.status(getPreparation.status).json(getPreparation.message)
   } catch (error) {
-    res.status(404).json(error.message)
+    res.json(error.message)
   }
 }
 
-async function deleteOne(req, res, next){
+async function deleteOne(req, res){
   try {
     const Preparation = await PreparationService.delete(req.headers['authorization'],req.params.id)
 
-    res.json(Preparation)
+    res.status(Preparation.status).json(Preparation.message)
   } catch (error) {
     res.json(error.message)
   }
@@ -43,7 +42,7 @@ async function deleteOne(req, res, next){
 async function updateOne(req, res){
   try {
     const Preparation = await PreparationService.update(req.headers['authorization'],req.params.id, req.body)
-    res.json(Preparation)
+    res.status(Preparation.status).json(Preparation.message)
   } catch (error) {
     res.json(error.message)
   }
@@ -51,13 +50,13 @@ async function updateOne(req, res){
 
 async function findpagination(req, res){
   try {
-    const sizeAsNumber = Number(req.query.size);
-    const pageAsNumber = Number(req.query.page);
-    const where = req.body.where;
-    const Preparations = await PreparationService.findPagination(req.headers['authorization'],sizeAsNumber, pageAsNumber, where);
-    res.json(Preparations)    
+    const sizeAsNumber = Number(req.body.size);
+    const pageAsNumber = Number(req.body.page);
+    const {where, isActive} = req.body;
+    const Preparations = await PreparationService.findPagination(req.headers['authorization'],sizeAsNumber, pageAsNumber, where, isActive);
+    res.status(Preparations.status).json(Preparations.message);    
   } catch (error) {
-      throw new Error(error.message)
+    res.json(error.message)
   }
 }
 

@@ -1,40 +1,40 @@
 const BillingResolutionService = require('./service');
 
 
-async function findAll(req, res, next) {
+async function findAll(req, res) {
   try {
     const BillingResolutions = await BillingResolutionService.findAll(req.headers["authorization"])
-    res.status(200).json(BillingResolutions)
+    res.status(BillingResolutions.status).json(BillingResolutions.message)
   } catch (error) {
     res.json(error.message)
   }
 }
 
-async function create(req, res, next){
+async function create(req, res){
   try {
     const BillingResolution = await BillingResolutionService.create(req.headers["authorization"],req.body);
-    res.status(201).json(BillingResolution)
+    res.status(BillingResolution.status).json(BillingResolution.message)
   
   } catch (error) {
     res.json(error.message)
   }
 }
 
-async function findOne(req, res, next){
+async function findOne(req, res){
   try {
     console.log(req.params.id)
     const getBillingResolution = await BillingResolutionService.findOne(req.headers["authorization"],req.params.id)
-    res.status(200).json(getBillingResolution)
+    res.status(getBillingResolution.status).json(getBillingResolution.message)
   } catch (error) {
-    res.status(404).json(error.message)
+    res.json(error.message)
   }
 }
 
-async function deleteOne(req, res, next){
+async function deleteOne(req, res){
   try {
     const getBillingResolution = await BillingResolutionService.delete(req.headers["authorization"],req.params.id)
 
-    res.json(getBillingResolution)
+    res.status(getBillingResolution.status).json(getBillingResolution.message)
   } catch (error) {
     res.json(error.message)
   }
@@ -43,7 +43,7 @@ async function deleteOne(req, res, next){
 async function updateOne(req, res){
   try {
     const getBillingResolution = await BillingResolutionService.update(req.headers["authorization"],req.params.id, req.body)
-    res.json(getBillingResolution)
+    res.status(getBillingResolution.status).json(getBillingResolution.message)
   } catch (error) {
     res.json(error.message)
   }
@@ -51,13 +51,13 @@ async function updateOne(req, res){
 
 async function findpagination(req, res){
   try {
-    const sizeAsNumber = Number(req.query.size);
-    const pageAsNumber = Number(req.query.page);
-    const where = req.body.where;
-    const BillingResolutions = await BillingResolutionService.findPagination(req.headers["authorization"],sizeAsNumber, pageAsNumber, where);
-    res.json(BillingResolutions)    
+    const sizeAsNumber = Number(req.body.size);
+    const pageAsNumber = Number(req.body.page);
+    const {where, isActive} = req.body;
+    const BillingResolutions = await BillingResolutionService.findPagination(req.headers["authorization"],sizeAsNumber, pageAsNumber, where, isActive);
+    res.status(BillingResolutions.status).json(BillingResolutions.message)    
   } catch (error) {
-      throw new Error(error.message)
+      res.json(error.message);
   }
 }
 

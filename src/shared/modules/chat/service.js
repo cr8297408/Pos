@@ -151,14 +151,6 @@ const ChatService = {
         //   throw new Error(validateBody.error)
         // }
         const user = await getUser(bearerHeader);
-        console.log({
-          name: body.name,
-          description: body.description,
-          users: body.users,
-          messages: body.messages,
-          isPrivate: body.isPrivate,
-          updatedBy: user.id
-        },);
         const newChat = await Chat.update(
           {
             name: body.name,

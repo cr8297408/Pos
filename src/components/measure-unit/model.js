@@ -14,6 +14,13 @@ const MeasureUnit = sequelize.define('MeasureUnit', {
     allowNull: false,
     unique: true
   },
+  description: {
+    type: DataTypes.TEXT
+  },
+  isActive: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: true
+  },
   createdBy: {
     type: DataTypes.STRING,
   },

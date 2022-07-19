@@ -3,7 +3,8 @@ const db = require('../../config/connection/connectBD');
 const BillingResolutionValidation = require('./validation');
 const Pagination = require('../../shared/middlewares/pagination');
 const permissions = require('../../shared/middlewares/permissions');
-const getUser = require('../../shared/middlewares/getUser')
+const getUser = require('../../shared/middlewares/getUser');
+const HttpResponse = require('../../shared/response');
 
 
 sequelize = db.sequelize;
@@ -15,17 +16,14 @@ sequelize = db.sequelize;
 const BillingResolutionService = {
   async findAll(bearerHeader){
     try {
-      const validatePermission = await permissions(bearerHeader, 'FIND_ALL')
+      const validatePermission = await permissions(bearerHeader, ['FIND_ALL', 'FIND_ALL_BILLING_RESOLUTION'])
       if (validatePermission) {
         const BillingResolutions = await BillingResolution.findAll()
-        return BillingResolutions;
+        return new HttpResponse(200, BillingResolutions);
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      return new HttpResponse(401, 'no tienes permisos para esta acción');
     } catch(error) {
-      throw new Error(error.message)
+      throw new HttpResponse(400, error.message);
     }
   },
 
@@ -36,11 +34,11 @@ const BillingResolutionService = {
    */
   async create(bearerHeader,body) {
     try {
-      const validatePermission = await permissions(bearerHeader, 'CREATE')
+      const validatePermission = await permissions(bearerHeader, ['CREATE', 'CREATE_BILLING_RESOLUTION'])
       if (validatePermission) {
         const validate = BillingResolutionValidation.createBillingResolution(body);
         if (validate.error) {
-          throw new Error(validate.error)
+          throw new HttpResponse(400, validate.error)
         }
   
         const exists_resolutionNumber = await BillingResolution.findOne({
@@ -50,7 +48,7 @@ const BillingResolutionService = {
         })
   
         if (exists_resolutionNumber) {
-          throw new Error('el numero de resolucion ya está en uso...')
+          throw new HttpResponse(400, 'el numero de resolucion está en uso');
         }
 
         const user = await getUser(bearerHeader);
@@ -65,17 +63,15 @@ const BillingResolutionService = {
           initialNumber: body.initialNumber,
           finalNumber: body.finalNumber,
           localBilling: body.localBilling,
+          isActive: body.isActive,
           createdBy: user.id
         });
-        return createBillingResolution;
+        return new HttpResponse(201, 'resolucion creada');
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      return new HttpResponse(401, 'no tienes permisos para esta acción')
 
     } catch (error) {
-      throw new Error(error.message)
+      throw new HttpResponse(400, error.message);
     }
   },
 
@@ -86,23 +82,18 @@ const BillingResolutionService = {
 
    async findOne(bearerHeader,id){
     try {
-      const validatePermission = await permissions(bearerHeader, 'FIND_ONE')
+      const validatePermission = await permissions(bearerHeader, ['FIND_ONE', 'FIND_ONE_BILLING_RESOLUTION']);
       if (validatePermission) {
         const validate = BillingResolutionValidation.getBillingResolution(id);
         if (validate.error) {
-          throw new Error(validate.error)
+          throw new HttpResponse(400, validate.error)
         }
         const getBillingResolution = await BillingResolution.findByPk(id)
-        return getBillingResolution;
+        return new HttpResponse(200, getBillingResolution);
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
-
-
+      return new HttpResponse(401, 'no tienes permisos para esta acción');
     } catch (error) {
-      throw new Error(error.message)
+      throw new HttpResponse(400, error.message);
     }
   },
   /**
@@ -112,28 +103,25 @@ const BillingResolutionService = {
    */
   async delete(bearerHeader,id){
     try {
-      const validatePermission = await permissions(bearerHeader, 'DELETE')
+      const validatePermission = await permissions(bearerHeader, ['DELETE', 'DELETE_BILLING_RESOLUTION']);
       if (validatePermission) {
         const validate = await BillingResolutionValidation.getBillingResolution(id)
   
         if (validate.error) {
-          throw new Error(validate.error)
+          throw new HttpResponse(400, validate.error);
         }
   
         const getBillingResolution = await BillingResolution.findByPk(id);
         
         await getBillingResolution.destroy()
   
-        return getBillingResolution;
+        return new HttpResponse(200, 'resolucion eliminada');
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      return new HttpResponse(401, 'no tienes permisos para esta acción');
       
 
     } catch (error) {
-      throw new Error(error)
+      throw new HttpResponse(400, error.message)
     }
   },
 
@@ -145,18 +133,13 @@ const BillingResolutionService = {
    */
   async update(bearerHeader,id, body){
     try {
-      const validatePermission = await permissions(bearerHeader, 'UPDATE')
+      const validatePermission = await permissions(bearerHeader, ['UPDATE', 'UPDATE_BILLING_RESOLUTION'])
       if (validatePermission) {
         
         const validateid = await BillingResolutionValidation.getBillingResolution(id);
         
         if (validateid.error) {
-          throw new Error(validate.error)
-        }
-  
-        const validateBody = await BillingResolutionValidation.createBillingResolution(body)
-        if (validateBody.error) {
-          throw new Error(validate.error)
+          throw new HttpResponse(400, validate.error)
         }
   
         const exists_resolutionNumber = await BillingResolution.findOne({
@@ -166,7 +149,7 @@ const BillingResolutionService = {
         })
   
         if (exists_resolutionNumber) {
-          throw new Error('el numero de resolucion ya está en uso...')
+          throw new HttpResponse(400, 'el numero de resolucion ya está en uso...')
         }
         const user = await getUser(bearerHeader);
         const newBillingResolution = await BillingResolution.update(
@@ -180,36 +163,37 @@ const BillingResolutionService = {
             initialNumber: body.initialNumber,
             finalNumber: body.finalNumber,
             localBilling: body.localBilling,
+            isActive: body.isActive,
             updatedBy: user.id
           },
           {where: {id}}
         )
   
-        return newBillingResolution;
+        return new HttpResponse(200, 'resolucion actualizada');
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      return new HttpResponse(401, 'no tienes permisos para esta acción');
     } catch (error) {
-      
+      throw new HttpResponse(400, error.message);
     }
   },
 
-  async findPagination(bearerHeader,sizeAsNumber, pageAsNumber, wherecond){
+  async findPagination(bearerHeader,sizeAsNumber, pageAsNumber, wherecond, isActive){
     try {
-        const validatePermission = await permissions(bearerHeader, 'FIND_PAGINATION')
+        const validatePermission = await permissions(bearerHeader, ['FIND_PAGINATION', 'FIND_PAGINATION_BILLING_RESOLUTION']);
       if (validatePermission) {
-        const billingResolutions = Pagination('billingResolutions', sequelize,sizeAsNumber, pageAsNumber, wherecond)
-        return billingResolutions
+
+        if(isActive == undefined || typeof(isActive) !== 'boolean'){
+          isActive = true
+        }
+
+        let query = `SELECT * FROM billingResolutions WHERE resolutionClass LIKE '%${wherecond}%' AND isActive = ${isActive} OR resolutionType LIKE '%${wherecond}%' AND isActive = ${isActive} OR resolutionNumber LIKE '%${wherecond}%' AND isActive = ${isActive}`
+        const billingResolutions = Pagination(sequelize,sizeAsNumber, pageAsNumber, query)
+        return new HttpResponse(200, billingResolutions)
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      return new HttpResponse(401, 'no tienes permisos para esta acción')
 
     } catch (error) {
-        throw new Error(error.message);
+        throw new HttpResponse(400, error.message);
     }
   },
 

@@ -1,40 +1,39 @@
 const EconomicActivitiesService = require('./service');
 
 
-async function findAll(req, res, next) {
+async function findAll(req, res) {
   try {
     const EconomicActivitiess = await EconomicActivitiesService.findAll(req.headers['authorization'])
-    res.status(200).json(EconomicActivitiess)
+    res.status(EconomicActivitiess.status).json(EconomicActivitiess.message)
   } catch (error) {
     res.json(error.message)
   }
 }
 
-async function create(req, res, next){
+async function create(req, res){
   try {
     const getEconomicActivities = await EconomicActivitiesService.create(req.headers['authorization'],req.body);
-    res.status(201).json(getEconomicActivities)
+    res.status(getEconomicActivities.status).json(getEconomicActivities.message);
   
   } catch (error) {
     res.json(error.message)
   }
 }
 
-async function findOne(req, res, next){
+async function findOne(req, res){
   try {
-    console.log(req.params.id)
     const getEconomicActivities = await EconomicActivitiesService.findOne(req.headers['authorization'],req.params.id)
-    res.status(200).json(getEconomicActivities)
+    res.status(getEconomicActivities.status).json(getEconomicActivities.message);
   } catch (error) {
-    res.status(404).json(error.message)
+    res.json(error.message)
   }
 }
 
-async function deleteOne(req, res, next){
+async function deleteOne(req, res){
   try {
     const EconomicActivities = await EconomicActivitiesService.delete(req.headers['authorization'],req.params.id)
 
-    res.json(EconomicActivities)
+    res.status(EconomicActivities.status).json(EconomicActivities.message);
   } catch (error) {
     res.json(error.message)
   }
@@ -43,7 +42,7 @@ async function deleteOne(req, res, next){
 async function updateOne(req, res){
   try {
     const EconomicActivities = await EconomicActivitiesService.update(req.headers['authorization'],req.params.id, req.body)
-    res.json(EconomicActivities)
+    res.status(EconomicActivities.status).json(EconomicActivities.message)
   } catch (error) {
     res.json(error.message)
   }
@@ -51,13 +50,13 @@ async function updateOne(req, res){
 
 async function findpagination(req, res){
   try {
-    const sizeAsNumber = Number(req.query.size);
-    const pageAsNumber = Number(req.query.page);
-    const where = req.body.where;
-    const EconomicActivitiess = await EconomicActivitiesService.findPagination(req.headers['authorization'],sizeAsNumber, pageAsNumber, where);
-    res.json(EconomicActivitiess)    
+    const sizeAsNumber = Number(req.body.size);
+    const pageAsNumber = Number(req.body.page);
+    const {where, isActive} = req.body;
+    const EconomicActivitiess = await EconomicActivitiesService.findPagination(req.headers['authorization'],sizeAsNumber, pageAsNumber, where, isActive);
+    res.status(EconomicActivitiess.status).json(EconomicActivitiess.message);    
   } catch (error) {
-      throw new Error(error.message)
+    res.json(error.message)
   }
 }
 

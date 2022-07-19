@@ -4,6 +4,7 @@ const Preparation = require('./model');
 const Pagination = require('../../../../shared/middlewares/pagination');
 const permissions = require('../../../../shared/middlewares/permissions');
 const getUser = require('../../../../shared/middlewares/getUser');
+const HttpResponse = require('../../../../shared/response');
 
 
 sequelize = db.sequelize;
@@ -20,17 +21,14 @@ const PreparationService = {
    */
   async findAll(bearerHeader){
     try {
-      const validatePermission = await permissions(bearerHeader, 'FIND_ALL')
+      const validatePermission = await permissions(bearerHeader, ['FIND_ALL', 'FIND_ALL_PREPARATION']);
       if (validatePermission) {
         const Preparations = await Preparation.findAll()
-        return Preparations;
+        return new HttpResponse(200, Preparations);
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      return new HttpResponse(401, 'no tienes permisos para esta acción');
     } catch(error) {
-      throw new Error(error.message)
+      throw new HttpResponse(400, error.message)
     }
   },
 
@@ -42,27 +40,35 @@ const PreparationService = {
    */
   async create(bearerHeader, body) {
     try {
-      const validatePermission = await permissions(bearerHeader, 'CREATE')
+      const validatePermission = await permissions(bearerHeader, ['CREATE', 'CREATE_PREPARATION'])
       if (validatePermission) {
         const validate = PreparationValidation.createPreparation(body);
         if (validate.error) {
-          throw new Error(validate.error)
+          throw new HttpResponse(400, validate.error)
         }
         const user = await getUser(bearerHeader);
+
+        const validateName = await Preparation.findOne({
+          where: {
+            name: body.name
+          }
+        })
+        if (validateName) {
+          return new HttpResponse(400, 'el nombre ya está en uso');
+        }
+
         const createPreparation = await Preparation.create({
           name: body.name,
           description: body.description,
+          isActive: body.isActive,
           createdBy: user.id
         });
-        return createPreparation;
+        return new HttpResponse(201, createPreparation);
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      return new HttpResponse(401, 'no tienes permisos para esta acción');
       
     } catch (error) {
-      throw new Error(error.message)
+      throw new HttpResponse(400, error.message);
     }
   },
 
@@ -73,21 +79,18 @@ const PreparationService = {
 
   async findOne(bearerHeader, id){
     try {
-      const validatePermission = await permissions(bearerHeader, 'FIND_ONE')
+      const validatePermission = await permissions(bearerHeader, ['FIND_ONE', 'FIND_ONE_PREPARATION']);
       if (validatePermission) {
         const validate = PreparationValidation.getPreparation(id);
         if (validate.error) {
-          throw new Error(validate.error)
+          throw new HttpResponse(400, validate.error)
         }
         const getPreparation = await Preparation.findByPk(id)
-        return getPreparation;
+        return new HttpResponse(200, getPreparation);
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      return new HttpResponse(401, 'no tienes permisos para esta acción');
     } catch (error) {
-      throw new Error(error.message)
+      throw new HttpResponse(400, error.message);
     }
   },
   /**
@@ -97,27 +100,24 @@ const PreparationService = {
    */
   async delete(bearerHeader, id){
     try {
-      const validatePermission = await permissions(bearerHeader, 'DELETE')
+      const validatePermission = await permissions(bearerHeader, ['DELETE', 'DELETE_PREPARATION']);
       if (validatePermission) {
         const validate = await PreparationValidation.getPreparation(id)
 
         if (validate.error) {
-          throw new Error(validate.error)
+          throw new HttpResponse(validate.error)
         }
 
         const getPreparation = await Preparation.findByPk(id);
         
         await getPreparation.destroy()
 
-        return getPreparation;
+        return new HttpResponse(200, 'preparacion eliminada');
         
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      return new HttpResponse(401, 'no tienes permisos para esta acción');
     } catch (error) {
-      throw new Error(error)
+      throw new HttpResponse(400, error.message);
     }
   },
 
@@ -129,47 +129,56 @@ const PreparationService = {
    */
   async update(bearerHeader, id, body){
     try {
-      const validatePermission = await permissions(bearerHeader, 'UPDATE')
+      const validatePermission = await permissions(bearerHeader, ['UPDATE', 'UPDATE_PREPARATION'])
       if (validatePermission) {
         
         const validateid = await PreparationValidation.getPreparation(id);
         
         if (validateid.error) {
-          throw new Error(validate.error)
+          throw new HttpResponse(400, validateid.error)
         }
   
-        const validateBody = await PreparationValidation.createPreparation(body)
-        if (validateBody.error) {
-          throw new Error(validate.error)
-        }
         const user = await getUser(bearerHeader);
+
+        const validateName = await Preparation.findOne({
+          where: {
+            name: body.name
+          }
+        })
+        if (validateName) {
+          return new HttpResponse(400, 'el nombre ya está en uso');
+        }
+
         const newPreparation = await Preparation.update(
           {
             name: body.name,
             description: body.description,
+            isActive: body.isActive,
             updatedBy: user.id 
           },
           {where: {id}}
         )
   
-        return newPreparation;
+        return new HttpResponse(200, 'preparacion actualizada');
         
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      return new HttpResponse(401, 'no tienes permisos para esta acción');
     } catch (error) {
-      
+      throw new HttpResponse(400, error.message);
     }
   },
 
-  async findPagination(bearerHeader, sizeAsNumber, pageAsNumber, wherecond){
+  async findPagination(bearerHeader, sizeAsNumber, pageAsNumber, wherecond, isActive){
     try {
-      const validatePermission = await permissions(bearerHeader, 'FIND_PAGINATION')
+      const validatePermission = await permissions(bearerHeader, ['FIND_PAGINATION', 'FIND_PAGINATION_PREPARATION']);
       if (validatePermission) {
-        const Preparations = await Pagination('Preparations',sequelize,sizeAsNumber, pageAsNumber, wherecond)
-        return Preparations
+        if(isActive == undefined || typeof(isActive) !== 'boolean'){
+          isActive = true
+        }
+
+        let query = `SELECT * FROM preparations WHERE name LIKE '%${wherecond}%' AND isActive = ${isActive} OR description LIKE '%${wherecond}%' AND isActive = ${isActive}`
+        const preparations = Pagination(sequelize,sizeAsNumber, pageAsNumber, query)
+        return new HttpResponse(200, preparations)
       } 
       return {
         message: 'no tienes permisos para esta acción',

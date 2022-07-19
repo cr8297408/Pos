@@ -61,6 +61,7 @@ const __name__Service = {
         const create__name__ = await __name__.create({
           name: body.name,
           description: body.description,
+          isActive: body.isActive,
           createdBy: user.id
         });
         return new HttpResponse(201, 'usuario creado');
@@ -157,6 +158,7 @@ const __name__Service = {
           {
             name: body.name,
             description: body.description,
+            isActive: body.isActive,
             updatedBy: user.id
           },
           {where: {id}}

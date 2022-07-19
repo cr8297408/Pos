@@ -40,6 +40,10 @@ const BillingResolution = sequelize.define('BillingResolution', {
     type: DataTypes.BOOLEAN,
     defaultValue: true
   },
+  isActive: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: true
+  },
   createdBy: {
     type: DataTypes.STRING,
   },

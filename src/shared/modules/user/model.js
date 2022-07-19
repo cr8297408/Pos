@@ -1,6 +1,6 @@
 const { DataTypes, Model, UUIDV4} = require('sequelize');
 const db = require('../../../config/connection/connectBd');
-const Facture = require('../../../components/facture/model')
+// const Facture = require('../../../components/facture/model')
 sequelize = db.sequelize;
 
 const User = sequelize.define('User', {
@@ -56,8 +56,8 @@ const User = sequelize.define('User', {
   timestamps: true
 })
 
-User.hasMany(Facture, {
-  foreignKey: 'UserId'
-});
+// User.hasMany(Facture, {
+//   foreignKey: 'UserId'
+// });
 
 module.exports = User;

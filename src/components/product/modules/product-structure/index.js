@@ -1,40 +1,39 @@
 const ProductStructureService = require('./service');
 
 
-async function findAll(req, res, next) {
+async function findAll(req, res) {
   try {
     const ProductStructures = await ProductStructureService.findAll(req.headers['authorization'])
-    res.status(200).json(ProductStructures)
+    res.status(ProductStructures.status).json(ProductStructures.message)
   } catch (error) {
     res.json(error.message)
   }
 }
 
-async function create(req, res, next){
+async function create(req, res){
   try {
     const getProductStructure = await ProductStructureService.create(req.headers['authorization'],req.body);
-    res.status(201).json(getProductStructure)
+    res.status(getProductStructure.status).json(getProductStructure.message)
   
   } catch (error) {
     res.json(error.message)
   }
 }
 
-async function findOne(req, res, next){
+async function findOne(req, res){
   try {
-    console.log(req.params.id)
     const getProductStructure = await ProductStructureService.findOne(req.headers['authorization'],req.params.id)
-    res.status(200).json(getProductStructure)
+    res.status(getProductStructure.status).json(getProductStructure.message)
   } catch (error) {
-    res.status(404).json(error.message)
+    res.json(error.message)
   }
 }
 
-async function deleteOne(req, res, next){
+async function deleteOne(req, res){
   try {
     const ProductStructure = await ProductStructureService.delete(req.headers['authorization'],req.params.id)
 
-    res.json(ProductStructure)
+    res.status(ProductStructure.status).json(ProductStructure.message)
   } catch (error) {
     res.json(error.message)
   }
@@ -43,7 +42,7 @@ async function deleteOne(req, res, next){
 async function updateOne(req, res){
   try {
     const ProductStructure = await ProductStructureService.update(req.headers['authorization'],req.params.id, req.body)
-    res.json(ProductStructure)
+    res.status(ProductStructure.status).json(ProductStructure.message)
   } catch (error) {
     res.json(error.message)
   }
@@ -51,13 +50,13 @@ async function updateOne(req, res){
 
 async function findpagination(req, res){
   try {
-    const sizeAsNumber = Number(req.query.size);
-    const pageAsNumber = Number(req.query.page);
-    const where = req.body.where;
-    const ProductStructures = await ProductStructureService.findPagination(req.headers['authorization'],sizeAsNumber, pageAsNumber, where);
-    res.json(ProductStructures)    
+    const sizeAsNumber = Number(req.bosy.size);
+    const pageAsNumber = Number(req.bosy.page);
+    const {where, isActive} = req.body;
+    const ProductStructures = await ProductStructureService.findPagination(req.headers['authorization'],sizeAsNumber, pageAsNumber, where, isActive);
+    res.status(ProductStructures.status).json(ProductStructures.message)    
   } catch (error) {
-      throw new Error(error.message)
+    throw new Error(error.message)
   }
 }
 

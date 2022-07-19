@@ -1,49 +1,49 @@
 const ThirdPartiesService = require('./service');
 
 
-async function findAll(req, res, next) {
+async function findAll(req, res) {
   try {
     const ThirdPartiess = await ThirdPartiesService.findAll(req.headers['authorization'])
-    res.status(200).json(ThirdPartiess)
+    res.status(ThirdPartiess.status).json(ThirdPartiess.message);
   } catch (error) {
     res.json(error.message)
   }
 }
 
-async function create(req, res, next){
+async function create(req, res){
   try {
     const getThirdParties = await ThirdPartiesService.create(req.headers['authorization'],req.body);
-    res.status(201).json(getThirdParties)
+    res.status(getThirdParties.status).json(getThirdParties.message);
   
   } catch (error) {
     res.json(error.message)
   }
 }
 
-async function findOne(req, res, next){
+async function findOne(req, res){
   try {
     console.log(req.params.id)
     const getThirdParties = await ThirdPartiesService.findOne(req.headers['authorization'],req.params.id)
-    res.status(200).json(getThirdParties)
+    res.status(getThirdParties.status).json(getThirdParties.message)
   } catch (error) {
     res.status(404).json(error.message)
   }
 }
 
-async function deleteOne(req, res, next){
+async function deleteOne(req, res){
   try {
     const ThirdParties = await ThirdPartiesService.delete(req.headers['authorization'],req.params.id)
 
-    res.json(ThirdParties)
+    res.status(ThirdParties.status).json(ThirdParties.message);
   } catch (error) {
-    res.json(error.message)
+    res.json(error.message);
   }
 }
 
 async function updateOne(req, res){
   try {
     const ThirdParties = await ThirdPartiesService.update(req.headers['authorization'],req.params.id, req.body)
-    res.json(ThirdParties)
+    res.status(ThirdParties.status).json(ThirdParties.message);
   } catch (error) {
     res.json(error.message)
   }
@@ -51,10 +51,10 @@ async function updateOne(req, res){
 
 async function findpagination(req, res){
   try {
-    const sizeAsNumber = Number(req.query.size);
-    const pageAsNumber = Number(req.query.page);
-    const where = req.body.where;
-    const ThirdPartiess = await ThirdPartiesService.findPagination(req.headers['authorization'],sizeAsNumber, pageAsNumber, where);
+    const sizeAsNumber = Number(req.body.size);
+    const pageAsNumber = Number(req.body.page);
+    const {where, isActive} = req.body;
+    const ThirdPartiess = await ThirdPartiesService.findPagination(req.headers['authorization'],sizeAsNumber, pageAsNumber, where, isActive);
     res.json(ThirdPartiess)    
   } catch (error) {
       throw new Error(error.message)

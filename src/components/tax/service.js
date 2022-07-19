@@ -4,6 +4,7 @@ const TaxValidation = require('./validation');
 const permissions = require('../../shared/middlewares/permissions');
 const Pagination = require('../../shared/middlewares/pagination');
 const getUser = require('../../shared/middlewares/getUser');
+const HttpResponse = require('../../shared/response');
 
 sequelize = db.sequelize;
 
@@ -14,17 +15,15 @@ sequelize = db.sequelize;
 const TaxService = {
   async findAll(bearerHeader){
     try {
-      const validatePermission = await permissions(bearerHeader, 'FIND_ALL')
+      const validatePermission = await permissions(bearerHeader, ['FIND_ALL', 'FIND_ALL_TAX'])
       if (validatePermission) { 
         const Taxs = await Tax.findAll()
-        return Taxs;
+        return new HttpResponse(200, Taxs);
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      return new HttpResponse(401, 'no tienes permisos para esta acción')
+
     } catch(error) {
-      throw new Error(error.message)
+      throw new HttpResponse(400, error.message)
     }
   },
 
@@ -35,13 +34,23 @@ const TaxService = {
    */
   async create(bearerHeader, body) {
     try {
-      const validatePermission = await permissions(bearerHeader, 'CREATE')
+      const validatePermission = await permissions(bearerHeader, ['CREATE', 'CREATE_TAX'])
       if (validatePermission) { 
         const validate = TaxValidation.createTax(body);
         if (validate.error) {
-          throw new Error(validate.error)
+          throw new HttpResponse(validate.error);
         }
         const user = await getUser(bearerHeader);
+
+        const validateName = await ProductCategory.findOne({
+          where: {
+            name: body.name
+          }
+        })
+        if (validateName) {
+          return new HttpResponse(400, 'el nombre ya está en uso');
+        }
+
         const createTax = await Tax.create({
           name: body.name,
           description:body.description,
@@ -50,15 +59,12 @@ const TaxService = {
           isActive: body.isActive,
           createdBy: user.id
         });
-        return createTax;
+        return new HttpResponse(201, createTax);
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      return new HttpResponse(401, 'no tienes permisos para esta acción')
 
     } catch (error) {
-      throw new Error(error.message)
+      throw new HttpResponse(400, error.message)
     }
   },
 
@@ -69,23 +75,19 @@ const TaxService = {
 
    async findOne(bearerHeader, id){
     try {
-      const validatePermission = await permissions(bearerHeader, 'FIND_ONE')
+      const validatePermission = await permissions(bearerHeader, ['FIND_ONE', 'FIND_ONE_TAX']);
       if (validatePermission) { 
         const validate = TaxValidation.getTax(id);
         if (validate.error) {
           throw new Error(validate.error)
         }
         const getTax = await Tax.findByPk(id)
-        return getTax;
+        return new HttpResponse(200, getTax);
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
-
+      return new HttpResponse(401, 'no tienes permisos para esta acción');
 
     } catch (error) {
-      throw new Error(error.message)
+      throw new HttpResponse(400, error.message)
     }
   },
   /**
@@ -95,28 +97,24 @@ const TaxService = {
    */
   async delete(bearerHeader, id){
     try {
-      const validatePermission = await permissions(bearerHeader, 'DELETE')
+      const validatePermission = await permissions(bearerHeader, ['DELETE', 'DELETE_TAX']);
       if (validatePermission) { 
         const validate = await TaxValidation.getTax(id)
   
         if (validate.error) {
-          throw new Error(validate.error)
+          throw new HttpResponse(400, validate.error)
         }
   
         const getTax = await Tax.findByPk(id);
         
         await getTax.destroy()
   
-        return getTax;
+        return new HttpResponse(200, 'impuesto eliminado');
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
-      
+      return new HttpResponse(401, 'no tienes permisos para esta acción')      
 
     } catch (error) {
-      throw new Error(error)
+      throw new HttpResponse(400, error.message)
     }
   },
 
@@ -128,19 +126,25 @@ const TaxService = {
    */
   async update(bearerHeader, id, body){
     try {
-      const validatePermission = await permissions(bearerHeader, 'UPDATE')
-      if (validatePermission) { 
+      const validatePermission = await permissions(bearerHeader, ['UPDATE', 'UPDATE_TAX']);
+      if (validatePermission) {
         const validateid = await TaxValidation.getTax(id);
         
         if (validateid.error) {
-          throw new Error(validate.error)
+          throw new Error(validateid.error)
         }
   
-        const validateBody = await TaxValidation.createTax(body)
-        if (validateBody.error) {
-          throw new Error(validate.error)
-        }
         const user = await getUser(bearerHeader);
+
+        const validateName = await Tax.findOne({
+          where: {
+            name: body.name
+          }
+        })
+        if (validateName) {
+          return new HttpResponse(400, 'el nombre ya está en uso');
+        }
+
         const newTax = await Tax.update(
           {
             name: body.name,
@@ -153,30 +157,31 @@ const TaxService = {
           {where: {id}}
         )
   
-        return newTax;
+        return new HttpResponse(200, 'impuesto actualizado');
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      return new HttpResponse(401, 'no tienes permisos para esta acción')
+
     } catch (error) {
-      
+      throw new HttpResponse(400, error.message);      
     }
   },
 
   async findPagination(bearerHeader, sizeAsNumber, pageAsNumber,where){
     try {
-      const validatePermission = await permissions(bearerHeader, 'FIND_PAGINATION')
+      const validatePermission = await permissions(bearerHeader, ['FIND_PAGINATION', 'FIND_PAGINATION_TAX'])
       if (validatePermission) {
-        const taxs = await Pagination('taxes',sequelize,sizeAsNumber, pageAsNumber,where)
-        return taxs
+        if(isActive == undefined || typeof(isActive) !== 'boolean'){
+          isActive = true
+        }
+
+        let query = `SELECT * FROM taxes WHERE name LIKE '%${wherecond}%' AND isActive = ${isActive} OR description LIKE '%${wherecond}%' AND isActive = ${isActive}`
+        const taxes = Pagination(sequelize,sizeAsNumber, pageAsNumber, query)
+        return new HttpResponse(200, taxes)
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      return new HttpResponse(401, 'no tienes permisos para esta acción')
+
     } catch (error) {
-        throw new Error(error.message);
+      throw new HttpResponse(400, error.message);
     }
   },
 

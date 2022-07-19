@@ -17,6 +17,16 @@ const FiscalResponsibility = sequelize.define('FiscalResponsibility', {
   taxDescription: {
     type: DataTypes.STRING,
   },
+  isActive: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: true
+  },
+  createdBy: {
+    type: DataTypes.STRING,
+  },
+  updatedBy: {
+      type: DataTypes.STRING,
+  }
 },{
   tableName: 'fiscalResponsibilitys',
   timestamps: true
