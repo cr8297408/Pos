@@ -78,11 +78,16 @@ const AuthService = {
       if (!result) {
         return new HttpResponse(400, 'credenciales incorrectas');
       }
+      const fecha = new Date();
+      fecha.setDate(fecha.getDate() + 1)
       const dataToken = {
         id : user.id,
         isAdmin : user.isAdmin,
         isActive : user.isActive,
         typeUser: user.typeUser,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        expiredIn: fecha
       }
 
       const token = jsonwebtoken.sign({dataToken}, config.JWT_SECRET);

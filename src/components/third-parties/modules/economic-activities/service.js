@@ -5,6 +5,7 @@ const Pagination = require('../../../../shared/middlewares/pagination');
 const permissions = require('../../../../shared/middlewares/permissions');
 const getUser = require('../../../../shared/middlewares/getUser');
 const HttpResponse = require('../../../../shared/response');
+const { Op } = require('sequelize');
 
 sequelize = db.sequelize;
 
@@ -44,7 +45,7 @@ const EconomicActivitiesService = {
       if (validatePermission) {
         const validate = EconomicActivitiesValidation.createEconomicActivities(body);
         if (validate.error) {
-          throw new HttpResponse(200, validate.error)
+          throw new HttpResponse(400, validate.error)
         }
         const user = await getUser(bearerHeader);
         
@@ -59,11 +60,11 @@ const EconomicActivitiesService = {
         // }
         const validateName = await EconomicActivities.findOne({
           where: {
-            name: body.name
+            [Op.or]: [{nameActivity: body.nameActivity}, {codeActivity: body.codeActivity}]
           }
         })
         if (validateName) {
-          return new HttpResponse(400, 'el nombre ya está en uso');
+          return new HttpResponse(400, 'nombre o codigo en uso');
         }
         const createEconomicActivities = await EconomicActivities.create({
           nameActivity: body.nameActivity,
@@ -73,7 +74,7 @@ const EconomicActivitiesService = {
           isActive: body.isActive,
           createdBy: user.id
         });
-        return createEconomicActivities;
+        return new HttpResponse(201, createEconomicActivities);
       } 
       return new HttpResponse(401, 'no tienes permisos para esta acción')
       
@@ -153,7 +154,7 @@ const EconomicActivitiesService = {
   
         const user = await getUser(bearerHeader);
 
-        const validateName = await ThirdParties.findOne({
+        const validateName = await EconomicActivities.findOne({
           where: {
             name: body.name
           }
@@ -184,7 +185,7 @@ const EconomicActivitiesService = {
     }
   },
 
-  async findPagination(bearerHeader, sizeAsNumber, pageAsNumber, wherecond){
+  async findPagination(bearerHeader, sizeAsNumber, pageAsNumber, wherecond, isActive){
     try {
       const validatePermission = await permissions(bearerHeader, ['FIND_PAGINATION', 'FIND_PAGINATION_ECONOMIC_ACTIVITES']);
       if (validatePermission) {

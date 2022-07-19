@@ -141,15 +141,16 @@ const BillingResolutionService = {
         if (validateid.error) {
           throw new HttpResponse(400, validate.error)
         }
-  
-        const exists_resolutionNumber = await BillingResolution.findOne({
-          where:{
-            resolutionNumber: body.resolutionNumber
+        if(body.resolutionNumber){
+          const exists_resolutionNumber = await BillingResolution.findOne({
+            where:{
+              resolutionNumber: body.resolutionNumber
+            }
+          })
+    
+          if (exists_resolutionNumber) {
+            throw new HttpResponse(400, 'el numero de resolucion ya está en uso...')
           }
-        })
-  
-        if (exists_resolutionNumber) {
-          throw new HttpResponse(400, 'el numero de resolucion ya está en uso...')
         }
         const user = await getUser(bearerHeader);
         const newBillingResolution = await BillingResolution.update(

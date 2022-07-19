@@ -3,7 +3,8 @@ const MessageValidation = require('./validation');
 const Message = require('./model');
 const Pagination = require('../../../middlewares/pagination')
 const permissions = require('../../../middlewares/permissions')
-const getUser = require('../../../middlewares/getUser')
+const getUser = require('../../../middlewares/getUser');
+const HttpResponse = require('../../../response');
 
 sequelize = db.sequelize;
 
@@ -19,17 +20,14 @@ const MessageService = {
    */
   async findAll(bearerHeader){
     try {
-      const validatePermission = await permissions(bearerHeader, 'FIND_ALL')
+      const validatePermission = await permissions(bearerHeader, ['FIND_ALL', 'FIND_ALL_MESSAGE'])
       if (validatePermission) {
         const Messages = await Message.findAll()
-        return Messages;
+        return new HttpResponse(Messages);
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      return new HttpResponse(401, 'no tienes permisos para esta acción');
     } catch(error) {
-      throw new Error(error.message)
+      throw new HttpResponse(400, error.message)
     }
   },
 
@@ -41,7 +39,7 @@ const MessageService = {
    */
   async create(bearerHeader, body) {
     try {
-      const validatePermission = await permissions(bearerHeader, 'CREATE');
+      const validatePermission = await permissions(bearerHeader, ['CREATE', 'CREATE_MESSAGE']);
       const user = await getUser(bearerHeader);
       if (validatePermission) {
         const validate = MessageValidation.createMessage({
@@ -58,15 +56,12 @@ const MessageService = {
         }
   
         const createMessage = await Message.create(body);
-        return createMessage;
+        return new HttpResponse(201, createMessage);
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      return new HttpResponse(401, 'no tienes permisos para esta acción');
       
     } catch (error) {
-      throw new Error(error.message)
+      throw new HttpResponse(400, error.message)
     }
   },
 
@@ -92,27 +87,24 @@ const MessageService = {
    */
   async delete(bearerHeader, id){
     try {
-      const validatePermission = await permissions(bearerHeader, 'DELETE')
+      const validatePermission = await permissions(bearerHeader, ['DELETE', 'DELETE_MESSAGE'])
       if (validatePermission) {
         const validate = await MessageValidation.getMessage(id)
 
         if (validate.error) {
-          throw new Error(validate.error)
+          throw new HttpResponse(400, validate.error)
         }
 
         const getMessage = await Message.findByPk(id);
         
         await getMessage.destroy()
 
-        return getMessage;
+        return new HttpResponse(200, 'mensaje eliminado');
         
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      return new HttpResponse(401, 'no tienes permisos para esta acción');
     } catch (error) {
-      throw new Error(error)
+      throw new HttpResponse(400, error.message);
     }
   },
 
@@ -124,19 +116,15 @@ const MessageService = {
    */
   async update(bearerHeader, id, body){
     try {
-      const validatePermission = await permissions(bearerHeader, 'UPDATE')
+      const validatePermission = await permissions(bearerHeader, ['UPDATE', 'UPDATE_MESSAGE'])
       if (validatePermission) {
         
         const validateid = await MessageValidation.getMessage(id);
         
         if (validateid.error) {
-          throw new Error(validate.error)
+          throw new HttpResponse(400, validateid.error)
         }
-  
-        const validateBody = await MessageValidation.createMessage(body)
-        if (validateBody.error) {
-          throw new Error(validate.error)
-        }
+
         const user = await getUser(bearerHeader);
         const newMessage = await Message.update(
           {
@@ -153,28 +141,23 @@ const MessageService = {
         return newMessage;
         
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      return new HttpResponse(401, 'no tienes permisos para esta acción');
     } catch (error) {
-      
+      throw new HttpResponse(400, error.message);
     }
   },
 
   async findPagination(bearerHeader, sizeAsNumber, pageAsNumber, wherecond){
     try {
-      const validatePermission = await permissions(bearerHeader, 'FIND_PAGINATION')
+      const validatePermission = await permissions(bearerHeader, ['FIND_PAGINATION', 'FIND_PAGINATION_MESSAGE']);
       if (validatePermission) {
-        const Messages = await Pagination('Messages',sequelize,sizeAsNumber, pageAsNumber, wherecond)
-        return Messages
+        let query = `SELECT * FROM messages WHERE title LIKE '%${wherecond}%' AND isActive = ${isActive} OR subtitle LIKE '%${wherecond}%' AND isActive = ${isActive} OR description LIKE '%${wherecond}%' AND isActive = ${isActive}`
+        const messages = await Pagination(sequelize,sizeAsNumber, pageAsNumber, query)
+        return new HttpResponse(200, messages);
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      return new HttpResponse(401, 'no tienes permisos para esta acción');
     } catch (error) {
-        throw new Error(error.message);
+      throw new HttpResponse(400, error.message);
     }
   },
 }

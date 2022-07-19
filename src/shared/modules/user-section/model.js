@@ -30,6 +30,10 @@ const UserSection = sequelize.define('UserSection', {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  isActive: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: true
+  },
   createdBy: {
     type: DataTypes.STRING,
   },

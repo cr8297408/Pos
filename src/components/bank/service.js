@@ -151,20 +151,22 @@ const BankService = {
 
         const user = await getUser(bearerHeader);
 
-        const existsBank = await Bank.findOne({
-          where: {
-            name: body.name
+        if(body.name || body.accountingAccount){
+          const existsBank = await Bank.findOne({
+            where: {
+              name: body.name
+            }
+          })
+          
+          const existsAccount = await Bank.findOne({
+            where: {
+              accountingAccount: body.accountingAccount
+            }
+          })
+          
+          if(existsBank || existsAccount){
+            throw new HttpResponse(400,'el nombre del banco y el numero de cuenta deben ser unicos, revisa si ya está registrado este banco')
           }
-        })
-        
-        const existsAccount = await Bank.findOne({
-          where: {
-            accountingAccount: body.accountingAccount
-          }
-        })
-        
-        if(existsBank || existsAccount){
-          throw new HttpResponse(400,'el nombre del banco y el numero de cuenta deben ser unicos, revisa si ya está registrado este banco')
         }
 
         const newBank = await Bank.update(
@@ -177,7 +179,7 @@ const BankService = {
           {where: {id}}
         )
   
-        return new HttpResponse(200, 'banco eliminado.');
+        return new HttpResponse(200, 'banco actualizado.');
         
       } 
       return new HttpResponse(401, 'no tienes permisos para esta acción')

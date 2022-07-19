@@ -24,6 +24,10 @@ const Chat = sequelize.define('Chat', {
     type: DataTypes.BOOLEAN,
     defaultValue: false
   },
+  isActive: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: true
+  },
   createdBy: {
     type: DataTypes.STRING,
   },

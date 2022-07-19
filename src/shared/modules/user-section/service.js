@@ -4,6 +4,7 @@ const UserSection = require('./model');
 const Pagination = require('../../shared/middlewares/pagination')
 const permissions = require('../../shared/middlewares/permissions')
 const getUser = require('../../middlewares/getUser');
+const HttpResponse = require('../../response');
 
 sequelize = db.sequelize;
 
@@ -19,17 +20,14 @@ const UserSectionService = {
    */
   async findAll(bearerHeader){
     try {
-      const validatePermission = await permissions(bearerHeader, 'FIND_ALL')
+      const validatePermission = await permissions(bearerHeader, ['FIND_ALL', 'FIND_ALL_USER_SECTION'])
       if (validatePermission) {
         const UserSections = await UserSection.findAll()
-        return UserSections;
+        return new HttpResponse(200, UserSections);
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      return new HttpResponse(401, 'no tienes permisos para esta acción');
     } catch(error) {
-      throw new Error(error.message)
+      throw new HttpResponse(400, error.message)
     }
   },
 
@@ -41,27 +39,28 @@ const UserSectionService = {
    */
   async create(bearerHeader, body) {
     try {
-      const validatePermission = await permissions(bearerHeader, 'CREATE')
+      const validatePermission = await permissions(bearerHeader, ['CREATE', 'CREATE_USER_SECTION']);
       if (validatePermission) {
         const validate = UserSectionValidation.createUserSection(body);
         if (validate.error) {
-          throw new Error(validate.error)
+          throw new HttpResponse(400, validate.error)
         }
         const user = await getUser(bearerHeader);
         const createUserSection = await UserSection.create({
-          name: body.name,
-          description: body.description, 
+          ip: body.ip,
+          region: body.region,
+          country: body.country,
+          city: body.city,
+          token: body.token,
+          isActive: body.isActive, 
           createdBy: user.id
         });
-        return createUserSection;
+        return new HttpResponse(201, createUserSection);
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      return new HttpResponse(401, 'no tienes permisos para esta acción');
       
     } catch (error) {
-      throw new Error(error.message)
+      throw new HttpResponse(400, error.message)
     }
   },
 
@@ -72,21 +71,18 @@ const UserSectionService = {
 
   async findOne(bearerHeader, id){
     try {
-      const validatePermission = await permissions(bearerHeader, 'FIND_ONE')
+      const validatePermission = await permissions(bearerHeader, ['FIND_ONE', 'FIND_ONE_USER_SECTION'])
       if (validatePermission) {
         const validate = UserSectionValidation.getUserSection(id);
         if (validate.error) {
-          throw new Error(validate.error)
+          throw new HttpResponse(400, validate.error)
         }
         const getUserSection = await UserSection.findByPk(id)
-        return getUserSection;
+        return new HttpResponse(200, getUserSection);
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      return new HttpResponse(401, 'no tienes permisos para esta acción');
     } catch (error) {
-      throw new Error(error.message)
+      throw new HttpResponse(400, error.message);
     }
   },
   /**
@@ -96,7 +92,7 @@ const UserSectionService = {
    */
   async delete(bearerHeader, id){
     try {
-      const validatePermission = await permissions(bearerHeader, 'DELETE')
+      const validatePermission = await permissions(bearerHeader, ['DELETE', 'DELETE_USER_SECTION']);
       if (validatePermission) {
         const validate = await UserSectionValidation.getUserSection(id)
 
@@ -108,15 +104,12 @@ const UserSectionService = {
         
         await getUserSection.destroy()
 
-        return getUserSection;
+        return new HttpResponse(200, getUserSection);
         
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      return new HttpResponse(401, 'no tienes permisos para esta acción');
     } catch (error) {
-      throw new Error(error)
+      throw new HttpResponse(400, error.message);
     }
   },
 
@@ -128,54 +121,50 @@ const UserSectionService = {
    */
   async update(bearerHeader, id, body){
     try {
-      const validatePermission = await permissions(bearerHeader, 'UPDATE')
+      const validatePermission = await permissions(bearerHeader, ['UPDATE', 'UPDATE_USER_SECTION'])
       if (validatePermission) {
         
         const validateid = await UserSectionValidation.getUserSection(id);
         
         if (validateid.error) {
-          throw new Error(validate.error)
+          throw new HttpResponse(400, validateid.error);
         }
   
-        const validateBody = await UserSectionValidation.createUserSection(body)
-        if (validateBody.error) {
-          throw new Error(validate.error)
-        }
         const user = await getUser(bearerHeader);
         const newUserSection = await UserSection.update(
           {
-            name: body.name,
-            description: body.description,
+            ip: body.ip,
+            region: body.region,
+            country: body.country,
+            city: body.city,
+            token: body.token,
+            isActive: body.isActive,
             updatedBy: user.id 
           },
           {where: {id}}
         )
   
-        return newUserSection;
+        return new HttpResponse(400, 'sección actualizada');
         
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      return new HttpResponse(401, 'no tienes permisos para esta acción');
     } catch (error) {
-      
+      throw new HttpResponse(200, error.message);
     }
   },
 
-  async findPagination(bearerHeader, sizeAsNumber, pageAsNumber, wherecond){
+  async findPagination(bearerHeader, sizeAsNumber, pageAsNumber, wherecond, isActive){
     try {
-      const validatePermission = await permissions(bearerHeader, 'FIND_PAGINATION')
+      const validatePermission = await permissions(bearerHeader, ['FIND_PAGINATION', 'FIND_PAGINATION_USER_SECTION']);
       if (validatePermission) {
-        const UserSections = await Pagination('UserSections',sequelize,sizeAsNumber, pageAsNumber, wherecond)
-        return UserSections
+        
+        let query = `SELECT * FROM userSections WHERE ip LIKE '%${wherecond}%' AND isActive = ${isActive} OR region LIKE '%${wherecond}%' AND isActive = ${isActive} OR country LIKE '%${wherecond}%' AND isActive = ${isActive}`
+        const userSections = await Pagination(sequelize,sizeAsNumber, pageAsNumber, query)
+        return new HttpResponse(200, userSections);
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      return new HttpResponse(401, 'no tienes permisos para esta acción');
     } catch (error) {
-        throw new Error(error.message);
+        throw new HttpResponse(400, error.message);
     }
   },
 }

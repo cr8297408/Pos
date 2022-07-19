@@ -4,6 +4,7 @@ const Chat = require('./model');
 const Message = require('./message/model');
 const permissions = require('../../middlewares/permissions');
 const getUser = require('../../middlewares/getUser');
+const HttpResponse = require('../../response');
 
 const io = require('../../../config/socket.io');
 
@@ -21,17 +22,14 @@ const ChatService = {
    */
   async findAll(bearerHeader){
     try {
-      const validatePermission = await permissions(bearerHeader, 'FIND_ALL')
+      const validatePermission = await permissions(bearerHeader, ['FIND_ALL', 'FIND_ALL_CHAT'])
       if (validatePermission) {
         const Chats = await Chat.findAll();
-        return Chats;
+        return new HttpResponse(200, Chats);
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      return new HttpResponse(401, 'no tienes permisos para esta acción');
     } catch(error) {
-      throw new Error(error.message)
+      throw new HttpResponse(400, error.message);
     }
   },
 
@@ -43,11 +41,11 @@ const ChatService = {
    */
   async create(bearerHeader, body) {
     try {
-      const validatePermission = await permissions(bearerHeader, 'CREATE')
+      const validatePermission = await permissions(bearerHeader, ['CREATE', 'CREATE_CHAT'])
       if (validatePermission) {
         const validate = ChatValidation.createChat(body);
         if (validate.error) {
-          throw new Error(validate.error)
+          throw new HttpResponse(400, validate.error)
         }
         const user = await getUser(bearerHeader);
         const createChat = await Chat.create({
@@ -59,15 +57,12 @@ const ChatService = {
           createdBy: user.id
         });
         // io.emit('new-room', body)
-        return createChat;
+        return new HttpResponse(201, createChat);
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      return new HttpResponse(401, 'no tienes permisos para esta acción');
       
     } catch (error) {
-      throw new Error(error.message)
+      throw new HttpResponse(400, error.message);
     }
   },
 
@@ -78,21 +73,18 @@ const ChatService = {
 
   async findOne(bearerHeader, id, socket){
     try {
-      const validatePermission = await permissions(bearerHeader, 'UPDATE')
+      const validatePermission = await permissions(bearerHeader, ['UPDATE', 'UPDATE_CHAT'])
       if (validatePermission) {
         const validate = ChatValidation.getChat(id);
         if (validate.error) {
-          throw new Error(validate.error)
+          throw new HttpResponse(400, validate.error)
         }
         const getChat = await Chat.findByPk(id)
-        return getChat;
+        return new HttpResponse(200, getChat);
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      return new HttpResponse(401, 'no tienes permisos para esta acción');
     } catch (error) {
-      throw new Error(error.message)
+      throw new HttpResponse(400, error.message)
     }
   },
   /**
@@ -102,30 +94,27 @@ const ChatService = {
    */
   async delete(bearerHeader, id){
     try {
-      const validatePermission = await permissions(bearerHeader, 'DELETE')
+      const validatePermission = await permissions(bearerHeader, ['DELETE', 'DELETE_CHAT'])
       if (validatePermission) {
         const validate = await ChatValidation.getChat(id)
 
         if (validate.error) {
-          throw new Error(validate.error)
+          throw new HttpResponse(400, validate.error)
         }
 
         const getChat = await Chat.findByPk(id);
         
         await getChat.destroy()
         
-        io.in(getChat.name).socketsLeave(getChat.name);
-        io.emit('delete-room', id)
+        // io.in(getChat.name).socketsLeave(getChat.name);
+        // io.emit('delete-room', id)
 
-        return getChat;
+        return new HttpResponse(200, 'chat eliminado');
         
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      return new HttpResponse(401, 'no tienes permisos para esta acción');
     } catch (error) {
-      throw new Error(error)
+      throw new HttpResponse(400, error.message)
     }
   },
 
@@ -137,13 +126,13 @@ const ChatService = {
    */
   async update(bearerHeader, id, body){
     try {
-      const validatePermission = await permissions(bearerHeader, 'UPDATE')
+      const validatePermission = await permissions(bearerHeader, ['UPDATE', 'UPDATE_CHAT'])
       if (validatePermission) {
         
         const validateid = await ChatValidation.getChat(id);
         
         if (validateid.error) {
-          throw new Error(validateid.error)
+          throw new HttpResponse(400, validateid.error)
         }
   
         // const validateBody = await ChatValidation.createChat(body)
@@ -163,15 +152,12 @@ const ChatService = {
           {where: {id}}
         )
   
-        return newChat;
-        
+        return new HttpResponse(200, 'chat actualizado');
+
       } 
-      return {
-        message: 'no tienes permisos para esta acción',
-        status: 401
-      }
+      return new HttpResponse(401, 'no tienes permisos para esta acción');
     } catch (error) {
-      throw new Error(error.message)
+      throw new HttpResponse(400, error.message)
     }
   },
 
@@ -184,9 +170,9 @@ const ChatService = {
   async getMessages(id){
     try {
       const Chats = await Message.findAll();
-      return Chats;
+      return new HttpResponse(200, Chats);
     } catch (error) {
-      throw new Error(error.message)
+      throw new HttpResponse(400, error.message)
     }
   },
 
@@ -208,8 +194,9 @@ const ChatService = {
       }
 
       console.log(users);
+      return new HttpResponse(200, `usuarios en el chat: ${users}`)
     } catch (error) {
-      throw new Error(error.message)
+      throw new HttpResponse(400, error.message);
     }
   }
 }

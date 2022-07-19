@@ -24,6 +24,10 @@ const Message = sequelize.define('Message', {
   estate: {
     type: DataTypes.ENUM('LEIDO', 'ENTREGADO', 'PENDIENTE'),
   },
+  isActive: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: true
+  },
   createdBy: {
     type: DataTypes.STRING,
   },

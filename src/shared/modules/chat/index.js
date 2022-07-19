@@ -4,7 +4,7 @@ const ChatService = require('./service');
 async function findAll(req, res, next) {
   try {
     const Chats = await ChatService.findAll(req.headers['authorization'])
-    res.status(200).json(Chats)
+    res.status(Chats.status).json(Chats.message)
   } catch (error) {
     res.json(error.message)
   }
@@ -13,7 +13,7 @@ async function findAll(req, res, next) {
 async function create(req, res, next){
   try {
     const getChat = await ChatService.create(req.headers['authorization'],req.body);
-    res.status(201).json(getChat);
+    res.status(getChat.status).json(getChat.message);
   
   } catch (error) {
     res.json(error.message)
@@ -24,9 +24,9 @@ async function findOne(req, res, next){
   try {
     const { id, socket } = req.params;
     const getChat = await ChatService.findOne(req.headers['authorization'], id)
-    res.status(200).json(getChat)
+    res.status(getChat.status).json(getChat.message)
   } catch (error) {
-    res.status(404).json(error.message)
+    res.json(error.message)
   }
 }
 
@@ -34,7 +34,7 @@ async function deleteOne(req, res, next){
   try {
     const Chat = await ChatService.delete(req.headers['authorization'],req.params.id)
 
-    res.json(Chat)
+    res.status(Chat.status).json(Chat.message);
   } catch (error) {
     res.json(error.message)
   }
@@ -43,7 +43,7 @@ async function deleteOne(req, res, next){
 async function updateOne(req, res){
   try {
     const Chat = await ChatService.update(req.headers['authorization'],req.params.id, req.body)
-    res.json(Chat)
+    res.status(Chat.status).json(Chat.message);
   } catch (error) {
     res.json(error.message)
   }
@@ -52,7 +52,7 @@ async function updateOne(req, res){
 async function getMessage(req, res){
   try {
     const chats = await ChatService.getMessages(req.params.id);
-    res.json(chats)
+    res.status(chats.status).json(chats.message);
   } catch (error) {
     res.json(error.message)
   }
@@ -61,7 +61,7 @@ async function getMessage(req, res){
 async function addPeople(req, res){
   try {
     const people = await ChatService.addPeople(req.params.id);
-    res.json(people)
+    res.status(people.status).json(people.message);
   } catch (error) {
     res.json(error.message)
   }
