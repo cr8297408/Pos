@@ -154,13 +154,15 @@ const EconomicActivitiesService = {
   
         const user = await getUser(bearerHeader);
 
-        const validateName = await EconomicActivities.findOne({
-          where: {
-            name: body.name
+        if (body.nameActivity) {
+          const validateName = await EconomicActivities.findOne({
+            where: {
+              [Op.or]: [{nameActivity: body.nameActivity}, {codeActivity: body.codeActivity}]
+            }
+          })
+          if (validateName) {
+            return new HttpResponse(400, 'nombre o codigo en uso');
           }
-        })
-        if (validateName) {
-          return new HttpResponse(400, 'el nombre ya está en uso');
         }
 
         const newEconomicActivities = await EconomicActivities.update(

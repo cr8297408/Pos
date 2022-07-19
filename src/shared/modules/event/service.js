@@ -6,6 +6,7 @@ const permissions = require('../../middlewares/permissions');
 const EventUser = require('./eventsUser.model');
 const User = require('../user/model');
 const HttpResponse = require('../../response');
+const getUser = require('../../middlewares/getUser');
 
 sequelize = db.sequelize;
 

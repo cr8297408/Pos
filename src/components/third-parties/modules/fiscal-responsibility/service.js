@@ -138,13 +138,16 @@ const FiscalResponsibilityService = {
         }
   
         const user = await getUser(bearerHeader);
-        const validateCodeDian = await ThirdParties.findOne({
-          where: {
-            codeDian: body.codeDian
-          }
-        })
+
         if (validateCodeDian) {
-          return new HttpResponse(400, 'codigo Dian en uso');
+          const validateCodeDian = await ThirdParties.findOne({
+            where: {
+              codeDian: body.codeDian
+            }
+          })
+          if (validateCodeDian) {
+            return new HttpResponse(400, 'codigo Dian en uso');
+          }
         }
         const newFiscalResponsibility = await FiscalResponsibility.update(
           {
