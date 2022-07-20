@@ -36,6 +36,7 @@ const ProductLine = sequelize.define('ProductLine', {
 ProductStructure.hasMany(ProductLine, {
   foreignKey: 'ProductStructureId', 
 })
+ProductLine.belongsTo(ProductStructure);
 
 
 module.exports = ProductLine;

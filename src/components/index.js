@@ -24,6 +24,8 @@ const SupportTicketComponent = require('../shared/modules/support-ticket');
 const TicketThreadComponent = require('../shared/modules/ticket-thread');
 const EconomicActivitieComponent = require('./third-parties/modules/economic-activities');
 const FiscalResponsibilityComponent = require('./third-parties/modules/fiscal-responsibility');
+const ProductComponent = require('./product');
+const PriceByVolumeComponent = require('./product/modules/price-by-volume');
 
 module.exports = { 
   BankComponent, 
@@ -51,5 +53,7 @@ module.exports = {
   SupportTicketComponent,
   TicketThreadComponent,
   EconomicActivitieComponent,
-  FiscalResponsibilityComponent
+  FiscalResponsibilityComponent,
+  ProductComponent,
+  PriceByVolumeComponent
 }

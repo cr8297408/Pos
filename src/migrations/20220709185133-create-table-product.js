@@ -10,35 +10,35 @@ module.exports = {
         primaryKey: true,
         allowNull: false,
       },
-      StructureId: {
+      ProductStructureId: {
         type: DataTypes.STRING,
         references: {
           model: 'productStructures',
           key: 'id'
         }
       },
-      LineId: {
+      ProductLineId: {
         type: DataTypes.STRING,
         references: {
           model: 'productLines',
           key: 'id'
         }
       },
-      UMeasurementId: {
+      UnitMeasurementId: {
         type: DataTypes.STRING,
         references: {
           model: 'unitMeasurements',
           key: 'id'
         }
       },
-      AreaId: {
+      ProductAreaId: {
         type: DataTypes.STRING,
         references: {
           model: 'productAreas',
           key: 'id'
         }
       },
-      GroupId: {
+      ProductGroupId: {
         type: DataTypes.STRING,
         references: {
           model: 'productGroups',

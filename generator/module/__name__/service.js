@@ -64,13 +64,13 @@ const __name__Service = {
           isActive: body.isActive,
           createdBy: user.id
         });
-        return new HttpResponse(201, 'usuario creado');
+        return new HttpResponse(201, create__name__);
       } 
       const err = new HttpResponse(401, 'no tienes permisos para esta acción');
       return err;
       
     } catch (error) {
-      return new HttpResponse(400, error.errors[0].message);
+      return new HttpResponse(400, error.message);
     }
   },
 
@@ -111,14 +111,11 @@ const __name__Service = {
           return new HttpResponse(400, validate.error);
         }
 
-        const newUser = await __name__.update(
-          {
-            isActive: false
-          },
-          {where: {id}}
-        )
+        const param = await __name__.findByPk(id);
+
+        await param.destroy();
   
-        return new HttpResponse(200, 'usuario eliminado');
+        return new HttpResponse(200, '__name__ eliminado');
         
       } 
       const err = new HttpResponse(401, 'no tienes permisos para esta acción');
@@ -145,13 +142,15 @@ const __name__Service = {
           return new HttpResponse(400, validateid.error)
         }
         
-        const exists__name__ = await __name__.findOne({
-          where: {
-            name: body.name
+        if(body.name){
+          const exists__name__ = await __name__.findOne({
+            where: {
+              name: body.name
+            }
+          })
+          if(exists__name__){
+            return new HttpResponse(400, 'el nombre ya está en uso')
           }
-        })
-        if(exists__name__){
-          return new HttpResponse(400, 'el nombre de __name__ ya está en uso')
         }
 
         const new__name__ = await __name__.update(
@@ -174,12 +173,17 @@ const __name__Service = {
     }
   },
 
-  async findPagination(bearerHeader, sizeAsNumber, pageAsNumber, wherecond){
+  async findPagination(bearerHeader, sizeAsNumber, pageAsNumber, wherecond, isActive){
     try {
       const validatePermission = await permissions(bearerHeader, ['FIND_PAGINATION', 'FIND_PAGINATION___name__'])
       if (validatePermission) {
-        const __name__s = await Pagination('__name__s',sequelize,sizeAsNumber, pageAsNumber, wherecond)
-        return new HttpResponse(200, __name__s);
+        if(isActive == undefined || typeof(isActive) !== 'boolean'){
+          isActive = true
+        }
+
+        let query = `SELECT * FROM __name__s WHERE ProductId LIKE '%${wherecond}%' AND isActive = ${isActive} OR description LIKE '%${wherecond}%' AND isActive = ${isActive}`
+        const __name__s = Pagination(sequelize,sizeAsNumber, pageAsNumber, query)
+        return new HttpResponse(200, __name__s)
       } 
       const err = new HttpResponse(401, 'no tienes permisos para esta acción');
       return err;

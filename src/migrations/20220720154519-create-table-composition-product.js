@@ -1,25 +1,29 @@
 'use strict';
-const { UUIDV4, DataTypes } = require('sequelize')
+const { DataTypes, UUIDV4 } = require('sequelize');
 
 module.exports = {
   async up (queryInterface, Sequelize) {
-    
-    await queryInterface.createTable('productLines', { 
+    await queryInterface.createTable('compositionProducts', {
       id: {
-        type: Sequelize.DataTypes.STRING,
+        type: DataTypes.STRING,
         defaultValue: UUIDV4,
         primaryKey: true,
         allowNull: false,
       },
-      name: {
-        type: Sequelize.DataTypes.STRING,
-        allowNull: false,
-        unique: true
+      ProductId: {
+        type: DataTypes.STRING,
+        references: {
+          model: 'products',
+          key: 'id'
+        }
       },
-      code: {
-        type: Sequelize.DataTypes.STRING,
-        allowNull: false,
-      },
+      CompositionId: {
+        type: DataTypes.STRING,
+        references: {
+          model: 'compositions',
+          key: 'id'
+        }
+      },      
       createdAt: {
         type: Sequelize.DataTypes.STRING,
         defaultValue: new Date(),
@@ -39,11 +43,9 @@ module.exports = {
         type: DataTypes.STRING,
       }
     });
-     
   },
 
   async down (queryInterface, Sequelize) {
-    
-    await queryInterface.dropTable('productLines');
+    await queryInterface.dropTable('compositionProducts');
   }
 };

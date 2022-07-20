@@ -28,6 +28,10 @@ const ChatRouter = require('./chat');
 const MessagesRouter = require('./message');
 const EconomicActivitiesRouter = require('./economic-activitie');
 const FiscalResponsibilityRouter = require('./fiscal-responsibility');
+const ProductRouter = require('./product');
+const PriceByVolumeRouter = require('./price-by-volume');
+
+
 
 router.use('/v1/banks', BankRouter);
 router.use('/v1/billingResolutions', BillingResolutionRouter);
@@ -55,6 +59,9 @@ router.use('/v1/chats', ChatRouter);
 router.use('/v1/messages', MessagesRouter);
 router.use('/v1/economicActivities', EconomicActivitiesRouter);
 router.use('/v1/fiscalResponsibilitys', FiscalResponsibilityRouter);
+router.use('/v1/products', ProductRouter);
+router.use('/v1/priceByVolumes', PriceByVolumeRouter);
+
 
 // prueba socket
 

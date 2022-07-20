@@ -1,25 +1,56 @@
 const { Router } = require('express');
 const { 
-  UserComponent, 
   BankComponent, 
   BillingResolutionComponent, 
-  MeasureUnitComponent,
-  MonetaryDenominationComponent,
-  ProductAreaComponent,
-  TaxComponent,
   WarehouseComponent,
+  TaxComponent,
+  MonetaryDenominationComponent,
+  MeasureUnitComponent,
+  UserComponent,
   NotificationComponent,
   ProductStructureComponent,
+  ProductAreaComponent,
+  ProductLineComponent,
+  ProductCategoryComponent,
+  ProductGroupComponent,
+  UnitMeasurementComponent,
+  PreparationComponent,
+  PreparationTypeComponent,
+  ChatComponent,
   EventComponent,
   FileComponent,
   MessageComponent,
   ReportTypeComponent,
   SupportTicketComponent,
   TicketThreadComponent,
+  EconomicActivitieComponent,
+  FiscalResponsibilityComponent,
+  ProductComponent,
+  PriceByVolumeComponent
 } = require('../components');
 
 
 const router = Router();
+
+/**
+  * @swagger
+  *  /v1/page/productLines?:
+  *      post:
+  *          summary: get productLines paginated
+  *          tags: ["pagination"]
+  *          requestBody:
+  *              required: true
+  *              content:
+  *                  application/json:
+  *                      schema:
+  *                          $ref: '#/components/schemas/Pagination'
+  *          responses:
+  *              200:
+  *                  description: get productLine succefully  
+  *              401:
+  *                  description: user not authorized to get productLine
+  */
+ router.post('/productLines/?', ProductLineComponent.findpagination);
 
 /**
   * @swagger
@@ -32,30 +63,12 @@ const router = Router();
   *              content:
   *                  application/json:
   *                      schema:
-  *                          $ref: '#/components/schemas/reportType'
+  *                          $ref: '#/components/schemas/Pagination'
   *          responses:
   *              200:
   *                  description: get reportType succefully  
   *              401:
   *                  description: user not authorized to get reportType
-  *          parameters: [
-  *           {
-  *              name: size,
-  *              in: query,
-  *              description: size to pagination,
-  *              schema: {
-  *                  type: string
-  *              }
-  *           },
-  *           {
-  *              name: page,
-  *              in: query,
-  *              description: number of page paginate,
-  *              schema: {
-  *                  type: string
-  *              }
-  *           },
-  *          ]
   */
  router.post('/reportTypes/?', ReportTypeComponent.findpagination);
 
@@ -70,30 +83,12 @@ const router = Router();
   *              content:
   *                  application/json:
   *                      schema:
-  *                          $ref: '#/components/schemas/supportTicket'
+  *                          $ref: '#/components/schemas/Pagination'
   *          responses:
   *              200:
   *                  description: get supportTicket succefully  
   *              401:
   *                  description: user not authorized to get supportTicket
-  *          parameters: [
-  *           {
-  *              name: size,
-  *              in: query,
-  *              description: size to pagination,
-  *              schema: {
-  *                  type: string
-  *              }
-  *           },
-  *           {
-  *              name: page,
-  *              in: query,
-  *              description: number of page paginate,
-  *              schema: {
-  *                  type: string
-  *              }
-  *           },
-  *          ]
   */
  router.post('/supportTickets/?', SupportTicketComponent.findpagination);
 
@@ -108,30 +103,12 @@ const router = Router();
   *              content:
   *                  application/json:
   *                      schema:
-  *                          $ref: '#/components/schemas/ticketThread'
+  *                          $ref: '#/components/schemas/Pagination'
   *          responses:
   *              200:
   *                  description: get ticketThread succefully  
   *              401:
   *                  description: user not authorized to get ticketThread
-  *          parameters: [
-  *           {
-  *              name: size,
-  *              in: query,
-  *              description: size to pagination,
-  *              schema: {
-  *                  type: string
-  *              }
-  *           },
-  *           {
-  *              name: page,
-  *              in: query,
-  *              description: number of page paginate,
-  *              schema: {
-  *                  type: string
-  *              }
-  *           },
-  *          ]
   */
   router.post('/ticketThreads/?', TicketThreadComponent.findpagination);
 
@@ -146,30 +123,12 @@ const router = Router();
   *              content:
   *                  application/json:
   *                      schema:
-  *                          $ref: '#/components/schemas/message'
+  *                          $ref: '#/components/schemas/Pagination'
   *          responses:
   *              200:
   *                  description: get message succefully  
   *              401:
   *                  description: user not authorized to get message
-  *          parameters: [
-  *           {
-  *              name: size,
-  *              in: query,
-  *              description: size to pagination,
-  *              schema: {
-  *                  type: string
-  *              }
-  *           },
-  *           {
-  *              name: page,
-  *              in: query,
-  *              description: number of page paginate,
-  *              schema: {
-  *                  type: string
-  *              }
-  *           },
-  *          ]
   */
  router.post('/messages/?', MessageComponent.findpagination);
 
@@ -185,30 +144,12 @@ const router = Router();
   *              content:
   *                  application/json:
   *                      schema:
-  *                          $ref: '#/components/schemas/file'
+  *                          $ref: '#/components/schemas/Pagination'
   *          responses:
   *              200:
   *                  description: get file succefully  
   *              401:
   *                  description: user not authorized to get file
-  *          parameters: [
-  *           {
-  *              name: size,
-  *              in: query,
-  *              description: size to pagination,
-  *              schema: {
-  *                  type: string
-  *              }
-  *           },
-  *           {
-  *              name: page,
-  *              in: query,
-  *              description: number of page paginate,
-  *              schema: {
-  *                  type: string
-  *              }
-  *           },
-  *          ]
   */
  router.post('/files/?', FileComponent.findpagination);
 
@@ -223,30 +164,12 @@ const router = Router();
   *              content:
   *                  application/json:
   *                      schema:
-  *                          $ref: '#/components/schemas/event'
+  *                          $ref: '#/components/schemas/Pagination'
   *          responses:
   *              200:
   *                  description: get event succefully  
   *              401:
   *                  description: user not authorized to get event
-  *          parameters: [
-  *           {
-  *              name: size,
-  *              in: query,
-  *              description: size to pagination,
-  *              schema: {
-  *                  type: string
-  *              }
-  *           },
-  *           {
-  *              name: page,
-  *              in: query,
-  *              description: number of page paginate,
-  *              schema: {
-  *                  type: string
-  *              }
-  *           },
-  *          ]
   */
  router.post('/events/?', EventComponent.findpagination);
 
@@ -262,30 +185,12 @@ const router = Router();
   *              content:
   *                  application/json:
   *                      schema:
-  *                          $ref: '#/components/schemas/user'
+  *                          $ref: '#/components/schemas/Pagination'
   *          responses:
   *              200:
   *                  description: get user succefully  
   *              401:
   *                  description: user not authorized to get user
-  *          parameters: [
-  *           {
-  *              name: size,
-  *              in: query,
-  *              description: size to pagination,
-  *              schema: {
-  *                  type: string
-  *              }
-  *           },
-  *           {
-  *              name: page,
-  *              in: query,
-  *              description: number of page paginate,
-  *              schema: {
-  *                  type: string
-  *              }
-  *           },
-  *          ]
   */
  router.post('/users/?', UserComponent.findpagination);
 
@@ -301,30 +206,12 @@ const router = Router();
   *              content:
   *                  application/json:
   *                      schema:
-  *                          $ref: '#/components/schemas/bank'
+  *                          $ref: '#/components/schemas/Pagination'
   *          responses:
   *              200:
   *                  description: get bank succefully  
   *              401:
   *                  description: bank not authorized to get bank
-  *          parameters: [
-  *           {
-  *              name: size,
-  *              in: query,
-  *              description: size to pagination,
-  *              schema: {
-  *                  type: string
-  *              }
-  *           },
-  *           {
-  *              name: page,
-  *              in: query,
-  *              description: number of page paginate,
-  *              schema: {
-  *                  type: string
-  *              }
-  *           },
-  *          ]
   */
   router.post('/banks/?', BankComponent.findpagination);
 
@@ -339,30 +226,12 @@ const router = Router();
   *              content:
   *                  application/json:
   *                      schema:
-  *                          $ref: '#/components/schemas/billing'
+  *                          $ref: '#/components/schemas/Pagination'
   *          responses:
   *              200:
   *                  description: get billingResolution succefully  
   *              401:
   *                  description: billingResolution not authorized to get billingResolution
-  *          parameters: [
-  *           {
-  *              name: size,
-  *              in: query,
-  *              description: size to pagination,
-  *              schema: {
-  *                  type: string
-  *              }
-  *           },
-  *           {
-  *              name: page,
-  *              in: query,
-  *              description: number of page paginate,
-  *              schema: {
-  *                  type: string
-  *              }
-  *           },
-  *          ]
   */
 router.post('/billingResolutions/?', BillingResolutionComponent.findpagination);
 
@@ -372,31 +241,19 @@ router.post('/billingResolutions/?', BillingResolutionComponent.findpagination);
   *      get:
   *          summary: get MeasureUnits paginated
   *          tags: ["pagination"]
+  *          requestBody:
+  *              required: true
+  *              content:
+  *                  application/json:
+  *                      schema:
+  *                          $ref: '#/components/schemas/Pagination'
   *          responses:
   *              200:
   *                  description: get MeasureUnit succefully  
   *              401:
   *                  description: MeasureUnit not authorized to get MeasureUnit
-  *          parameters: [
-  *           {
-  *              name: size,
-  *              in: query,
-  *              description: size to pagination,
-  *              schema: {
-  *                  type: string
-  *              }
-  *           },
-  *           {
-  *              name: page,
-  *              in: query,
-  *              description: number of page paginate,
-  *              schema: {
-  *                  type: string
-  *              }
-  *           },
-  *          ]
   */
- router.get('/measureUnit/?', MeasureUnitComponent.findpagination);
+ router.post('/measureUnit/?', MeasureUnitComponent.findpagination);
 
  /**
   * @swagger
@@ -409,30 +266,12 @@ router.post('/billingResolutions/?', BillingResolutionComponent.findpagination);
   *              content:
   *                  application/json:
   *                      schema:
-  *                          $ref: '#/components/schemas/monetaryD'
+  *                          $ref: '#/components/schemas/Pagination'
   *          responses:
   *              200:
   *                  description: get monetaryDenomination succefully  
   *              401:
   *                  description: monetaryDenomination not authorized to get monetaryDenomination
-  *          parameters: [
-  *           {
-  *              name: size,
-  *              in: query,
-  *              description: size to pagination,
-  *              schema: {
-  *                  type: string
-  *              }
-  *           },
-  *           {
-  *              name: page,
-  *              in: query,
-  *              description: number of page paginate,
-  *              schema: {
-  *                  type: string
-  *              }
-  *           },
-  *          ]
   */
 router.post('/monetaryDenominations/?', MonetaryDenominationComponent.findpagination);
 
@@ -447,30 +286,12 @@ router.post('/monetaryDenominations/?', MonetaryDenominationComponent.findpagina
   *              content:
   *                  application/json:
   *                      schema:
-  *                          $ref: '#/components/schemas/productA'
+  *                          $ref: '#/components/schemas/Pagination'
   *          responses:
   *              200:
   *                  description: get productArea succefully  
   *              401:
   *                  description: productArea not authorized to get productArea
-  *          parameters: [
-  *           {
-  *              name: size,
-  *              in: query,
-  *              description: size to pagination,
-  *              schema: {
-  *                  type: string
-  *              }
-  *           },
-  *           {
-  *              name: page,
-  *              in: query,
-  *              description: number of page paginate,
-  *              schema: {
-  *                  type: string
-  *              }
-  *           },
-  *          ]
   */
   router.post('/productAreas/?', ProductAreaComponent.findpagination);
 
@@ -485,30 +306,12 @@ router.post('/monetaryDenominations/?', MonetaryDenominationComponent.findpagina
 *              content:
 *                  application/json:
 *                      schema:
-*                          $ref: '#/components/schemas/tax'
+*                          $ref: '#/components/schemas/Pagination'
 *          responses:
 *              200:
 *                  description: get tax succefully  
 *              401:
 *                  description: tax not authorized to get tax
-*          parameters: [
-*           {
-*              name: size,
-*              in: query,
-*              description: size to pagination,
-*              schema: {
-*                  type: string
-*              }
-*           },
-*           {
-*              name: page,
-*              in: query,
-*              description: number of page paginate,
-*              schema: {
-*                  type: string
-*              }
-*           },
-*          ]
 */
 router.post('/taxes/?', TaxComponent.findpagination);
 
@@ -523,30 +326,12 @@ router.post('/taxes/?', TaxComponent.findpagination);
 *              content:
 *                  application/json:
 *                      schema:
-*                          $ref: '#/components/schemas/wareh'
+*                          $ref: '#/components/schemas/Pagination'
 *          responses:
 *              200:
 *                  description: get tax succefully  
 *              401:
-*                  description: tax not authorized to get tax
-*          parameters: [
-*           {
-*              name: size,
-*              in: query,
-*              description: size to pagination,
-*              schema: {
-*                  type: string
-*              }
-*           },
-*           {
-*              name: page,
-*              in: query,
-*              description: number of page paginate,
-*              schema: {
-*                  type: string
-*              }
-*           },
-*          ]
+*                  description: tax not authorized to get warehouses
 */
 router.post('/warehouses/?', WarehouseComponent.findpagination);
 
@@ -561,30 +346,12 @@ router.post('/warehouses/?', WarehouseComponent.findpagination);
 *              content:
 *                  application/json:
 *                      schema:
-*                          $ref: '#/components/schemas/notif'
+*                          $ref: '#/components/schemas/Pagination'
 *          responses:
 *              200:
 *                  description: get tax succefully  
 *              401:
 *                  description: tax not authorized to get tax
-*          parameters: [
-*           {
-*              name: size,
-*              in: query,
-*              description: size to pagination,
-*              schema: {
-*                  type: string
-*              }
-*           },
-*           {
-*              name: page,
-*              in: query,
-*              description: number of page paginate,
-*              schema: {
-*                  type: string
-*              }
-*           },
-*          ]
 */
 router.post('/notifications/?', NotificationComponent.findpagination);
 
@@ -599,30 +366,13 @@ router.post('/notifications/?', NotificationComponent.findpagination);
 *              content:
 *                  application/json:
 *                      schema:
-*                          $ref: '#/components/schemas/prodStr'
+*                          $ref: '#/components/schemas/Pagination'
 *          responses:
 *              200:
 *                  description: get tax succefully  
 *              401:
 *                  description: tax not authorized to get tax
-*          parameters: [
-*           {
-*              name: size,
-*              in: query,
-*              description: size to pagination,
-*              schema: {
-*                  type: string
-*              }
-*           },
-*           {
-*              name: page,
-*              in: query,
-*              description: number of page paginate,
-*              schema: {
-*                  type: string
-*              }
-*           },
-*          ]
+
 */
 router.post('/productStructures/?', ProductStructureComponent.findpagination);
 
@@ -634,60 +384,15 @@ router.post('/productStructures/?', ProductStructureComponent.findpagination);
   *  description: endpoints for managing api users.
   * components:
   *  schemas:
-  *      user:
+  *      Pagination:
   *          type: string
   *          required:
   *              where
   *          example:
-  *              where: isAdmin=false
-  *      bank:
-  *          type: string
-  *          required:
-  *              where
-  *          example:
-  *              where: accountingAccount>4
-  *      billing:
-  *          type: string
-  *          required:
-  *              where
-  *          example:
-  *              where: localBilling=true
-  *      monetaryD:
-  *          type: string
-  *          required:
-  *              where
-  *          example:
-  *              where: monetaryDenominationTypes=coin
-  *      productA:
-  *         type: string
-  *         required:
-  *             where:
-  *         example:
-  *              where: attentionArea=false
-  *      tax:
-  *          type: string
-  *          required:
-  *              where
-  *          example:
-  *              where: isActive=true
-  *      wareh:
-  *          type: string
-  *          required:
-  *              where
-  *          example:
-  *              where: location=risaralda
-  *      notif:
-  *          type: string
-  *          required:
-  *              where
-  *          example:
-  *              where: type=PERSONAL
-  *      prodStr:
-  *          type: string
-  *          required:
-  *              where
-  *          example:
-  *              where: code=code3232
+  *              where: c
+  *              isActive: false
+  *              size: 8
+  *              page: 1
   *      Error:    
   *          type: object
   *          required:

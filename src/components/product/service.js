@@ -63,10 +63,16 @@ const ProductService = {
           subGroups: body.subGroups,
           barCode: body.barCode,
           barCodeGroup: body.barCodeGroup,
+          ProductStructureId: body.ProductStructureId,
+          ProductLineId: body.ProductLineId,
+          UnitMeasurementId: body.UnitMeasurementId,
+          ProductAreaId: body.ProductAreaId,
+          ProductGroupId: body.ProductGroupId,
+          FileId: body.FileId,
           shoppingAssistant: body.shoppingAssistant,
-          isActive: body.isActive,
           isProductCurve: body.isProductCurve,
           compound: body.compound,
+          isActive: body.isActive,
           createdBy: user.id
         });
         return new HttpResponse(201, createProduct);
@@ -144,10 +150,6 @@ const ProductService = {
           throw new HttpResponse(400, validate.error)
         }
   
-        const validateBody = await ProductValidation.createProduct(body)
-        if (validateBody.error) {
-          throw new HttpResponse(400, validate.error)
-        }
         const user = await getUser(bearerHeader);
         const validateName = await Product.findOne({
           where: {
@@ -166,10 +168,16 @@ const ProductService = {
             subGroups: body.subGroups,
             barCode: body.barCode,
             barCodeGroup: body.barCodeGroup,
+            ProductStructureId: body.ProductStructureId,
+            ProductLineId: body.ProductLineId,
+            UnitMeasurementId: body.UnitMeasurementId,
+            ProductAreaId: body.ProductAreaId,
+            ProductGroupId: body.ProductGroupId,
+            FileId: body.FileId,
             shoppingAssistant: body.shoppingAssistant,
-            isActive: body.isActive,
             isProductCurve: body.isProductCurve,
             compound: body.compound,
+            isActive: body.isActive,
             updatedBy: user.id 
           },
           {where: {id}}

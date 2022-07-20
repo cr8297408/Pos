@@ -40,9 +40,5 @@ const Composition = sequelize.define('Composition', {
   timestamps: true
 })
 
-Product.hasMany(Composition, {
-  foreignKey: 'ProductId'
-})
-
 
 module.exports = Composition;

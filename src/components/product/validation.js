@@ -17,7 +17,22 @@ class ProductValidation {
     createProduct(body){
       const schema = Joi.object().keys({
         name: Joi.string().required(),
-        description: Joi.string().required(),
+        description: Joi.string(),
+        code:Joi.string().required(),
+        ref:Joi.string(),
+        subGroups:Joi.string(),
+        barCode:Joi.string(),
+        barCodeGroup:Joi.string(),
+        ProductStructureId:Joi.string(),
+        ProductLineId:Joi.string().required(),
+        UnitMeasurementId:Joi.string(),
+        ProductAreaId:Joi.string(),
+        ProductGroupId:Joi.string(),
+        FileId:Joi.string(),
+        shoppingAssistant:Joi.boolean(),
+        isProductCurve:Joi.boolean(),
+        compound:Joi.boolean(),
+        isActive:Joi.boolean(),
       })
 
       return schema.validate(body)

@@ -5,8 +5,7 @@ const ProductLine = require('./modules/product-line/model');
 const UnitMeasurement = require('../measure-unit/model');
 const ProductArea = require('./modules/product-area/model');
 const ProductGroup = require('./modules/product-group/model');
-const Composition = require('./modules/composition/model');
-const File = require('../../shared/modules/file/model');
+const File = require('../../shared/modules/files/model');
 
 sequelize = db.sequelize;
 
@@ -70,31 +69,34 @@ const Product = sequelize.define('Product', {
 })
 
 ProductStructure.hasMany(Product, {
-  foreignKey: 'StructureId'
+  foreignKey: 'ProductStructureId'
 })
+
+Product.belongsTo(ProductStructure);
 
 ProductLine.hasMany(Product, {
-  foreignKey: 'LineId'
+  foreignKey: 'ProductLineId'
 })
+Product.belongsTo(ProductLine);
 
 UnitMeasurement.hasMany(Product, {
-  foreignKey: 'UMeasurementId'
+  foreignKey: 'UnitMeasurementId'
 })
+Product.belongsTo(UnitMeasurement);
 
 ProductArea.hasMany(Product, {
-  foreignKey: 'AreaId'
+  foreignKey: 'ProductAreaId'
 })
+Product.belongsTo(ProductArea);
 
 ProductGroup.hasMany(Product, {
-  foreignKey: 'GroupId'
+  foreignKey: 'ProductGroupId'
 })
-
-Composition.hasMany(Product, {
-  foreignKey: 'CompositionId'
-})
+Product.belongsTo(ProductGroup);
 
 File.hasMany(Product, {
   foreignKey: 'FileId'
 })
+Product.belongsTo(File);
 
 module.exports = Product;

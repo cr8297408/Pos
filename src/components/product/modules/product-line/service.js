@@ -6,6 +6,7 @@ const permissions = require('../../../../shared/middlewares/permissions');
 const ProductStructure = require('../product-structure/model');
 const getUser = require('../../../../shared/middlewares/getUser');
 const HttpResponse = require('../../../../shared/response');
+const { Op } = require('sequelize');
 
 
 sequelize = db.sequelize;
@@ -154,17 +155,16 @@ const ProductLineService = {
           throw new HttpResponse(400, validate.error)
         }
         
-        const existsLine = await ProductLine.findOne({
-          where: {
-            [Op.or]: [
-              {name: body.name},
-              {code: body.code}
-            ]
+        if(body.name){
+          const existsLine = await ProductLine.findOne({
+            where: {
+              name: body.name
+            }
+          })
+  
+          if (existsLine) {
+            return new HttpResponse(400, 'nombre en uso')
           }
-        })
-
-        if (existsLine) {
-          return new HttpResponse(400, 'nombre o codigo en uso')
         }
 
         const user = await getUser(bearerHeader);
