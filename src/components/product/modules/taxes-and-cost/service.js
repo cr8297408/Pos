@@ -138,16 +138,6 @@ const TaxesAndCostService = {
           return new HttpResponse(400, validateid.error)
         }
         
-        if(body.name){
-          const existsTaxesAndCost = await TaxesAndCost.findOne({
-            where: {
-              name: body.name
-            }
-          })
-          if(existsTaxesAndCost){
-            return new HttpResponse(400, 'el nombre ya está en uso')
-          }
-        }
         const user = await getUser(bearerHeader)
 
         const newTaxesAndCost = await TaxesAndCost.update(

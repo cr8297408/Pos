@@ -30,6 +30,7 @@ const ProductMenuComponent = require('./product/modules/product-menu');
 const ProductParamComponent = require('./product/modules/product-param');
 const ProductSalePriceComponent = require('./product/modules/product-sale-price');
 const TaxesAndCostComponent = require('./product/modules/taxes-and-cost');
+const ProductCurveComponent = require('./product/modules/product-curve');
 
 module.exports = { 
   BankComponent, 
@@ -63,5 +64,6 @@ module.exports = {
   ProductMenuComponent,
   ProductParamComponent,
   ProductSalePriceComponent,
-  TaxesAndCostComponent
+  TaxesAndCostComponent,
+  ProductCurveComponent
 }

@@ -11,12 +11,8 @@ const {
   ProductStructureComponent,
   ProductAreaComponent,
   ProductLineComponent,
-  ProductCategoryComponent,
-  ProductGroupComponent,
-  UnitMeasurementComponent,
   PreparationComponent,
   PreparationTypeComponent,
-  ChatComponent,
   EventComponent,
   FileComponent,
   MessageComponent,
@@ -28,11 +24,236 @@ const {
   ProductComponent,
   PriceByVolumeComponent,
   ProductMenuComponent,
-  ProductParamComponent
+  ProductParamComponent,
+  ProductSalePriceComponent,
+  TaxesAndCostComponent,
+  ProductCategoryComponent,
+  ProductGroupComponent,
+  UnitMeasurementComponent,
 } = require('../components');
 
 
 const router = Router();
+
+/**
+  * @swagger
+  *  /v1/page/productGroups?:
+  *      post:
+  *          summary: get productGroups paginated
+  *          tags: ["pagination"]
+  *          requestBody:
+  *              required: true
+  *              content:
+  *                  application/json:
+  *                      schema:
+  *                          $ref: '#/components/schemas/Pagination'
+  *          responses:
+  *              200:
+  *                  description: get productGroup succefully  
+  *              401:
+  *                  description: user not authorized to get productGroup
+  */
+ router.post('/productGroups/?', ProductGroupComponent.findpagination);
+
+/**
+  * @swagger
+  *  /v1/page/productCategorys?:
+  *      post:
+  *          summary: get productCategorys paginated
+  *          tags: ["pagination"]
+  *          requestBody:
+  *              required: true
+  *              content:
+  *                  application/json:
+  *                      schema:
+  *                          $ref: '#/components/schemas/Pagination'
+  *          responses:
+  *              200:
+  *                  description: get productCategory succefully  
+  *              401:
+  *                  description: user not authorized to get productCategory
+  */
+ router.post('/productCategorys/?', ProductCategoryComponent.findpagination);
+
+/**
+  * @swagger
+  *  /v1/page/unitMeasurements?:
+  *      post:
+  *          summary: get unitMeasurements paginated
+  *          tags: ["pagination"]
+  *          requestBody:
+  *              required: true
+  *              content:
+  *                  application/json:
+  *                      schema:
+  *                          $ref: '#/components/schemas/Pagination'
+  *          responses:
+  *              200:
+  *                  description: get unitMeasurement succefully  
+  *              401:
+  *                  description: user not authorized to get unitMeasurement
+  */
+ router.post('/unitMeasurements/?', UnitMeasurementComponent.findpagination);
+
+/**
+  * @swagger
+  *  /v1/page/preparations?:
+  *      post:
+  *          summary: get preparations paginated
+  *          tags: ["pagination"]
+  *          requestBody:
+  *              required: true
+  *              content:
+  *                  application/json:
+  *                      schema:
+  *                          $ref: '#/components/schemas/Pagination'
+  *          responses:
+  *              200:
+  *                  description: get preparation succefully  
+  *              401:
+  *                  description: user not authorized to get preparation
+  */
+ router.post('/preparations/?', PreparationComponent.findpagination);
+
+/**
+  * @swagger
+  *  /v1/page/preparationTypes?:
+  *      post:
+  *          summary: get preparationTypes paginated
+  *          tags: ["pagination"]
+  *          requestBody:
+  *              required: true
+  *              content:
+  *                  application/json:
+  *                      schema:
+  *                          $ref: '#/components/schemas/Pagination'
+  *          responses:
+  *              200:
+  *                  description: get preparationType succefully  
+  *              401:
+  *                  description: user not authorized to get preparationType
+  */
+ router.post('/preparationTypes/?', PreparationTypeComponent.findpagination);
+
+/**
+  * @swagger
+  *  /v1/page/economicActivities?:
+  *      post:
+  *          summary: get economicActivities paginated
+  *          tags: ["pagination"]
+  *          requestBody:
+  *              required: true
+  *              content:
+  *                  application/json:
+  *                      schema:
+  *                          $ref: '#/components/schemas/Pagination'
+  *          responses:
+  *              200:
+  *                  description: get economicActivitie succefully  
+  *              401:
+  *                  description: user not authorized to get economicActivitie
+  */
+ router.post('/economicActivities/?', EconomicActivitieComponent.findpagination);
+
+/**
+  * @swagger
+  *  /v1/page/fiscalResponsibilitys?:
+  *      post:
+  *          summary: get fiscalResponsibilitys paginated
+  *          tags: ["pagination"]
+  *          requestBody:
+  *              required: true
+  *              content:
+  *                  application/json:
+  *                      schema:
+  *                          $ref: '#/components/schemas/Pagination'
+  *          responses:
+  *              200:
+  *                  description: get fiscalResponsibility succefully  
+  *              401:
+  *                  description: user not authorized to get fiscalResponsibility
+  */
+ router.post('/fiscalResponsibilitys/?', FiscalResponsibilityComponent.findpagination);
+
+/**
+  * @swagger
+  *  /v1/page/products?:
+  *      post:
+  *          summary: get products paginated
+  *          tags: ["pagination"]
+  *          requestBody:
+  *              required: true
+  *              content:
+  *                  application/json:
+  *                      schema:
+  *                          $ref: '#/components/schemas/Pagination'
+  *          responses:
+  *              200:
+  *                  description: get product succefully  
+  *              401:
+  *                  description: user not authorized to get product
+  */
+ router.post('/products/?', ProductComponent.findpagination);
+
+/**
+  * @swagger
+  *  /v1/page/priceByVolumes?:
+  *      post:
+  *          summary: get priceByVolumes paginated
+  *          tags: ["pagination"]
+  *          requestBody:
+  *              required: true
+  *              content:
+  *                  application/json:
+  *                      schema:
+  *                          $ref: '#/components/schemas/Pagination'
+  *          responses:
+  *              200:
+  *                  description: get priceByVolume succefully  
+  *              401:
+  *                  description: user not authorized to get priceByVolume
+  */
+ router.post('/priceByVolumes/?', PriceByVolumeComponent.findpagination);
+
+/**
+  * @swagger
+  *  /v1/page/taxesAndCosts?:
+  *      post:
+  *          summary: get taxesAndCosts paginated
+  *          tags: ["pagination"]
+  *          requestBody:
+  *              required: true
+  *              content:
+  *                  application/json:
+  *                      schema:
+  *                          $ref: '#/components/schemas/Pagination'
+  *          responses:
+  *              200:
+  *                  description: get taxesAndCost succefully  
+  *              401:
+  *                  description: user not authorized to get taxesAndCost
+  */
+ router.post('/taxesAndCosts/?', TaxesAndCostComponent.findpagination);
+
+/**
+  * @swagger
+  *  /v1/page/productSalePrices?:
+  *      post:
+  *          summary: get productSalePrices paginated
+  *          tags: ["pagination"]
+  *          requestBody:
+  *              required: true
+  *              content:
+  *                  application/json:
+  *                      schema:
+  *                          $ref: '#/components/schemas/Pagination'
+  *          responses:
+  *              200:
+  *                  description: get productSalePrice succefully  
+  *              401:
+  *                  description: user not authorized to get productSalePrice
+  */
+ router.post('/productSalePrices/?', ProductSalePriceComponent.findpagination);
 
 /**
   * @swagger
