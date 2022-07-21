@@ -1,7 +1,7 @@
 const __name__Service = require('./service');
 
 
-async function findAll(req, res, next) {
+async function findAll(req, res) {
   try {
     const __name__s = await __name__Service.findAll(req.headers['authorization'])
     res.status(__name__s.status).json(__name__s.message)
@@ -10,7 +10,7 @@ async function findAll(req, res, next) {
   }
 }
 
-async function create(req, res, next){
+async function create(req, res){
   try {
     const get__name__ = await __name__Service.create(req.headers['authorization'],req.body);
     res.status(get__name__.status).json(get__name__.message);
@@ -20,7 +20,7 @@ async function create(req, res, next){
   }
 }
 
-async function findOne(req, res, next){
+async function findOne(req, res){
   try {
     console.log(req.params.id)
     const get__name__ = await __name__Service.findOne(req.headers['authorization'],req.params.id)
@@ -30,7 +30,7 @@ async function findOne(req, res, next){
   }
 }
 
-async function deleteOne(req, res, next){
+async function deleteOne(req, res){
   try {
     const __name__ = await __name__Service.delete(req.headers['authorization'],req.params.id)
     res.status(__name__.status).json(__name__.message)

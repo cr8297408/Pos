@@ -30,7 +30,9 @@ const EconomicActivitiesRouter = require('./economic-activitie');
 const FiscalResponsibilityRouter = require('./fiscal-responsibility');
 const ProductRouter = require('./product');
 const PriceByVolumeRouter = require('./price-by-volume');
-
+const ProductMenuRouter = require('./product-menu');
+const ProductParamRouter = require('./product-param');
+const ProductSalePriceRouter = require('./product-sale-price');
 
 
 router.use('/v1/banks', BankRouter);
@@ -61,6 +63,9 @@ router.use('/v1/economicActivities', EconomicActivitiesRouter);
 router.use('/v1/fiscalResponsibilitys', FiscalResponsibilityRouter);
 router.use('/v1/products', ProductRouter);
 router.use('/v1/priceByVolumes', PriceByVolumeRouter);
+router.use('/v1/productMenus', ProductMenuRouter);
+router.use('/v1/productParams', ProductParamRouter);
+router.use('/v1/productSalePrices', ProductSalePriceRouter);
 
 
 // prueba socket

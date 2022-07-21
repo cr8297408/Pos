@@ -42,7 +42,7 @@ const TaxService = {
         }
         const user = await getUser(bearerHeader);
 
-        const validateName = await ProductCategory.findOne({
+        const validateName = await Tax.findOne({
           where: {
             name: body.name
           }

@@ -26,11 +26,54 @@ const {
   EconomicActivitieComponent,
   FiscalResponsibilityComponent,
   ProductComponent,
-  PriceByVolumeComponent
+  PriceByVolumeComponent,
+  ProductMenuComponent,
+  ProductParamComponent
 } = require('../components');
 
 
 const router = Router();
+
+/**
+  * @swagger
+  *  /v1/page/productParams?:
+  *      post:
+  *          summary: get productParams paginated
+  *          tags: ["pagination"]
+  *          requestBody:
+  *              required: true
+  *              content:
+  *                  application/json:
+  *                      schema:
+  *                          $ref: '#/components/schemas/Pagination'
+  *          responses:
+  *              200:
+  *                  description: get productParam succefully  
+  *              401:
+  *                  description: user not authorized to get productParam
+  */
+ router.post('/productParams/?', ProductParamComponent.findpagination);
+
+/**
+  * @swagger
+  *  /v1/page/productMenus?:
+  *      post:
+  *          summary: get productMenus paginated
+  *          tags: ["pagination"]
+  *          requestBody:
+  *              required: true
+  *              content:
+  *                  application/json:
+  *                      schema:
+  *                          $ref: '#/components/schemas/Pagination'
+  *          responses:
+  *              200:
+  *                  description: get productMenu succefully  
+  *              401:
+  *                  description: user not authorized to get productMenu
+  */
+ router.post('/productMenus/?', ProductMenuComponent.findpagination);
+
 
 /**
   * @swagger

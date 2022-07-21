@@ -2,7 +2,7 @@ const { DataTypes, UUIDV4} = require('sequelize');
 const db = require('../../config/connection/connectBd');
 sequelize = db.sequelize;
 
-const __name__ = sequelize.define('__name__', {
+const TaxesAndCost = sequelize.define('TaxesAndCost', {
   id: {
     type: DataTypes.STRING,
     defaultValue: UUIDV4,
@@ -28,8 +28,8 @@ const __name__ = sequelize.define('__name__', {
     type: DataTypes.STRING,
   }
 },{
-  tableName: '__name__s',
+  tableName: 'TaxesAndCosts',
   timestamps: true
 })
 
-module.exports = __name__;
+module.exports = TaxesAndCost;

@@ -1,8 +1,10 @@
 const { DataTypes, UUIDV4} = require('sequelize');
-const db = require('../../config/connection/connectBd');
+const db = require('../../../../config/connection/connectBd');
+const Product = require('../../model');
+
 sequelize = db.sequelize;
 
-const __name__ = sequelize.define('__name__', {
+const ProductMenu = sequelize.define('ProductMenu', {
   id: {
     type: DataTypes.STRING,
     defaultValue: UUIDV4,
@@ -17,6 +19,9 @@ const __name__ = sequelize.define('__name__', {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  products: {
+    type: DataTypes.JSON
+  },
   isActive: {
     type: DataTypes.BOOLEAN,
     defaultValue: true
@@ -28,8 +33,13 @@ const __name__ = sequelize.define('__name__', {
     type: DataTypes.STRING,
   }
 },{
-  tableName: '__name__s',
+  tableName: 'productMenus',
   timestamps: true
 })
 
-module.exports = __name__;
+Product.hasMany(ProductMenu, {
+  foreignKey: 'ProductId'
+});
+ProductMenu.belongsTo(Product);
+
+module.exports = ProductMenu;

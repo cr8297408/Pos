@@ -26,6 +26,9 @@ const EconomicActivitieComponent = require('./third-parties/modules/economic-act
 const FiscalResponsibilityComponent = require('./third-parties/modules/fiscal-responsibility');
 const ProductComponent = require('./product');
 const PriceByVolumeComponent = require('./product/modules/price-by-volume');
+const ProductMenuComponent = require('./product/modules/product-menu');
+const ProductParamComponent = require('./product/modules/product-param');
+const ProductSalePriceComponent = require('./product/modules/product-sale-price');
 
 module.exports = { 
   BankComponent, 
@@ -55,5 +58,8 @@ module.exports = {
   EconomicActivitieComponent,
   FiscalResponsibilityComponent,
   ProductComponent,
-  PriceByVolumeComponent
+  PriceByVolumeComponent,
+  ProductMenuComponent,
+  ProductParamComponent,
+  ProductSalePriceComponent
 }

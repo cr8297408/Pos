@@ -1,6 +1,6 @@
 const db = require('../../config/connection/connectBd');
-const __name__Validation = require('./validation');
-const __name__ = require('./model');
+const TaxesAndCostValidation = require('./validation');
+const TaxesAndCost = require('./model');
 const Pagination = require('../../shared/middlewares/pagination')
 const permissions = require('../../shared/middlewares/permissions');
 const HttpResponse = require('../../shared/response');
@@ -10,20 +10,20 @@ sequelize = db.sequelize;
 
 /**
  * @exports
- * @implements {__name__} model
+ * @implements {TaxesAndCost} model
  */
-const __name__Service = {
+const TaxesAndCostService = {
   /**
    * @exports
-   * @implements {__name__} model
-   * @description get all __name__s 
+   * @implements {TaxesAndCost} model
+   * @description get all TaxesAndCosts 
    */
   async findAll(bearerHeader){
     try {
-      const validatePermission = await permissions(bearerHeader, ['FIND_ALL', 'FIND_ALL___name__'])
+      const validatePermission = await permissions(bearerHeader, ['FIND_ALL', 'FIND_ALL_TaxesAndCost'])
       if (validatePermission) {
-        const __name__s = await __name__.findAll()
-        return new HttpResponse(200, __name__s);
+        const TaxesAndCosts = await TaxesAndCost.findAll()
+        return new HttpResponse(200, TaxesAndCosts);
       } 
       const err = new HttpResponse(401, 'no tienes permisos para esta acción');
       return err;
@@ -36,34 +36,34 @@ const __name__Service = {
   /**
    * @exports
    * @param {*} body
-   * @implements {__name__} model 
+   * @implements {TaxesAndCost} model 
    */
   async create(bearerHeader, body) {
     try {
-      const validatePermission = await permissions(bearerHeader, ['CREATE', 'CREATE___name__'])
+      const validatePermission = await permissions(bearerHeader, ['CREATE', 'CREATE_TaxesAndCost'])
       if (validatePermission) {
-        const validate = __name__Validation.create__name__(body);
+        const validate = TaxesAndCostValidation.createTaxesAndCost(body);
         if (validate.error) {
           return new HttpResponse(400, validate.error);
         }
         const user = await getUser(bearerHeader);
 
-        const exists__name__ = await __name__.findOne({
+        const existsTaxesAndCost = await TaxesAndCost.findOne({
           where: {
             name: body.name
           }
         })
-        if(exists__name__){
-          return new HttpResponse(400, 'el nombre de __name__ ya está en uso')
+        if(existsTaxesAndCost){
+          return new HttpResponse(400, 'el nombre de TaxesAndCost ya está en uso')
         }
         
-        const create__name__ = await __name__.create({
+        const createTaxesAndCost = await TaxesAndCost.create({
           name: body.name,
           description: body.description,
           isActive: body.isActive,
           createdBy: user.id
         });
-        return new HttpResponse(201, create__name__);
+        return new HttpResponse(201, createTaxesAndCost);
       } 
       const err = new HttpResponse(401, 'no tienes permisos para esta acción');
       return err;
@@ -75,19 +75,19 @@ const __name__Service = {
 
   /**
    * @exports
-   * @implements {__name__} model
+   * @implements {TaxesAndCost} model
    */
 
   async findOne(bearerHeader, id){
     try {
-      const validatePermission = await permissions(bearerHeader, ['FIND_ONE', 'FIND_ONE___name__'])
+      const validatePermission = await permissions(bearerHeader, ['FIND_ONE', 'FIND_ONE_TaxesAndCost'])
       if (validatePermission) {
-        const validate = __name__Validation.get__name__(id);
+        const validate = TaxesAndCostValidation.getTaxesAndCost(id);
         if (validate.error) {
           return new HttpResponse(400, validate.error);
         }
-        const get__name__ = await __name__.findByPk(id);
-        return new HttpResponse(200, get__name__);
+        const getTaxesAndCost = await TaxesAndCost.findByPk(id);
+        return new HttpResponse(200, getTaxesAndCost);
       } 
       const err = new HttpResponse(401, 'no tienes permisos para esta acción');
       return err;
@@ -98,23 +98,23 @@ const __name__Service = {
   /**
    * @exports
    * @param {*} id
-   * @implements {__name__} model
+   * @implements {TaxesAndCost} model
    */
   async delete(bearerHeader, id){
     try {
-      const validatePermission = await permissions(bearerHeader, ['DELETE', 'DELETE___name__'])
+      const validatePermission = await permissions(bearerHeader, ['DELETE', 'DELETE_TaxesAndCost'])
       if (validatePermission) {
-        const validate = await __name__Validation.get__name__(id)
+        const validate = await TaxesAndCostValidation.getTaxesAndCost(id)
 
         if (validate.error) {
           return new HttpResponse(400, validate.error);
         }
 
-        const param = await __name__.findByPk(id);
+        const param = await TaxesAndCost.findByPk(id);
 
         await param.destroy();
   
-        return new HttpResponse(200, '__name__ eliminado');
+        return new HttpResponse(200, 'TaxesAndCost eliminado');
         
       } 
       const err = new HttpResponse(401, 'no tienes permisos para esta acción');
@@ -128,32 +128,32 @@ const __name__Service = {
    * @exports
    * @param {*} id 
    * @param {*} body 
-   * @description update a __name__ in the db
+   * @description update a TaxesAndCost in the db
    */
   async update(bearerHeader, id, body){
     try {
-      const validatePermission = await permissions(bearerHeader, ['UPDATE', 'UPDATE___name__'])
+      const validatePermission = await permissions(bearerHeader, ['UPDATE', 'UPDATE_TaxesAndCost'])
       if (validatePermission) {
         
-        const validateid = await __name__Validation.get__name__(id);
+        const validateid = await TaxesAndCostValidation.getTaxesAndCost(id);
         
         if (validateid.error) {
           return new HttpResponse(400, validateid.error)
         }
         
         if(body.name){
-          const exists__name__ = await __name__.findOne({
+          const existsTaxesAndCost = await TaxesAndCost.findOne({
             where: {
               name: body.name
             }
           })
-          if(exists__name__){
+          if(existsTaxesAndCost){
             return new HttpResponse(400, 'el nombre ya está en uso')
           }
         }
         const user = await getUser(bearerHeader)
 
-        const new__name__ = await __name__.update(
+        const newTaxesAndCost = await TaxesAndCost.update(
           {
             name: body.name,
             description: body.description,
@@ -175,15 +175,15 @@ const __name__Service = {
 
   async findPagination(bearerHeader, sizeAsNumber, pageAsNumber, wherecond, isActive){
     try {
-      const validatePermission = await permissions(bearerHeader, ['FIND_PAGINATION', 'FIND_PAGINATION___name__'])
+      const validatePermission = await permissions(bearerHeader, ['FIND_PAGINATION', 'FIND_PAGINATION_TaxesAndCost'])
       if (validatePermission) {
         if(isActive == undefined || typeof(isActive) !== 'boolean'){
           isActive = true
         }
 
-        let query = `SELECT * FROM __name__s WHERE ProductId LIKE '%${wherecond}%' AND isActive = ${isActive} OR description LIKE '%${wherecond}%' AND isActive = ${isActive}`
-        const __name__s = Pagination(sequelize,sizeAsNumber, pageAsNumber, query)
-        return new HttpResponse(200, __name__s)
+        let query = `SELECT * FROM TaxesAndCosts WHERE ProductId LIKE '%${wherecond}%' AND isActive = ${isActive} OR description LIKE '%${wherecond}%' AND isActive = ${isActive}`
+        const TaxesAndCosts = Pagination(sequelize,sizeAsNumber, pageAsNumber, query)
+        return new HttpResponse(200, TaxesAndCosts)
       } 
       const err = new HttpResponse(401, 'no tienes permisos para esta acción');
       return err;
@@ -193,4 +193,4 @@ const __name__Service = {
   },
 }
 
-module.exports = __name__Service;
+module.exports = TaxesAndCostService;
