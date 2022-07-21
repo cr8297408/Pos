@@ -16,8 +16,15 @@ class TaxesAndCostValidation {
 
     createTaxesAndCost(body){
       const schema = Joi.object().keys({
-        name: Joi.string().required(),
-        description: Joi.string().required(),
+        ProductId: Joi.string().required(),
+        ShoppingTaxId: Joi.string().required(),
+        unitTaxCostId: Joi.string().required(),
+        applyIco: Joi.boolean(),
+        valueIco: Joi.number().required(),
+        includeIcoInCost: Joi.boolean(),
+        productCost: Joi.number().required(),
+        unitCost: Joi.number().required(),
+        isActive: Joi.boolean(),
       })
 
       return schema.validate(body)

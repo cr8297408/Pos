@@ -1,10 +1,10 @@
-const db = require('../../config/connection/connectBd');
+const db = require('../../../../config/connection/connectBd');
 const TaxesAndCostValidation = require('./validation');
 const TaxesAndCost = require('./model');
-const Pagination = require('../../shared/middlewares/pagination')
-const permissions = require('../../shared/middlewares/permissions');
-const HttpResponse = require('../../shared/response');
-const getUser = require('../../shared/middlewares/getUser');
+const Pagination = require('../../../../shared/middlewares/pagination')
+const permissions = require('../../../../shared/middlewares/permissions');
+const HttpResponse = require('../../../../shared/response');
+const getUser = require('../../../../shared/middlewares/getUser');
 
 sequelize = db.sequelize;
 
@@ -20,7 +20,7 @@ const TaxesAndCostService = {
    */
   async findAll(bearerHeader){
     try {
-      const validatePermission = await permissions(bearerHeader, ['FIND_ALL', 'FIND_ALL_TaxesAndCost'])
+      const validatePermission = await permissions(bearerHeader, ['FIND_ALL', 'FIND_ALL_TAXES_AND_COST'])
       if (validatePermission) {
         const TaxesAndCosts = await TaxesAndCost.findAll()
         return new HttpResponse(200, TaxesAndCosts);
@@ -40,7 +40,7 @@ const TaxesAndCostService = {
    */
   async create(bearerHeader, body) {
     try {
-      const validatePermission = await permissions(bearerHeader, ['CREATE', 'CREATE_TaxesAndCost'])
+      const validatePermission = await permissions(bearerHeader, ['CREATE', 'CREATE_TAXES_AND_COST'])
       if (validatePermission) {
         const validate = TaxesAndCostValidation.createTaxesAndCost(body);
         if (validate.error) {
@@ -48,18 +48,15 @@ const TaxesAndCostService = {
         }
         const user = await getUser(bearerHeader);
 
-        const existsTaxesAndCost = await TaxesAndCost.findOne({
-          where: {
-            name: body.name
-          }
-        })
-        if(existsTaxesAndCost){
-          return new HttpResponse(400, 'el nombre de TaxesAndCost ya está en uso')
-        }
-        
         const createTaxesAndCost = await TaxesAndCost.create({
-          name: body.name,
-          description: body.description,
+          ProductId: body.ProductId,
+          ShoppingTaxId: body.ShoppingTaxId,
+          unitTaxCostId: body.unitTaxCostId,
+          applyIco: body.applyIco,
+          valueIco: body.valueIco,
+          includeIcoInCost: body.includeIcoInCost,
+          productCost: body.productCost,
+          unitCost: body.unitCost,
           isActive: body.isActive,
           createdBy: user.id
         });
@@ -80,7 +77,7 @@ const TaxesAndCostService = {
 
   async findOne(bearerHeader, id){
     try {
-      const validatePermission = await permissions(bearerHeader, ['FIND_ONE', 'FIND_ONE_TaxesAndCost'])
+      const validatePermission = await permissions(bearerHeader, ['FIND_ONE', 'FIND_ONE_TAXES_AND_COST'])
       if (validatePermission) {
         const validate = TaxesAndCostValidation.getTaxesAndCost(id);
         if (validate.error) {
@@ -102,7 +99,7 @@ const TaxesAndCostService = {
    */
   async delete(bearerHeader, id){
     try {
-      const validatePermission = await permissions(bearerHeader, ['DELETE', 'DELETE_TaxesAndCost'])
+      const validatePermission = await permissions(bearerHeader, ['DELETE', 'DELETE_TAXES_AND_COST'])
       if (validatePermission) {
         const validate = await TaxesAndCostValidation.getTaxesAndCost(id)
 
@@ -132,7 +129,7 @@ const TaxesAndCostService = {
    */
   async update(bearerHeader, id, body){
     try {
-      const validatePermission = await permissions(bearerHeader, ['UPDATE', 'UPDATE_TaxesAndCost'])
+      const validatePermission = await permissions(bearerHeader, ['UPDATE', 'UPDATE_TAXES_AND_COST'])
       if (validatePermission) {
         
         const validateid = await TaxesAndCostValidation.getTaxesAndCost(id);
@@ -155,8 +152,13 @@ const TaxesAndCostService = {
 
         const newTaxesAndCost = await TaxesAndCost.update(
           {
-            name: body.name,
-            description: body.description,
+            ShoppingTaxId: body.ShoppingTaxId,
+            unitTaxCostId: body.unitTaxCostId,
+            applyIco: body.applyIco,
+            valueIco: body.valueIco,
+            includeIcoInCost: body.includeIcoInCost,
+            productCost: body.productCost,
+            unitCost: body.unitCost,
             isActive: body.isActive,
             updatedBy: user.id
           },
@@ -175,7 +177,7 @@ const TaxesAndCostService = {
 
   async findPagination(bearerHeader, sizeAsNumber, pageAsNumber, wherecond, isActive){
     try {
-      const validatePermission = await permissions(bearerHeader, ['FIND_PAGINATION', 'FIND_PAGINATION_TaxesAndCost'])
+      const validatePermission = await permissions(bearerHeader, ['FIND_PAGINATION', 'FIND_PAGINATION_TAXES_AND_COST']);
       if (validatePermission) {
         if(isActive == undefined || typeof(isActive) !== 'boolean'){
           isActive = true

@@ -33,6 +33,7 @@ const PriceByVolumeRouter = require('./price-by-volume');
 const ProductMenuRouter = require('./product-menu');
 const ProductParamRouter = require('./product-param');
 const ProductSalePriceRouter = require('./product-sale-price');
+const TaxesAndCostRouter = require('./taxes-and-cost');
 
 
 router.use('/v1/banks', BankRouter);
@@ -66,6 +67,7 @@ router.use('/v1/priceByVolumes', PriceByVolumeRouter);
 router.use('/v1/productMenus', ProductMenuRouter);
 router.use('/v1/productParams', ProductParamRouter);
 router.use('/v1/productSalePrices', ProductSalePriceRouter);
+router.use('/v1/taxesAndCosts', TaxesAndCostRouter);
 
 
 // prueba socket
