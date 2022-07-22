@@ -55,10 +55,15 @@ TaxesAndCost.belongsTo(Product);
 Tax.hasMany(TaxesAndCost, {
   foreignKey: 'ShoppingTaxId'
 });
+TaxesAndCost.belongsTo(Tax, {
+  foreignKey: 'ShoppingTaxId'
+});
 
 Tax.hasMany(TaxesAndCost, {
   foreignKey: 'unitTaxCostId'
 });
-TaxesAndCost.belongsTo(Tax);
+TaxesAndCost.belongsTo(Tax, {
+  foreignKey: 'unitTaxCostId'
+});
 
 module.exports = TaxesAndCost;

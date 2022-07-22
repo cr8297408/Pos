@@ -31,6 +31,29 @@ class TaxesAndCostValidation {
     }
 
     /**
+     * update an instance of TaxesAndCostValidation
+     * @memberof TaxesAndCostValidation
+     * @param {TaxesAndCost}
+     * @returns {Joi.validationResult}
+     */
+
+    updateTaxesAndCost(body){
+      const schema = Joi.object().keys({
+        ShoppingTaxId: Joi.string(),
+        unitTaxCostId: Joi.string().required(),
+        applyIco: Joi.boolean(),
+        valueIco: Joi.number().required(),
+        includeIcoInCost: Joi.boolean(),
+        productCost: Joi.number().required(),
+        unitCost: Joi.number().required(),
+        isActive: Joi.boolean()
+      })
+
+      return schema.validate(body)
+    }
+
+
+    /**
      * @param {{ id: string }} body
      * @returns {Joi.ValidationResult<{ id: string }>}
      * @memberof UserValidation

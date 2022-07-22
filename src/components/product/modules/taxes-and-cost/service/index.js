@@ -1,10 +1,11 @@
-const db = require('../../../../config/connection/connectBd');
-const TaxesAndCostValidation = require('./validation');
-const TaxesAndCost = require('./model');
-const Pagination = require('../../../../shared/middlewares/pagination')
-const permissions = require('../../../../shared/middlewares/permissions');
-const HttpResponse = require('../../../../shared/response');
-const getUser = require('../../../../shared/middlewares/getUser');
+const db = require('../../../../../config/connection/connectBd');
+const TaxesAndCostValidation = require('../validation');
+const TaxesAndCost = require('../model');
+const Pagination = require('../../../../../shared/middlewares/pagination')
+const permissions = require('../../../../../shared/middlewares/permissions');
+const HttpResponse = require('../../../../../shared/response');
+const getUser = require('../../../../../shared/middlewares/getUser');
+const {getCosts} = require('./total-cu-iu');
 
 sequelize = db.sequelize;
 
@@ -48,6 +49,12 @@ const TaxesAndCostService = {
         }
         const user = await getUser(bearerHeader);
 
+        const getTaxesAndCost = await TaxesAndCost.findByPk(body.ProductId);
+
+        if(getTaxesAndCost){
+          return new HttpResponse(400, 'precios e impuestos del producto ya registrados')
+        }
+
         const createTaxesAndCost = await TaxesAndCost.create({
           ProductId: body.ProductId,
           ShoppingTaxId: body.ShoppingTaxId,
@@ -60,7 +67,13 @@ const TaxesAndCostService = {
           isActive: body.isActive,
           createdBy: user.id
         });
-        return new HttpResponse(201, createTaxesAndCost);
+
+        let costs = await getCosts(bearerHeader, body.unitTaxCostId, body.unitCost, body.includeIcoInCost, body.valueIco);
+        
+        return new HttpResponse(201, {
+          createTaxesAndCost,
+          costs
+        });
       } 
       const err = new HttpResponse(401, 'no tienes permisos para esta acción');
       return err;
@@ -84,7 +97,8 @@ const TaxesAndCostService = {
           return new HttpResponse(400, validate.error);
         }
         const getTaxesAndCost = await TaxesAndCost.findByPk(id);
-        return new HttpResponse(200, getTaxesAndCost);
+        const costs = await getCosts(bearerHeader, getTaxesAndCost.unitTaxCostId, getTaxesAndCost.unitCost,getTaxesAndCost.includeIcoInCost, getTaxesAndCost.valueIco);
+        return new HttpResponse(200, {getTaxesAndCost, costs});
       } 
       const err = new HttpResponse(401, 'no tienes permisos para esta acción');
       return err;
@@ -137,8 +151,13 @@ const TaxesAndCostService = {
         if (validateid.error) {
           return new HttpResponse(400, validateid.error)
         }
+
+        const validateBody = await TaxesAndCostValidation.updateTaxesAndCost(body);
+        if(validateBody.error){
+          throw new HttpResponse(400, validateBody.error);
+        }
         
-        const user = await getUser(bearerHeader)
+        const user = await getUser(bearerHeader);
 
         const newTaxesAndCost = await TaxesAndCost.update(
           {
@@ -154,8 +173,13 @@ const TaxesAndCostService = {
           },
           {where: {id}}
         )
-  
-        return new HttpResponse(200, 'usuario modificado');
+        
+        let costs = await getCosts(bearerHeader, body.unitTaxCostId, body.unitCost, body.includeIcoInCost, body.valueIco);
+
+        return new HttpResponse(200, {
+          message: 'usuario modificado',
+          costs
+        });
         
       } 
       const err = new HttpResponse(401, 'no tienes permisos para esta acción');
@@ -169,13 +193,17 @@ const TaxesAndCostService = {
     try {
       const validatePermission = await permissions(bearerHeader, ['FIND_PAGINATION', 'FIND_PAGINATION_TAXES_AND_COST']);
       if (validatePermission) {
-        if(isActive == undefined || typeof(isActive) !== 'boolean'){
-          isActive = true
+        try {
+          if(isActive == undefined || typeof(isActive) !== 'boolean'){
+            isActive = true
+          }
+  
+          let query = `SELECT * FROM taxesAndCosts WHERE ProductId LIKE '%${wherecond}%' AND isActive = ${isActive} OR unitCost LIKE '%${wherecond}%' AND isActive = ${isActive}`
+          const TaxesAndCosts = Pagination(sequelize,sizeAsNumber, pageAsNumber, query)
+          return new HttpResponse(200, TaxesAndCosts)
+        } catch (error) {
+          throw new HttpResponse(400, error.message);
         }
-
-        let query = `SELECT * FROM TaxesAndCosts WHERE ProductId LIKE '%${wherecond}%' AND isActive = ${isActive} OR description LIKE '%${wherecond}%' AND isActive = ${isActive}`
-        const TaxesAndCosts = Pagination(sequelize,sizeAsNumber, pageAsNumber, query)
-        return new HttpResponse(200, TaxesAndCosts)
       } 
       const err = new HttpResponse(401, 'no tienes permisos para esta acción');
       return err;

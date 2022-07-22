@@ -30,6 +30,9 @@ const ProductSalePrice = sequelize.define('ProductSalePrice', {
   specialTwoValue: {
     type: DataTypes.FLOAT,
   },
+  specialOneUtilityValue: {
+    type: DataTypes.FLOAT,
+  },
   specialTwoUtilityValue: {
     type: DataTypes.FLOAT,
   },
@@ -64,6 +67,8 @@ Tax.hasMany(ProductSalePrice, {
 Tax.hasMany(ProductSalePrice, {
   foreignKey: 'SpecialTwoValueTaxId'
 });
+
+// ProductSalePrice.belongsTo(Tax);
 
 
 module.exports = ProductSalePrice;

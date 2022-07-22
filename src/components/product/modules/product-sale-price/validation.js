@@ -25,6 +25,7 @@ class ProductSalePriceValidation {
         comission: Joi.number(),
         specialOneValue: Joi.number(),
         specialTwoValue: Joi.number(),
+        specialOneUtilityValue: Joi.number(),
         specialTwoUtilityValue: Joi.number(),
         isActive: Joi.boolean(),
       })

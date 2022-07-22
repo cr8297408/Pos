@@ -1,10 +1,10 @@
-const db = require('../../config/connection/connectBd');
+const db = require('../../../../config/connection/connectBd');
 const ProductCurveValidation = require('./validation');
 const ProductCurve = require('./model');
-const Pagination = require('../../shared/middlewares/pagination')
-const permissions = require('../../shared/middlewares/permissions');
-const HttpResponse = require('../../shared/response');
-const getUser = require('../../shared/middlewares/getUser');
+const Pagination = require('../../../../shared/middlewares/pagination')
+const permissions = require('../../../../shared/middlewares/permissions');
+const HttpResponse = require('../../../../shared/response');
+const getUser = require('../../../../shared/middlewares/getUser');
 
 sequelize = db.sequelize;
 

@@ -57,6 +57,9 @@ module.exports = {
       specialTwoValue: {
         type: DataTypes.FLOAT,
       },
+      specialOneUtilityValue: {
+        type: DataTypes.FLOAT,
+      },
       specialTwoUtilityValue: {
         type: DataTypes.FLOAT,
       },
