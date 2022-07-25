@@ -5,6 +5,7 @@ const ProductLine = require('./modules/product-line/model');
 const UnitMeasurement = require('../measure-unit/model');
 const ProductArea = require('./modules/product-area/model');
 const ProductGroup = require('./modules/product-group/model');
+const ProductCategory = require('./modules/product-category/model');
 const File = require('../../shared/modules/files/model');
 
 sequelize = db.sequelize;
@@ -30,9 +31,6 @@ const Product = sequelize.define('Product', {
     type: DataTypes.STRING,
   },
   ref: {
-    type: DataTypes.STRING,
-  },
-  subGroups: {
     type: DataTypes.STRING,
   },
   barCode: {
@@ -91,6 +89,10 @@ Product.belongsTo(ProductArea);
 
 ProductGroup.hasMany(Product, {
   foreignKey: 'ProductGroupId'
+})
+
+ProductCategory.hasMany(Product, {
+  foreignKey: 'ProductCategoryId'
 })
 Product.belongsTo(ProductGroup);
 

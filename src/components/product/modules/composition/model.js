@@ -23,7 +23,7 @@ const Composition = sequelize.define('Composition', {
     allowNull: false
   },
   portion: {
-    type: DataTypes.NUMBER,
+    type: DataTypes.FLOAT,
   },
   isActive: {
     type: DataTypes.BOOLEAN,

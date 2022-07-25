@@ -5,6 +5,9 @@ const Pagination = require('../../shared/middlewares/pagination');
 const permissions = require('../../shared/middlewares/permissions');
 const getUser = require('../../shared/middlewares/getUser');
 const HttpResponse = require('../../shared/response');
+const ProductSalePrice = require('./modules/product-sale-price/model');
+const {getValue} = require('./modules/product-sale-price/service/value');
+
 
 sequelize = db.sequelize;
 
@@ -97,7 +100,14 @@ const ProductService = {
         if (validate.error) {
           throw new HttpResponse(400, validate.error)
         }
-        const getProduct = await Product.findByPk(id)
+        const getProduct = await Product.findByPk(id);
+
+        const getProductSalePrice = await ProductSalePrice.findOne({where: {ProductId: id}});
+
+        /**traemos los datos calculados */
+        const values = await getValue(bearerHeader, getProductSalePrice.ProductId, getProductSalePrice.GeneralValueTaxId, getProductSalePrice.generalValue, getProductSalePrice.comission, getProductSalePrice.generalUtilityValue, getProductSalePrice.SpecialOneValueTaxId, getProductSalePrice.SpecialTwoValueTaxId, getProductSalePrice.specialOneValue, getProductSalePrice.specialTwoValue, getProductSalePrice.specialOneUtilityValue, getProductSalePrice.specialTwoUtilityValue);
+        getProduct.dataValues.costs = values;
+         console.log(getProduct);
         return new HttpResponse(200, getProduct);
       } 
       return new HttpResponse(401, 'no tienes permisos para esta acción');

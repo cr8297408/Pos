@@ -17,7 +17,7 @@ class PriceByVolumeValidation {
     createPriceByVolume(body){
       const schema = Joi.object().keys({
         name: Joi.string().required(),
-        ProducId: Joi.string().required(),
+        ProductId: Joi.string().required(),
         TaxId: Joi.string(),
         utility: Joi.number(),
         value: Joi.number(),

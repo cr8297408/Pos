@@ -45,6 +45,13 @@ module.exports = {
           key: 'id'
         }
       },
+      ProductCategoryId: {
+        type: DataTypes.STRING,
+        references: {
+          model: 'productCategorys',
+          key: 'id'
+        }
+      },
       FileId: {
         type: DataTypes.STRING,
         references: {

@@ -57,7 +57,7 @@ const ProductSalePriceService = {
          * acá se utilizará el servicio que me calculará el valor neto el iva y la comisión
          * se debe de llamar 3 veces para calcular con los 3 precios
          */
-         const values = await getValue(bearerHeader, body.ProductId || getProductSalePrice.ProductId, body.GeneralValueTaxId || getProductSalePrice.GeneralValueTaxId, body.generalValue || getProductSalePrice.generalValue, body.comission || getProductSalePrice.comission, body.generalUtilityValue || getProductSalePrice.generalUtilityValue);
+         const values = await getValue(bearerHeader, body.ProductId || getProductSalePrice.ProductId, body.GeneralValueTaxId || getProductSalePrice.GeneralValueTaxId, body.generalValue || getProductSalePrice.generalValue, body.comission || getProductSalePrice.comission, body.generalUtilityValue || getProductSalePrice.generalUtilityValue, body.SpecialOneValueTaxId || getProductSalePrice.SpecialOneValueTaxId, body.SpecialTwoValueTaxId || getProductSalePrice.SpecialTwoValueTaxId, body.specialOneValue || getProductSalePrice.specialOneValue, body.specialTwoValue || getProductSalePrice.specialTwoValue, body.specialOneUtilityValue || getProductSalePrice.specialOneUtilityValue, body.specialTwoUtilityValue || getProductSalePrice.specialTwoUtilityValue);
         const user = await getUser(bearerHeader);
         
         const createProductSalePrice = await ProductSalePrice.create({
@@ -75,7 +75,13 @@ const ProductSalePriceService = {
           isActive: body.isActive,
           createdBy: user.id
         });
-        return new HttpResponse(201, {createProductSalePrice, values});
+
+        const obj = {
+          'valorNeto': values.valorNeto,
+          'iva': values.iva,
+          'comission': values.comission
+        }
+        return new HttpResponse(201, {createProductSalePrice, obj });
       } 
       const err = new HttpResponse(401, 'no tienes permisos para esta acción');
       return err;
@@ -104,9 +110,14 @@ const ProductSalePriceService = {
          * se debe de llamar 3 veces para calcular con los 3 precios
          */
         const getProductSalePrice = await ProductSalePrice.findByPk(id);
-        const values = await getValue(bearerHeader, getProductSalePrice.ProductId, getProductSalePrice.GeneralValueTaxId, getProductSalePrice.generalValue, getProductSalePrice.comission, getProductSalePrice.generalUtilityValue);
+        const values = await getValue(bearerHeader, getProductSalePrice.ProductId, getProductSalePrice.GeneralValueTaxId, getProductSalePrice.generalValue, getProductSalePrice.comission, getProductSalePrice.generalUtilityValue, getProductSalePrice.SpecialOneValueTaxId, getProductSalePrice.SpecialTwoValueTaxId, getProductSalePrice.specialOneValue, getProductSalePrice.specialTwoValue, getProductSalePrice.specialOneUtilityValue, getProductSalePrice.specialTwoUtilityValue);
 
-        return new HttpResponse(200, {getProductSalePrice, values});
+        const obj = {
+          'valorNeto': values.valorNeto,
+          'iva': values.iva,
+          'comission': values.comission
+        }
+        return new HttpResponse(201, {getProductSalePrice, obj });
       } 
       const err = new HttpResponse(401, 'no tienes permisos para esta acción');
       return err;
@@ -166,7 +177,7 @@ const ProductSalePriceService = {
          * se debe de llamar 3 veces para calcular con los 3 precios
          */
          const getProductSalePrice = await ProductSalePrice.findByPk(id);
-         const values = await getValue(bearerHeader, body.ProductId || getProductSalePrice.ProductId, body.GeneralValueTaxId || getProductSalePrice.GeneralValueTaxId, body.generalValue || getProductSalePrice.generalValue, body.comission || getProductSalePrice.comission, body.generalUtilityValue || getProductSalePrice.generalUtilityValue);
+         const values = await getValue(bearerHeader, body.ProductId || getProductSalePrice.ProductId, body.GeneralValueTaxId || getProductSalePrice.GeneralValueTaxId, body.generalValue || getProductSalePrice.generalValue, body.comission || getProductSalePrice.comission, body.generalUtilityValue || getProductSalePrice.generalUtilityValue, body.SpecialOneValueTaxId || getProductSalePrice.SpecialOneValueTaxId, body.SpecialTwoValueTaxId || getProductSalePrice.SpecialTwoValueTaxId, body.specialOneValue || getProductSalePrice.specialOneValue, body.specialTwoValue || getProductSalePrice.specialTwoValue, body.specialOneUtilityValue || getProductSalePrice.specialOneUtilityValue, body.specialTwoUtilityValue || getProductSalePrice.specialTwoUtilityValue);
 
         const newProductSalePrice = await ProductSalePrice.update(
           {
@@ -186,7 +197,12 @@ const ProductSalePriceService = {
           {where: {id}}
         )
   
-        return new HttpResponse(200, {message: 'precio modificado', values});
+        const obj = {
+          'valorNeto': values.valorNeto,
+          'iva': values.iva,
+          'comission': values.comission
+        }
+        return new HttpResponse(201, obj);
         
       } 
       const err = new HttpResponse(401, 'no tienes permisos para esta acción');

@@ -1,10 +1,11 @@
-const db = require('../../../../config/connection/connectBd');
-const PriceByVolumeValidation = require('./validation');
-const PriceByVolume = require('./model');
-const Pagination = require('../../../../shared/middlewares/pagination')
-const permissions = require('../../../../shared/middlewares/permissions');
-const HttpResponse = require('../../../../shared/response');
-const getUser = require('../../../../shared/middlewares/getUser');
+const db = require('../../../../../config/connection/connectBd');
+const PriceByVolumeValidation = require('../validation');
+const PriceByVolume = require('../model');
+const Pagination = require('../../../../../shared/middlewares/pagination')
+const permissions = require('../../../../../shared/middlewares/permissions');
+const HttpResponse = require('../../../../../shared/response');
+const getUser = require('../../../../../shared/middlewares/getUser');
+const {getVolumPrice} = require('./price-volum');
 
 sequelize = db.sequelize;
 
@@ -44,7 +45,6 @@ const PriceByVolumeService = {
       if (validatePermission) {
         const validate = PriceByVolumeValidation.createPriceByVolume(body);
         if (validate.error) {
-          console.log(new HttpResponse(400, validate.error));
           return new HttpResponse(400, validate.error);
         }
         const user = await getUser(bearerHeader);
@@ -58,10 +58,11 @@ const PriceByVolumeService = {
             return new HttpResponse(400, 'el nombre ya está en uso')
           }
         }
-        
+        const valueVolumen = await getVolumPrice(bearerHeader, body.ProductId, body.TaxId, body.value, 0, body.utility, body.quantity);
+      
         const createPriceByVolume = await PriceByVolume.create({
           name: body.name,
-          ProducId: body.ProductId,
+          ProductId: body.ProductId,
           TaxId: body.TaxId,
           utility: body.utility,
           value: body.value,
@@ -69,6 +70,7 @@ const PriceByVolumeService = {
           isActive: body.isActive,
           createdBy: user.id
         });
+        createPriceByVolume.dataValues.totalPrice = valueVolumen;
         return new HttpResponse(201, createPriceByVolume);
       } 
       const err = new HttpResponse(401, 'no tienes permisos para esta acción');
@@ -93,6 +95,9 @@ const PriceByVolumeService = {
           return new HttpResponse(400, validate.error);
         }
         const getPriceByVolume = await PriceByVolume.findByPk(id);
+        const valueVolumen = await getVolumPrice(bearerHeader, getPriceByVolume.ProductId, getPriceByVolume.TaxId, getPriceByVolume.value, 0, getPriceByVolume.utility, getPriceByVolume.quantity);
+
+        getPriceByVolume.dataValues.totalPrice = valueVolumen;
         return new HttpResponse(200, getPriceByVolume);
       } 
       const err = new HttpResponse(401, 'no tienes permisos para esta acción');
@@ -162,7 +167,6 @@ const PriceByVolumeService = {
         const newPriceByVolume = await PriceByVolume.update(
           {
             name: body.name,
-            ProducId: body.ProductId,
             TaxId: body.TaxId,
             utility: body.utility,
             value: body.value,

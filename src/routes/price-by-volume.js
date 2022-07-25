@@ -136,7 +136,7 @@ const router = Router();
   *      PriceByVolumes:
   *          type: object
   *          required:
-  *              -ProducId
+  *              -ProductId
   *              -name
   *          properties:
   *              id:
@@ -155,7 +155,7 @@ const router = Router();
   *                  type: number
   *          example:
   *              name: promo 10 hamburguesas
-  *              ProducId: id producto
+  *              ProductId: id producto
   *              TaxId: id impuesto
   *              utility: 10
   *              value: 30000
