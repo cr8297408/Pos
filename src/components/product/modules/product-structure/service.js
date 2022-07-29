@@ -66,7 +66,7 @@ const ProductStructureService = {
             isActive: body.isActive,
             createdBy: user.id
           });
-          return new HttpResponse(201, createProductStructure);
+          return new HttpResponse(200, createProductStructure);
         }
         return new HttpResponse(400, 'nombre o codigo en uso')
       } 
@@ -117,9 +117,14 @@ const ProductStructureService = {
 
         const getProductStructure = await ProductStructure.findByPk(id);
         
-        await getProductStructure.destroy()
+        const item = await ProductStructure.update(
+          {
+            isActive: getProductStructure.isActive? false : true
+          },
+          {where: {id}}
+        )
 
-        return new HttpResponse(200, 'estructura eliminada');
+        return new HttpResponse(200, item);
         
       } 
       return new HttpResponse(401, 'no tienes permisos para esta acción')
@@ -128,6 +133,8 @@ const ProductStructureService = {
       throw new HttpResponse(400, error.message)
     }
   },
+
+
 
   /**
    * @exports
@@ -150,7 +157,7 @@ const ProductStructureService = {
 
         const existsStruct = await ProductStructure.findOne({
           where: {
-            [Op.or]: [
+            [Op.and]: [
               {name: body.name},
               {code: body.code}
             ]
@@ -161,14 +168,13 @@ const ProductStructureService = {
           const newProductStructure = await ProductStructure.update(
             {
               name: body.name,
-              code: body.code,
               isActive: body.isActive,
               updatedBy: user.id 
             },
             {where: {id}}
           )
     
-          return HttpResponse(200, newProductStructure);
+          return new HttpResponse(200,body);
         }
         
         return new HttpResponse(400, 'nombre o codigo en uso');
@@ -185,13 +191,26 @@ const ProductStructureService = {
       const validatePermission = await permissions(bearerHeader, ['FIND_PAGINATION', 'FIND_PAGINATION_PRODUCT_STRUCTURE']);
       if (validatePermission) {
         
-        if(isActive == undefined || typeof(isActive) !== 'boolean'){
-          isActive = true
+        let query = `SELECT * FROM 
+        productStructures  
+        WHERE isActive = ${isActive} AND
+        ( 
+          name LIKE '%${wherecond}%' OR 
+          code LIKE '%${wherecond}%'
+        )`
+        const ProductStructures = await Pagination(sequelize,sizeAsNumber, pageAsNumber, query)
+        const total = await ProductStructure.count({
+          where:{isActive:isActive}
+        })
+        let totalPage = total/sizeAsNumber;
+        let response={
+          items: ProductStructures??[],
+          total:total??0,
+          currentPage:pageAsNumber??0,
+          totalPage:totalPage
         }
 
-        let query = `SELECT * FROM productStructures WHERE name LIKE '%${wherecond}%' AND isActive = ${isActive} OR code LIKE '%${wherecond}%' AND isActive = ${isActive}`
-        const productStructures = Pagination(sequelize,sizeAsNumber, pageAsNumber, query)
-        return new HttpResponse(200, productStructures)
+        return new HttpResponse(200, response)
 
       } 
       return new HttpResponse(401, 'no tienes permisos para esta acción')
