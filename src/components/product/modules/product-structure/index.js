@@ -50,9 +50,10 @@ async function updateOne(req, res){
 
 async function findpagination(req, res){
   try {
-    const sizeAsNumber = Number(req.bosy.size);
-    const pageAsNumber = Number(req.bosy.page);
-    const {where, isActive} = req.body;
+    const sizeAsNumber = req.body.size ?Number(req.body.size): 10;
+    const pageAsNumber = req.body.page ?Number(req.body.page): 1;
+    const where = req.body.where ? req.body.where: "";
+    const isActive = req.body.isActive === 'inactive' ? false : true ;
     const ProductStructures = await ProductStructureService.findPagination(req.headers['authorization'],sizeAsNumber, pageAsNumber, where, isActive);
     res.status(ProductStructures.status).json(ProductStructures.message)    
   } catch (error) {

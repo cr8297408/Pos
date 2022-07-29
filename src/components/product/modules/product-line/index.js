@@ -50,10 +50,12 @@ async function updateOne(req, res){
 
 async function findpagination(req, res){
   try {
-    const sizeAsNumber = Number(req.body.size);
-    const pageAsNumber = Number(req.body.page);
-    const {where, isAdmin} = req.body;
-    const ProductLines = await ProductLineService.findPagination(req.headers['authorization'],sizeAsNumber, pageAsNumber, where, isAdmin);
+    const sizeAsNumber = req.body.size ?Number(req.body.size): 10;
+    const pageAsNumber = req.body.page ?Number(req.body.page): 1;
+    const where = req.body.where ? req.body.where: "";
+    const idRoot = req.body.idRoot ? req.body.idRoot: "";
+    const isActive = req.body.isActive === 'inactive' ? false : true ;
+    const ProductLines = await ProductLineService.findPagination(req.headers['authorization'],sizeAsNumber, pageAsNumber, where, isActive, idRoot);
     res.status(ProductLines.status).json(ProductLines.message)    
   } catch (error) {
     res.json(error.message)

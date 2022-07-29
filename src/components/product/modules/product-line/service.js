@@ -76,7 +76,7 @@ const ProductLineService = {
             isActive: body.isActive,
             createdBy: user.id
           });
-          return new HttpResponse(201, createProductLine);
+          return new HttpResponse(200, createProductLine);
         }
         return new HttpResponse(400, 'el campo ProductStructureId no corresponde a ninguna estructura de producto')
       } 
@@ -127,8 +127,15 @@ const ProductLineService = {
         const getProductLine = await ProductLine.findByPk(id);
         
         await getProductLine.destroy()
+        const item = await ProductLine.update(
+          {
+            isActive: getProductStructure.isActive? false : true
+          },
+          {where: {id}}
+        )
 
-        return new HttpResponse(200, 'linea eliminada');
+
+        return new HttpResponse(200, item);
         
       } 
       return new HttpResponse(401, 'no tienes permisos para esta acción')
@@ -189,18 +196,42 @@ const ProductLineService = {
     }
   },
 
-  async findPagination(bearerHeader, sizeAsNumber, pageAsNumber, wherecond, isActive){
+  async findPagination(bearerHeader, sizeAsNumber, pageAsNumber, wherecond, isActive,idRoot){
     try {
       const validatePermission = await permissions(bearerHeader, ['FIND_PAGINATION', 'FIND_PAGINATION_PRODUCT_LINE']);
       if (validatePermission) {
-        
-        if(isActive == undefined || typeof(isActive) !== 'boolean'){
-          isActive = true
+        let query = `SELECT * FROM 
+        productlines  
+        WHERE isActive = ${isActive} AND
+        ProductStructureId = '${idRoot}' AND
+        ( 
+          name LIKE '%${wherecond}%' OR 
+          code LIKE '%${wherecond}%'
+        )`
+        const ProductStructures = await Pagination(sequelize,sizeAsNumber, pageAsNumber, query)
+        const total = await ProductLine.count({
+          where:{
+            [Op.and]: [
+              { isActive: isActive },
+              { ProductStructureId: idRoot }
+            ]
+          }
+        })
+        const totalLines = await ProductLine.count({
+          where:{
+             ProductStructureId: idRoot 
+          }
+        })
+        let totalPage = total/sizeAsNumber;
+        let response={
+          items: ProductStructures??[],
+          total:total??0,
+          currentPage:pageAsNumber??0,
+          totalPage:totalPage,
+          totalLines:totalLines
         }
 
-        let query = `SELECT * FROM productLines WHERE name LIKE '%${wherecond}%' AND isActive = ${isActive} OR code LIKE '%${wherecond}%' AND isActive = ${isActive}`
-        const productLines = Pagination(sequelize,sizeAsNumber, pageAsNumber, query)
-        return new HttpResponse(200, productLines)
+        return new HttpResponse(200, response)
 
       } 
       return new HttpResponse(401, 'no tienes permisos para esta acción')

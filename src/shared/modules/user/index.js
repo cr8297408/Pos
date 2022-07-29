@@ -58,10 +58,12 @@ async function updateOne(req, res){
 }
 
 async function findpagination(req, res){
+  console.log(req.body)
   try {
-    const sizeAsNumber = Number(req.body.size);
-    const pageAsNumber = Number(req.body.page);
-    const {where, isActive} = req.body;
+    const sizeAsNumber = req.body.size ?Number(req.body.size): 10;
+    const pageAsNumber = req.body.page ?Number(req.body.page): 1;
+    const where = req.body.where ? req.body.where: "";
+    const isActive = req.body.isActive === 'inactive' ? false : true ;
     const Users = await UserService.findPagination(req.headers['authorization'],sizeAsNumber, pageAsNumber, where, isActive);
     res.status(Users.status).json(Users.message)    
   } catch (error) {
@@ -75,7 +77,7 @@ async function putAvatar(req, res) {
     const avatar = await UserService.putAvatar(req.headers['authorization'], originalname, path)
     res.status(avatar.status).json(avatar.message)
   } catch (error) {
-    res.json(error.message)
+    //res.json(error.message) 
   }
 }
 

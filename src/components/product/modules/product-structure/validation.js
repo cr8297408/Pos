@@ -17,7 +17,7 @@ class ProductStructureValidation {
     createProductStructure(body){
       const schema = Joi.object().keys({
         name: Joi.string().required(),
-        code: Joi.string().required(),
+        code: Joi.string(),
       })
 
       return schema.validate(body)

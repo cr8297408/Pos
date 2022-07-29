@@ -653,8 +653,8 @@ router.post('/productStructures/?', ProductStructureComponent.findpagination);
   *          required:
   *              where
   *          example:
-  *              where: c
-  *              isActive: false
+  *              where: ""
+  *              isActive: "active"
   *              size: 8
   *              page: 1
   *      Error:    

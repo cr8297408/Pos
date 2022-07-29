@@ -43,6 +43,7 @@ const UserService = {
       if (validatePermission) {
         const validate = UserValidation.createUser(body);
         if (validate.error) {
+          console.log(validate.error)
           return new HttpResponse(400, validate.error);
         }
         const existsMail = await User.findOne({
@@ -52,7 +53,7 @@ const UserService = {
         })
         const existsUser = await User.findOne({
           where: {
-            username:body.username,
+            username:body.username, 
           }
         })
   
@@ -72,8 +73,8 @@ const UserService = {
           password: bcrypt.hashSync(body.password, 10),
           roles: body.roles,
           profile: body.profile,
-          avatarFile: body.avatarFile,
-          typeUser: body.typeUser,
+          avatarFile: body.avatarFile??'https://picsum.photos/200/300?random=1',
+          typeUser: body.typeUser??'USER',
           createdBy: user.id,
           isActive: body.isActive
         });
@@ -109,10 +110,10 @@ const UserService = {
         if (validate.error) {
           return new HttpResponse(400, validate.error);
         }
-        const getsUser = await User.findByPk(id)
-        return new HttpResponse(200, getUser);
+        const user = await User.findByPk(id)
+        return new HttpResponse(200, user);
       } 
-      const err = new HttpResponse(401, 'no tienes permisos para esta acción');
+      const err = new HttpResponse(403, 'no tienes permisos para esta acción');
       return err;
     } catch (error) {
       return new HttpResponse(400, error.message);
@@ -142,7 +143,7 @@ const UserService = {
   
         return new HttpResponse(200, 'usuario desactivado');
       } 
-      const err = new HttpResponse(401, 'no tienes permisos para esta acción');
+      const err = new HttpResponse(403, 'no tienes permisos para esta acción');
       return err;
     } catch (error) {
       throw new Error(error)
@@ -227,20 +228,27 @@ const UserService = {
 
   async findPagination(bearerHeader,sizeAsNumber, pageAsNumber, wherecond, isActive){
     try {
-      if(isActive == undefined || typeof(isActive) !== 'boolean'){
-        isActive = true
-      }
       const validatePermission = await permissions(bearerHeader, ['FIND_PAGINATION', 'FIND_PAGINATION_USER'])
       if (validatePermission) {
-        let query = `SELECT * FROM users WHERE username LIKE '%${wherecond}%' AND isActive = ${isActive} OR firstName LIKE '%${wherecond}%' AND isActive = ${isActive} OR lastName LIKE '%${wherecond}%' AND isActive = ${isActive} OR email LIKE '%${wherecond}%' AND isActive = ${isActive}`
+        let query = `SELECT * FROM users WHERE  isActive = ${isActive} AND (username LIKE '%${wherecond}%' OR firstName LIKE '%${wherecond}%'  OR lastName LIKE '%${wherecond}%'  OR email LIKE '%${wherecond}%') `
         const Users = await Pagination(sequelize,sizeAsNumber, pageAsNumber, query)
-        return new HttpResponse(200, Users);
+        const total = await User.count({
+          where:{isActive:isActive}
+        })
+        let totalPage = total/sizeAsNumber;
+        let response={
+          items: Users??[],
+          total:total??0,
+          currentPage:pageAsNumber??0,
+          totalPage:totalPage
+        }
+        return new HttpResponse(200, response);
       } 
       const err = new HttpResponse(401, 'no tienes permisos para esta acción');
       return err;
 
     } catch (error) {
-      return new HttpResponse(400, error.message);
+      return new HttpResponse(500, error.message);
     }
   },
 

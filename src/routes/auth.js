@@ -146,10 +146,10 @@ const router = Router();
   *              email:
   *                  type: string
   *          example:
-  *              email: admin1@mail.com
+  *              email: leonardo27188@gmail.com
   *              username: testAuth
   *              firstName: test
-  *              password: Admin1
+  *              password:  Admin@123
   *              lastName: auth
   *      login:
   *          type: object
@@ -162,8 +162,8 @@ const router = Router();
   *              email:
   *                  type: string
   *          example:
-  *              email: admin1@mail.com
-  *              password: Admin1
+  *              email: leonardo27188@gmail.com
+  *              password: Admin@123
   *      changePass:
   *          type: object
   *          required:
@@ -178,8 +178,8 @@ const router = Router();
   *              email:
   *                  type: string
   *          example:
-  *              email: admin1@mail.com
-  *              password: Admin1
+  *              email: leonardo27188@gmail.com
+  *              password: Admin@123
   *      forgotPass:
   *          type: object
   *          required:
@@ -188,7 +188,7 @@ const router = Router();
   *              email:
   *                  type: string
   *          example:
-  *              email: admin1@mail.com
+  *              email: leonardo27188@gmail.com
   *      newPass:
   *          type: object
   *          required:
